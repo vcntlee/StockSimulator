@@ -1,0 +1,113 @@
+package com.mine.stocksimulator;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+
+public class PopupActivity extends AppCompatActivity {
+
+    public final static String POSITION_DETAILS = "POSITION_DETAILS";
+    private TextView mSymbolValuePopup;
+    private TextView mPriceValuePopup;
+    private TextView mTotalValuePopup;
+    private EditText mNumSharesInput;
+    private Button mBuyButton;
+    private Button mCancelButton;
+
+    private OpenPosition mOpenPosition;
+
+    private int mNumShares;
+    private double mTotal;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_popup);
+
+        mSymbolValuePopup = (TextView) findViewById(R.id.symbolValuePopup);
+        mPriceValuePopup = (TextView) findViewById(R.id.priceValuePopup);
+        mTotalValuePopup = (TextView) findViewById(R.id.totalValuePopup);
+        mNumSharesInput = (EditText) findViewById(R.id.numSharesInput);
+        mBuyButton = (Button) findViewById(R.id.buyButtonPopup);
+        mCancelButton = (Button) findViewById(R.id.cancelButtonPopup);
+
+        DisplayMetrics dm = new DisplayMetrics();
+
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+
+        getWindow().setLayout(width, (int) (height * 0.6));
+
+        Intent intent = getIntent();
+
+        final Quote quote = intent.getParcelableExtra(BuyActivity.QUOTE_DETAILS);
+        mSymbolValuePopup.setText(quote.getSymbol());
+        String priceString = quote.getPrice()+"";
+        mPriceValuePopup.setText(priceString);
+
+        mNumSharesInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                mNumShares = Integer.parseInt(s.toString());
+                mTotal = BuyActivity.round((mNumShares * quote.getPrice()), 3);
+
+                mTotalValuePopup.setText(mTotal + "");
+            }
+        });
+
+
+        mBuyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mNumSharesInput.getText().toString().length() == 0) {
+                    Toast.makeText(PopupActivity.this, "Please enter number of shares", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    mOpenPosition = new OpenPosition();
+                    mOpenPosition.setPrice(quote.getPrice());
+                    mOpenPosition.setCost(quote.getPrice() * mNumShares);
+                    mOpenPosition.setCompanyTicker(quote.getSymbol());
+                    mOpenPosition.setShares(mNumShares);
+                    Intent intent = new Intent(PopupActivity.this, PortfolioActivity.class);
+                    intent.putExtra(POSITION_DETAILS, mOpenPosition);
+                    startActivity(intent);
+                }
+            }
+        });
+
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PopupActivity.this, BuyActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
+
+
+    }
+}

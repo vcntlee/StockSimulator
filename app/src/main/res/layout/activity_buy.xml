@@ -71,6 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="--"
+                android:id="@+id/companyValue"
                 android:textSize="18sp"
                 android:gravity="center"
                 />
@@ -95,6 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="--"
+                android:id="@+id/priceValue"
                 android:textSize="18sp"
                 android:gravity="center"
                 />
@@ -119,6 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="--"
+                android:id="@+id/symbolValue"
                 android:textSize="18sp"
                 android:gravity="center"
                 />
@@ -138,5 +141,36 @@
         android:layout_marginTop="10dp"
         android:visibility="invisible"
         tools:visibility="visible"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/buySellContainer"
+        android:visibility="invisible"
+        tools:visibility="visible">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="BUY"
+            android:id="@+id/buyButton"
+            android:textColor="#e15258"
+            android:textSize="14sp"
+            android:gravity="center"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="CANCEL"
+            android:id="@+id/cancelButton"
+            android:textColor="#e15258"
+            android:textSize="14sp"
+            android:gravity="center"/>
+
+    </LinearLayout>
 
 </RelativeLayout>
