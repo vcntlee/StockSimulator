@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:id="@+id/priceLabel"
+                android:id="@+id/priceItemLabel"
                 android:text="Current Price"
                 android:gravity="center_horizontal"
                 android:paddingTop="10dp"

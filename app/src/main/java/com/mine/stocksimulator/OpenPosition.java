@@ -76,7 +76,7 @@ public class OpenPosition implements Parcelable {
         mShares = in.readInt();
     }
 
-    private final static Creator<OpenPosition> CREATOR = new Creator<OpenPosition>() {
+    public final static Creator<OpenPosition> CREATOR = new Creator<OpenPosition>() {
         @Override
         public OpenPosition createFromParcel(Parcel source) {
             return new OpenPosition(source) ;
