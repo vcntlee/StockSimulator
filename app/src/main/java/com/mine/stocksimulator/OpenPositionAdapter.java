@@ -7,24 +7,27 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class OpenPositionsAdapter extends BaseAdapter {
+import java.util.ArrayList;
+
+
+public class OpenPositionAdapter extends BaseAdapter {
 
     private Context mContext;
-    private OpenPosition[] mOpenPositions;
+    private ArrayList<OpenPosition> mOpenPositions;
 
-    public OpenPositionsAdapter(Context context, OpenPosition[] openPositions){
+    public OpenPositionAdapter(Context context, ArrayList<OpenPosition> openPositions){
         mContext = context;
         mOpenPositions = openPositions;
     }
 
     @Override
     public int getCount() {
-        return mOpenPositions.length;
+        return mOpenPositions.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mOpenPositions[position];
+        return mOpenPositions.get(position);
     }
 
     @Override
@@ -52,7 +55,7 @@ public class OpenPositionsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        OpenPosition openPosition = mOpenPositions[position];
+        OpenPosition openPosition = mOpenPositions.get(position);
 
         holder.ticker.setText(openPosition.getCompanyTicker());
         holder.price.setText(openPosition.getPrice()+"");
