@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,6 +13,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.mine.stocksimulator.PortfolioActivity"
     android:background="@color/background">
+
+
+
 
     <LinearLayout
         android:orientation="horizontal"
@@ -37,6 +43,8 @@
             />
 
     </LinearLayout>
+
+
 
     <ListView
         android:layout_width="match_parent"
@@ -96,3 +104,5 @@
 
 
 </RelativeLayout>
+
+

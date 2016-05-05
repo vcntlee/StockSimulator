@@ -73,8 +73,8 @@ public class PortfolioActivity extends ListActivity {
         if (getIntent()!= null && getIntent().getExtras() != null) {
             Intent intent = getIntent();
             mPosition = intent.getParcelableExtra(PopupActivity.POSITION_DETAILS);
-            //Log.i(TAG, mPosition.getCompanyTicker());
             mPositions.addItem(mPosition);
+            Log.i(TAG, "length of array " + mPositions.getSize()+"");
 
         }
 
@@ -99,6 +99,10 @@ public class PortfolioActivity extends ListActivity {
     protected void onPause() {
         super.onPause();
         Log.i(TAG, "entered onPause");
+
+        if (getIntent()!= null && getIntent().getExtras() != null) {
+            getIntent().removeExtra(PopupActivity.POSITION_DETAILS);
+        }
 
         Gson gson = new Gson();
         String json = gson.toJson(mPositions); // myObject - instance of MyObject

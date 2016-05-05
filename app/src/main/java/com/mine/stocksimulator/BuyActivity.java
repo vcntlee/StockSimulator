@@ -47,6 +47,8 @@ public class BuyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy);
 
+        Log.i(TAG, "entered onCreate");
+
         mButton = (Button) findViewById(R.id.searchButton);
         mSearchEditText = (EditText) findViewById(R.id.searchEditText);
         mFactsContainer = (TableLayout) findViewById(R.id.factsContainer);
@@ -61,6 +63,9 @@ public class BuyActivity extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Log.i(TAG, "from onCreate " + mSearchEditText.getText().toString());
+
                 if (mSearchEditText.getText().toString().length() == 0) {
                     Log.i(TAG, "entered 0");
                     Toast.makeText(BuyActivity.this, "Please enter some text", Toast.LENGTH_LONG).show();
@@ -117,7 +122,9 @@ public class BuyActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                updateDisplay();
+                                if (isValidSearch) {
+                                    updateDisplay();
+                                }
                                 toggleFacts(isValidSearch);
                             }
                         });
@@ -210,5 +217,11 @@ public class BuyActivity extends AppCompatActivity {
         super.onResume();
         Log.i(TAG, "entered on resume state");
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "calling onDestroy");
     }
 }
