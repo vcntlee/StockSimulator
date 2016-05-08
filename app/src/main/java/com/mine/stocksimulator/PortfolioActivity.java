@@ -8,10 +8,35 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class PortfolioActivity extends ListActivity {
+
+    /*TODO List:
+        1. make sure that repeated buys don't get duplicated in listView
+        2. make a nav bar (search goes to the buy activity page)
+        3. calculate the profit --> DONE
+        4. error check input
+        5. create an adapter with search results?
+        6. portfolio summary on different activity
+        7. watchlist
+        8. buy and short | sell to cover and buy to cover
+     */
+
+
 
     public static final String TAG = PortfolioActivity.class.getSimpleName();
     private static final String PREFS_FILE = "com.mine.stocksimulator.prefs_file" ;
@@ -24,33 +49,13 @@ public class PortfolioActivity extends ListActivity {
     private SharedPreferences.Editor mEditor;
 
 
-//    @Override
-//    public void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        Log.i(TAG, "entered onSaveInstanceState");
-//
-//
-//        if (mPosition!=null){
-//
-//            mPositions.add(mPosition);
-//            Log.i(TAG, mPositions.get(0).getCost() + "");
-//        }
-//
-//    }
-//
-//
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//
-//    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_portfolio);
         Log.i(TAG, "entered onCreate");
 
+        
 
         mBuyButton = (Button) findViewById(R.id.buyButton);
         mShortButton = (Button) findViewById(R.id.shortButton);
@@ -59,15 +64,18 @@ public class PortfolioActivity extends ListActivity {
         mEditor = mSharedPreferences.edit();
 
         Gson gson = new Gson();
-        Log.i(TAG, "entered onCreate 1");
         String json = mSharedPreferences.getString(POSITIONS_ARRAY, "");
-        Log.i(TAG, "entered onCreate 2");
         if (json != "") {
             mPositions = gson.fromJson(json, OpenPositionsContainer.class);
-            Log.i(TAG, "entered if");
         }
-        Log.i(TAG, "entered onCreate 3");
-
+        if (mPositions.getSize() > 0) {
+            int size = mPositions.getSize();
+            for (int i = 0; i < size; i ++) {
+                refreshPositions(mPositions.getOpenPositions().get(i).getCompanyTicker(),
+                        mPositions.getOpenPositions().get(i));
+                Log.i(TAG + " price ", mPositions.getOpenPositions().get(i).getCost()+"");
+            }
+        }
 
         //Log.i(TAG, mPositions.getSize()+"");
         if (getIntent()!= null && getIntent().getExtras() != null) {
@@ -78,11 +86,9 @@ public class PortfolioActivity extends ListActivity {
 
         }
 
-        Log.i(TAG, "entered onCreate 3a");
         OpenPositionAdapter adapter = new OpenPositionAdapter(this, mPositions.getOpenPositions());
-        Log.i(TAG, "entered onCreate 4");
         setListAdapter(adapter);
-        Log.i(TAG, "entered onCreate 5");
+
 
         mBuyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +97,56 @@ public class PortfolioActivity extends ListActivity {
                 startActivity(intent);
             }
         });
+
+    }
+
+    private void refreshPositions(String companyName, final OpenPosition position) {
+        String completeUrl;
+        String baseUrl = "http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=%1$s";
+        completeUrl = String.format(baseUrl, companyName);
+
+        Log.i(TAG, completeUrl);
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request
+                .Builder()
+                .url(completeUrl)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    String jsonData = response.body().string();
+                    Log.v(TAG, jsonData);
+
+                    //TODO check network availability
+
+                    if (response.isSuccessful()) {
+                        updatePosition(jsonData, position);
+
+                    } else {
+                        alertUserAboutError();
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "Exception caught: ", e);
+                } catch (JSONException e) {
+                    Log.e(TAG, "JSONException caught: ", e);
+                    Toast.makeText(PortfolioActivity.this, "oops!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+
+
+    private void updatePosition(String jsonData, OpenPosition position) throws JSONException {
+        JSONObject wholeQuote = new JSONObject(jsonData);
+        position.setPrice(wholeQuote.getDouble("LastPrice"));
 
     }
 
@@ -108,6 +164,12 @@ public class PortfolioActivity extends ListActivity {
         String json = gson.toJson(mPositions); // myObject - instance of MyObject
         mEditor.putString(POSITIONS_ARRAY, json);
         mEditor.commit();
+
+    }
+
+    private void alertUserAboutError() {
+        //Toast.makeText(this, "response is not successful", Toast.LENGTH_LONG).show();
+        Log.i(TAG, "response is not successful");
 
     }
 //

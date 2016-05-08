@@ -70,8 +70,11 @@ public class PopupActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
-                mNumShares = Integer.parseInt(s.toString());
-                mTotal = BuyActivity.round((mNumShares * quote.getPrice()), 3);
+                //TODO need to account for non-numeric
+                if (s.length() > 0) {
+                    mNumShares = Integer.parseInt(s.toString());
+                    mTotal = BuyActivity.round((mNumShares * quote.getPrice()), 3);
+                }
 
                 mTotalValuePopup.setText(mTotal + "");
             }
@@ -83,11 +86,10 @@ public class PopupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mNumSharesInput.getText().toString().length() == 0) {
                     Toast.makeText(PopupActivity.this, "Please enter number of shares", Toast.LENGTH_LONG).show();
-                }
-                else {
+                } else {
                     mOpenPosition = new OpenPosition();
                     mOpenPosition.setPrice(quote.getPrice());
-                    mOpenPosition.setCost(quote.getPrice() * mNumShares);
+                    mOpenPosition.setCost(quote.getPrice());
                     mOpenPosition.setCompanyTicker(quote.getSymbol());
                     mOpenPosition.setShares(mNumShares);
                     Intent intent = new Intent(PopupActivity.this, PortfolioActivity.class);

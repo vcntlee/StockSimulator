@@ -5,56 +5,85 @@
                 android:layout_height="wrap_content"
                 tools:background="@color/background">
 
-
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="AAPL"
-        android:id="@+id/tickerItemLabel"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:padding="10dp"/>
+        android:id="@+id/positionListItem"
+        android:padding="15dp"
+        >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="100000"
-        android:id="@+id/priceItemLabel"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/tickerItemLabel"
-        android:layout_toEndOf="@+id/tickerItemLabel"
-        android:padding="10dp"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="100000"
-        android:id="@+id/costItemLabel"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/priceItemLabel"
-        android:layout_toEndOf="@+id/priceItemLabel"
-        android:padding="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="AAPL"
+                android:id="@+id/tickerLabelPortfolioItem"
+                android:textSize="14sp"
+                android:textColor="@color/fontColor"
+                android:fontFamily="sans-serif"
+                />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="100000"
-        android:id="@+id/profitItemLabel"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/costItemLabel"
-        android:layout_toEndOf="@+id/costItemLabel"
-        android:padding="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="500 shares"
+                android:id="@+id/numSharesLabelPortfolioItem"
+                android:textSize="10sp"
+                android:fontFamily="sans-serif"
+                android:textColor="#9b9b9b"
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="100%"
-        android:id="@+id/percentProfitItemLabel"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/profitItemLabel"
-        android:layout_toEndOf="@+id/profitItemLabel"
-        android:padding="10dp"/>
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1000"
+            android:id="@+id/priceLabelPortfolioItem"
+            android:textSize="14sp"
+            android:textColor="@color/fontColor"
+            android:fontFamily="sans-serif"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1000"
+            android:id="@+id/costLabelPortfolioItem"
+            android:textSize="14sp"
+            android:textColor="@color/fontColor"
+            android:fontFamily="sans-serif"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1000"
+            android:id="@+id/profitLabelPortfolioItem"
+            android:textSize="14sp"
+            android:textColor="@color/fontColor"
+            android:fontFamily="sans-serif"
+            android:layout_gravity="center_vertical"/>
+
+
+
+
+
+
+    </LinearLayout>
+
 
 
 

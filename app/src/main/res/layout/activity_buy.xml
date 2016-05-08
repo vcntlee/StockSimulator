@@ -51,19 +51,21 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:visibility="invisible"
-        tools:visibility="visible">
+        tools:visibility="visible"
+        >
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            >
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Company"
-                android:textSize="18sp"
+                android:textSize="6sp"
 
                 />
             <TextView
@@ -72,48 +74,18 @@
                 android:layout_weight="2"
                 android:text="--"
                 android:id="@+id/companyValue"
-                android:textSize="18sp"
+                android:textSize="6sp"
                 android:gravity="center"
                 />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Price"
-                android:textSize="18sp"
-
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="--"
-                android:id="@+id/priceValue"
-                android:textSize="18sp"
-                android:gravity="center"
-                />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Symbol"
-                android:textSize="18sp"
+                android:gravity="center"
+
+                android:textSize="6sp"
 
                 />
             <TextView
@@ -122,7 +94,227 @@
                 android:layout_weight="2"
                 android:text="--"
                 android:id="@+id/symbolValue"
-                android:textSize="18sp"
+                android:textSize="6sp"
+                android:gravity="center"
+                />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Last"
+                android:textSize="6sp"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="--"
+                android:id="@+id/priceValue"
+                android:textSize="6sp"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Open"
+                android:gravity="center"
+                android:textSize="6sp"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="--"
+                android:id="@+id/openValue"
+                android:textSize="6sp"
+                android:gravity="center"
+                />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Change"
+                android:textSize="6sp"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="--"
+                android:id="@+id/changeValue"
+                android:textSize="6sp"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Change %"
+                android:gravity="center"
+                android:textSize="6sp"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="--"
+                android:id="@+id/changePercentValue"
+                android:textSize="6sp"
+                android:gravity="center"
+                />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Mkt Cap"
+                android:textSize="6sp"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="--"
+                android:id="@+id/marketCapValue"
+                android:textSize="6sp"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Vol"
+                android:gravity="center"
+                android:textSize="6sp"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="--"
+                android:id="@+id/volumeValue"
+                android:textSize="6sp"
+                android:gravity="center"
+                />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Change YTD"
+                android:textSize="6sp"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="--"
+                android:id="@+id/changeYtdValue"
+                android:textSize="6sp"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Change % YTD"
+                android:gravity="center"
+                android:textSize="6sp"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="--"
+                android:id="@+id/changePercentYtdValue"
+                android:textSize="6sp"
+                android:gravity="center"
+                />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="High"
+                android:textSize="6sp"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="--"
+                android:id="@+id/highValue"
+                android:textSize="6sp"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Low"
+                android:gravity="center"
+                android:textSize="6sp"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="--"
+                android:id="@+id/lowValue"
+                android:textSize="6sp"
                 android:gravity="center"
                 />
 
@@ -135,12 +327,26 @@
         android:layout_height="wrap_content"
         android:text="Can't find given symbol"
         android:id="@+id/failMessage"
-        android:layout_below="@+id/factsContainer"
+        android:layout_below="@+id/getChartButton"
         android:gravity="center"
         android:textSize="20sp"
         android:layout_marginTop="10dp"
         android:visibility="invisible"
         tools:visibility="visible"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="CHART"
+        android:layout_below="@+id/factsContainer"
+        android:id="@+id/getChartButton"
+        android:textColor="#e15258"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -160,6 +366,8 @@
             android:textColor="#e15258"
             android:textSize="14sp"
             android:gravity="center"/>
+
+
 
         <Button
             android:layout_width="match_parent"

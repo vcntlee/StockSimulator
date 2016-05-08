@@ -1,6 +1,7 @@
 package com.mine.stocksimulator;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 
 public class OpenPositionAdapter extends BaseAdapter {
 
+    private static final String TAG = OpenPositionAdapter.class.getSimpleName();
     private Context mContext;
     private ArrayList<OpenPosition> mOpenPositions;
 
@@ -43,11 +45,12 @@ public class OpenPositionAdapter extends BaseAdapter {
         if (convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(R.layout.open_position_list_item, null);
             holder = new ViewHolder();
-            holder.ticker = (TextView) convertView.findViewById(R.id.tickerItemLabel);
-            holder.price = (TextView) convertView.findViewById(R.id.priceItemLabel);
-            holder.cost = (TextView) convertView.findViewById(R.id.costItemLabel);
-            holder.profit = (TextView) convertView.findViewById(R.id.profitItemLabel);
-            holder.percent = (TextView) convertView.findViewById(R.id.percentProfitItemLabel);
+            holder.ticker = (TextView) convertView.findViewById(R.id.tickerLabelPortfolioItem);
+            holder.numShares = (TextView) convertView.findViewById(R.id.numSharesLabelPortfolioItem);
+            holder.price = (TextView) convertView.findViewById(R.id.priceLabelPortfolioItem);
+            holder.cost = (TextView) convertView.findViewById(R.id.costLabelPortfolioItem);
+            holder.profit = (TextView) convertView.findViewById(R.id.profitLabelPortfolioItem);
+            //holder.percent = (TextView) convertView.findViewById(R.id.percentProfitItemLabel);
 
             convertView.setTag(holder);
         }
@@ -58,7 +61,15 @@ public class OpenPositionAdapter extends BaseAdapter {
         OpenPosition openPosition = mOpenPositions.get(position);
 
         holder.ticker.setText(openPosition.getCompanyTicker());
+        holder.numShares.setText(openPosition.getShares()+"");
+        //holder.price.setText(100+"");
         holder.price.setText(openPosition.getPrice()+"");
+        holder.cost.setText(openPosition.getPrice() + "");
+
+        Log.i(TAG + " Price", openPosition.getPrice() + "");
+        Log.i(TAG + " Cost", openPosition.getCost() + "");
+
+        holder.profit.setText((openPosition.getPrice() - openPosition.getCost()) + "");
 
 
         return convertView;
@@ -68,10 +79,11 @@ public class OpenPositionAdapter extends BaseAdapter {
 
     private static class ViewHolder{
         TextView ticker;
+        TextView numShares;
         TextView price;
         TextView cost;
         TextView profit;
-        TextView percent;
+        //TextView percent;
     }
 
 }
