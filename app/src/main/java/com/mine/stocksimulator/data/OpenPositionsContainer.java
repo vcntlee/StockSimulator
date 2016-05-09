@@ -1,4 +1,4 @@
-package com.mine.stocksimulator;
+package com.mine.stocksimulator.data;
 
 import java.util.ArrayList;
 

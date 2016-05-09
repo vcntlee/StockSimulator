@@ -1,4 +1,4 @@
-package com.mine.stocksimulator;
+package com.mine.stocksimulator.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.mine.stocksimulator.R;
+import com.mine.stocksimulator.data.OpenPosition;
 
 import java.util.ArrayList;
 

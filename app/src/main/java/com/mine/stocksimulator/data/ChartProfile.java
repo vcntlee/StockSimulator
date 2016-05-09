@@ -1,4 +1,4 @@
-package com.mine.stocksimulator;
+package com.mine.stocksimulator.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

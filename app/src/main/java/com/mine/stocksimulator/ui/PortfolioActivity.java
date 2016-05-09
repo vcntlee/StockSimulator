@@ -1,6 +1,6 @@
-package com.mine.stocksimulator;
+package com.mine.stocksimulator.ui;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,9 +8,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.mine.stocksimulator.adapter.OpenPositionAdapter;
+import com.mine.stocksimulator.R;
+import com.mine.stocksimulator.data.OpenPosition;
+import com.mine.stocksimulator.data.OpenPositionsContainer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +29,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class PortfolioActivity extends ListActivity {
+public class PortfolioActivity extends Activity {
 
     /*TODO List:
         1. make sure that repeated buys don't get duplicated in listView
@@ -37,10 +43,12 @@ public class PortfolioActivity extends ListActivity {
      */
 
 
-
     public static final String TAG = PortfolioActivity.class.getSimpleName();
     private static final String PREFS_FILE = "com.mine.stocksimulator.prefs_file" ;
     private static final String POSITIONS_ARRAY = "POSITIONS_ARRAY";
+
+    private ListView mListView;
+    private TextView mEmptyTextView;
     private Button mBuyButton;
     private Button mShortButton;
     private OpenPosition mPosition = new OpenPosition();
@@ -55,7 +63,8 @@ public class PortfolioActivity extends ListActivity {
         setContentView(R.layout.activity_portfolio);
         Log.i(TAG, "entered onCreate");
 
-        
+        mListView = (ListView) findViewById(android.R.id.list);
+        mEmptyTextView = (TextView) findViewById(android.R.id.empty);
 
         mBuyButton = (Button) findViewById(R.id.buyButton);
         mShortButton = (Button) findViewById(R.id.shortButton);
@@ -87,8 +96,9 @@ public class PortfolioActivity extends ListActivity {
         }
 
         OpenPositionAdapter adapter = new OpenPositionAdapter(this, mPositions.getOpenPositions());
-        setListAdapter(adapter);
 
+        mListView.setAdapter(adapter);
+        mListView.setEmptyView(mEmptyTextView);
 
         mBuyButton.setOnClickListener(new View.OnClickListener() {
             @Override

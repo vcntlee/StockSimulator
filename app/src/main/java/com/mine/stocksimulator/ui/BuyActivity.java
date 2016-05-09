@@ -1,4 +1,4 @@
-package com.mine.stocksimulator;
+package com.mine.stocksimulator.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mine.stocksimulator.R;
+import com.mine.stocksimulator.data.ChartProfile;
+import com.mine.stocksimulator.data.Quote;
 
 import org.json.JSONArray;
 import org.json.JSONException;

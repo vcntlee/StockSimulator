@@ -1,4 +1,4 @@
-package com.mine.stocksimulator;
+package com.mine.stocksimulator.ui;
 
 import android.content.Intent;
 import android.graphics.Point;
@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.Display;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+
+import com.mine.stocksimulator.R;
+import com.mine.stocksimulator.data.ChartProfile;
 
 public class ChartActivity extends AppCompatActivity {
 
