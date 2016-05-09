@@ -1,11 +1,12 @@
 package com.mine.stocksimulator.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -13,8 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.mine.stocksimulator.adapter.OpenPositionAdapter;
 import com.mine.stocksimulator.R;
+import com.mine.stocksimulator.adapter.OpenPositionAdapter;
 import com.mine.stocksimulator.data.OpenPosition;
 import com.mine.stocksimulator.data.OpenPositionsContainer;
 
@@ -29,7 +30,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class PortfolioActivity extends Activity {
+public class PortfolioActivity extends AppCompatActivity {
 
     /*TODO List:
         1. make sure that repeated buys don't get duplicated in listView
@@ -61,6 +62,20 @@ public class PortfolioActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_portfolio);
+
+        android.support.v7.app.ActionBar mActionBar = getSupportActionBar();
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setDisplayShowTitleEnabled(false);
+        LayoutInflater mInflater = LayoutInflater.from(this);
+
+        View mCustomView = mInflater.inflate(R.layout.custom_actionbar2, null);
+        TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.customActionBarTitle2);
+        mTitleTextView.setText("My Own Title");
+        mActionBar.setCustomView(mCustomView);
+        mActionBar.setDisplayShowCustomEnabled(true);
+
+
+
         Log.i(TAG, "entered onCreate");
 
         mListView = (ListView) findViewById(android.R.id.list);

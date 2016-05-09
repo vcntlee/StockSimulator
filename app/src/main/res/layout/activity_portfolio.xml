@@ -15,6 +15,7 @@
     tools:context=".ui.PortfolioActivity"
     android:background="@color/background">
 
+    <include layout="@layout/custom_actionbar2" />
 
 
 
