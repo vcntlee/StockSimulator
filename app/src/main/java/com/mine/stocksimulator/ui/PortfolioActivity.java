@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,7 +71,18 @@ public class PortfolioActivity extends AppCompatActivity {
 
         View mCustomView = mInflater.inflate(R.layout.custom_actionbar2, null);
         TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.customActionBarTitle2);
-        mTitleTextView.setText("My Own Title");
+        mTitleTextView.setText("Portfolio");
+
+
+        ImageButton mImageButton = (ImageButton) mCustomView.findViewById(R.id.searchIcon);
+        mImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PortfolioActivity.this, BuyActivity.class);
+                startActivity(intent);
+            }
+        });
+
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);
 
