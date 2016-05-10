@@ -3,4 +3,6 @@
     <string name="portfolio_button_text">My Portfolio</string>
     <string name="watchlist_button_text">Watchlist</string>
     <string name="search_button_text">Search Stock</string>
+    <string name="drawer_open">drawer open</string>
+    <string name="drawer_close">drawer close</string>
 </resources>

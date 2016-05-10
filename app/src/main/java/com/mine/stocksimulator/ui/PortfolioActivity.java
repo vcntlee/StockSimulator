@@ -5,14 +5,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +34,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class PortfolioActivity extends AppCompatActivity {
+public class PortfolioActivity extends AppCompatActivity  {
 
     /*TODO List:
         1. make sure that repeated buys don't get duplicated in listView
@@ -64,55 +64,52 @@ public class PortfolioActivity extends AppCompatActivity {
     private String[] mOptionsMenu;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToogle;
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_portfolio);
 
-        android.support.v7.app.ActionBar mActionBar = getSupportActionBar();
-        mActionBar.setDisplayShowHomeEnabled(false);
-        mActionBar.setDisplayShowTitleEnabled(false);
-        LayoutInflater mInflater = LayoutInflater.from(this);
-
-        View mCustomView = mInflater.inflate(R.layout.custom_actionbar, null);
-        TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.customActionBarTitle2);
-        mTitleTextView.setText("Portfolio");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
 
 
-        ImageButton mImageButton = (ImageButton) mCustomView.findViewById(R.id.searchIcon);
-        mImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(PortfolioActivity.this, BuyActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        mActionBar.setCustomView(mCustomView);
-        mActionBar.setDisplayShowCustomEnabled(true);
 
 
-        mOptionsMenu = new String[] {"Option1", "Option2", "Option3"};
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(getSupportActionBar().getThemedContext(),
-                        android.R.layout.simple_list_item_1, mOptionsMenu));
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0){
-                    return;
-                }
-                else if (position == 1){
-                    Intent intent = new Intent(PortfolioActivity.this, BuyActivity.class);
-                    startActivity(intent);
-                }
-                else{
-                    Log.i(TAG, "option 3 pressed");
-                }
-            }
-        });
+//        mTitle = mDrawerTitle = getTitle();
+//        mOptionsMenu = new String[] {"Option1", "Option2", "Option3"};
+//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        mDrawerToogle = new ActionBarDrawerToggle(this, mDrawerLayout, mActionBar,
+//                R.string.drawer_open, R.string.drawer_close);
+//
+//
+//        mDrawerLayout.setDrawerListener(mDrawerToogle);
+
+
+
+        ////////////////////////
+//        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+//        mDrawerList.setAdapter(new ArrayAdapter<String>(getSupportActionBar().getThemedContext(),
+//                        android.R.layout.simple_list_item_1, mOptionsMenu));
+//        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                if (position == 0){
+//                    return;
+//                }
+//                else if (position == 1){
+//                    Intent intent = new Intent(PortfolioActivity.this, BuyActivity.class);
+//                    startActivity(intent);
+//                }
+//                else{
+//                    Log.i(TAG, "option 3 pressed");
+//                }
+//            }
+//        });
 
 
 
@@ -167,6 +164,23 @@ public class PortfolioActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_portfolio, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.searchOption){
+            Intent intent = new Intent(PortfolioActivity.this, BuyActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void refreshPositions(String companyName, final OpenPosition position) {
@@ -241,7 +255,12 @@ public class PortfolioActivity extends AppCompatActivity {
         Log.i(TAG, "response is not successful");
 
     }
-//
+
+
+
+
+
+
 //    @Override
 //    protected void onStop() {
 //        super.onStop();

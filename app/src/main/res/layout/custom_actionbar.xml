@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="?attr/actionBarSize"
     android:background="#00bcd4"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     >
@@ -17,6 +17,7 @@
                     android:layout_height="50dp"
                     android:background="#00bcd4" >
 
+        <!--
         <ImageButton
             android:id="@+id/drawerIcon"
             android:layout_width="wrap_content"
@@ -27,7 +28,7 @@
             android:background="@null"
             android:src="@drawable/search"
             android:baselineAlignBottom="false"
-            />
+            />-->
 
         <TextView
             android:id="@+id/customActionBarTitle2"
@@ -41,7 +42,7 @@
             android:layout_centerVertical="true"/>
 
 
-
+        <!--
         <ImageButton
             android:id="@+id/searchIcon"
             android:layout_width="wrap_content"
@@ -52,7 +53,7 @@
             android:background="@null"
             android:src="@drawable/search"
             android:baselineAlignBottom="false"
-            />
+            />-->
     </RelativeLayout>
 
 </android.support.v7.widget.Toolbar>
