@@ -96,26 +96,12 @@ public class BuyActivity extends AppCompatActivity {
         mGetChartButton = (Button) findViewById(R.id.getChartButton);
         mCancelButton = (Button) findViewById(R.id.cancelButton);
 
+        Intent intent = getIntent();
+        String companyName = intent.getStringExtra(SearchActivity.QUERY_TICKER);
 
-        mSearchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        getRequest(companyName, "quote");
+        getRequest(companyName, "chart");
 
-                Log.i(TAG, "from onCreate " + mSearchEditText.getText().toString());
-
-                if (mSearchEditText.getText().toString().length() == 0) {
-                    Log.i(TAG, "entered 0");
-                    Toast.makeText(BuyActivity.this, "Please enter some text", Toast.LENGTH_LONG).show();
-                } else {
-
-                    String companyName = mSearchEditText.getText().toString();
-                    Log.i(TAG, companyName);
-                    Toast.makeText(BuyActivity.this, companyName, Toast.LENGTH_LONG).show();
-                    getRequest(companyName, "quote");
-                    getRequest(companyName, "chart");
-                }
-            }
-        });
 
         mBuyButton.setOnClickListener(new View.OnClickListener() {
             @Override

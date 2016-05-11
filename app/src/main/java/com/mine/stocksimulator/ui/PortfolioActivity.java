@@ -1,9 +1,11 @@
 package com.mine.stocksimulator.ui;
+import android.support.design.widget.NavigationView;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -34,7 +36,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class PortfolioActivity extends AppCompatActivity  {
+public class PortfolioActivity extends AppCompatActivity implements
+    NavigationView.OnNavigationItemSelectedListener{
 
     /*TODO List:
         1. make sure that repeated buys don't get duplicated in listView
@@ -45,6 +48,7 @@ public class PortfolioActivity extends AppCompatActivity  {
         6. portfolio summary on different activity
         7. watchlist
         8. buy and short | sell to cover and buy to cover
+        9. take care of onRotate
      */
 
 
@@ -52,6 +56,7 @@ public class PortfolioActivity extends AppCompatActivity  {
     private static final String PREFS_FILE = "com.mine.stocksimulator.prefs_file" ;
     private static final String POSITIONS_ARRAY = "POSITIONS_ARRAY";
 
+    private DrawerLayout mDrawer;
     private ListView mListView;
     private TextView mEmptyTextView;
     private Button mBuyButton;
@@ -60,6 +65,7 @@ public class PortfolioActivity extends AppCompatActivity  {
     private OpenPositionsContainer mPositions = new OpenPositionsContainer();
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
+
 
     private String[] mOptionsMenu;
     private DrawerLayout mDrawerLayout;
@@ -75,49 +81,20 @@ public class PortfolioActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_portfolio);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle("Portfolio");
+        }
 
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mDrawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
+        mDrawer.setDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.left_drawer);
+        navigationView.setNavigationItemSelectedListener(this);
 
-
-
-//        mTitle = mDrawerTitle = getTitle();
-//        mOptionsMenu = new String[] {"Option1", "Option2", "Option3"};
-//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        mDrawerToogle = new ActionBarDrawerToggle(this, mDrawerLayout, mActionBar,
-//                R.string.drawer_open, R.string.drawer_close);
-//
-//
-//        mDrawerLayout.setDrawerListener(mDrawerToogle);
-
-
-
-        ////////////////////////
-//        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-//        mDrawerList.setAdapter(new ArrayAdapter<String>(getSupportActionBar().getThemedContext(),
-//                        android.R.layout.simple_list_item_1, mOptionsMenu));
-//        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                if (position == 0){
-//                    return;
-//                }
-//                else if (position == 1){
-//                    Intent intent = new Intent(PortfolioActivity.this, BuyActivity.class);
-//                    startActivity(intent);
-//                }
-//                else{
-//                    Log.i(TAG, "option 3 pressed");
-//                }
-//            }
-//        });
-
-
-
-
-
-
-
-                Log.i(TAG, "entered onCreate");
+        Log.i(TAG, "entered onCreate");
 
         mListView = (ListView) findViewById(android.R.id.list);
         mEmptyTextView = (TextView) findViewById(android.R.id.empty);
@@ -167,6 +144,16 @@ public class PortfolioActivity extends AppCompatActivity  {
     }
 
     @Override
+    public void onBackPressed() {
+        if (mDrawer.isDrawerOpen(GravityCompat.START)){
+            mDrawer.closeDrawer(GravityCompat.START);
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_portfolio, menu);
         return true;
@@ -176,7 +163,7 @@ public class PortfolioActivity extends AppCompatActivity  {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.searchOption){
-            Intent intent = new Intent(PortfolioActivity.this, BuyActivity.class);
+            Intent intent = new Intent(PortfolioActivity.this, SearchActivity.class);
             startActivity(intent);
             return true;
         }
@@ -256,9 +243,29 @@ public class PortfolioActivity extends AppCompatActivity  {
 
     }
 
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.nav_portfolio){
+
+            //TODO
+            Log.i(TAG, "portfolio icon pressed");
+        }
+        else if (id == R.id.nav_watchlist){
+            //TODO
+            Log.i(TAG, "watchlist icon pressed");
+        }
+        else if (id == R.id.nav_settings){
+            //TODO
+            Log.i(TAG, "settings icon pressed");
+        }
 
 
+        mDrawer.closeDrawer(GravityCompat.START);
 
+        return false;
+    }
 
 
 //    @Override

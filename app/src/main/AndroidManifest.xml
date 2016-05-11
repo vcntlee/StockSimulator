@@ -20,6 +20,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.SearchActivity">
+            <!--<meta-data android:name="android.support.PARENT_ACTIVITY"-->
+                       <!--android:value=".ui.PortfolioActivity"/>-->
+        </activity>
 
         <activity android:name=".ui.BuyActivity">
         </activity>

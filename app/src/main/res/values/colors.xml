@@ -6,4 +6,5 @@
     <color name="background"> #eeeeee</color>
     <color name="containerBackground">#FFFFFF</color>
     <color name="fontColor">#545555</color>
+    <color name="toolbarBackground">#00bcd4</color>
 </resources>
