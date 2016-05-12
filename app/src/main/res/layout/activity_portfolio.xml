@@ -151,6 +151,8 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/fontColor"
             />
 
         <LinearLayout

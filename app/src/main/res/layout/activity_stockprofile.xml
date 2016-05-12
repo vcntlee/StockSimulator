@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.StockProfileActivity">
 
-    <include android:id="@+id/profileActivityAppBar"
+    <include android:id="@+id/stockProfileActivityAppBar"
              layout="@layout/main_actionbar" />
 
     <RadioGroup
@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
+
         >
 
         <RadioButton
@@ -61,7 +62,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_margin="16dp">
 
         <WebView
             android:layout_width="match_parent"
@@ -75,11 +77,25 @@
 
     </RelativeLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/displayErrorMessage"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/fontColor"
+        android:visibility="invisible"
+        android:gravity="center_vertical|center_horizontal"
+        tools:visibility="visible"
+        tools:text="error"
+        android:layout_gravity="center_horizontal|center_vertical"/>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:id="@+id/stockProfileListView"
+        android:layout_margin="16dp"
         >
 
     </ListView>

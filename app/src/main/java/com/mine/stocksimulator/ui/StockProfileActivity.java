@@ -3,15 +3,21 @@ package com.mine.stocksimulator.ui;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mine.stocksimulator.R;
@@ -30,6 +36,7 @@ import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -65,7 +72,12 @@ public class StockProfileActivity extends AppCompatActivity {
     private Button mGetChartButton;
     private Button mCancelButton;
 
+    private String mCompanyName;
+
     private boolean isValidSearch;
+    private boolean isValidChartSearch;
+    private TextView mDisplayErrorMessage;
+    private String mPeriodChecked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +87,8 @@ public class StockProfileActivity extends AppCompatActivity {
         mChartWebView = (WebView) findViewById(R.id.chartWebView);
         mListView = (ListView) findViewById(R.id.stockProfileListView);
         mRadioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        mDisplayErrorMessage = (TextView) findViewById(R.id.displayErrorMessage);
 
-        Log.i(TAG, "entered onCreate");
 
 //        mBuySellContainer = (LinearLayout) findViewById(R.id.buySellContainer);
 //        mBuyButton = (Button) findViewById(R.id.buyButton);
@@ -84,11 +96,18 @@ public class StockProfileActivity extends AppCompatActivity {
 //        mCancelButton = (Button) findViewById(R.id.cancelButton);
 
         Intent intent = getIntent();
-        final String companyName = intent.getStringExtra(SearchActivity.QUERY_TICKER);
+        mCompanyName = intent.getStringExtra(SearchActivity.QUERY_TICKER);
 
-        Log.i(TAG + " company", companyName);
-        getRequest(companyName);
-        getChartRequest(companyName, "Week");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.stockProfileActivityAppBar);
+        if(toolbar!=null){
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle(mCompanyName);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        getRequest();
+        getChartRequest("Week");
 
 //        mBuyButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -121,20 +140,22 @@ public class StockProfileActivity extends AppCompatActivity {
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                Log.i(TAG, "Hello world");
                 if (checkedId == R.id.weekRadioButton){
-                    getRequest(companyName);
-                    getChartRequest(companyName, "Week");
+                    mPeriodChecked = "Week";
+                    getRequest();
+                    getChartRequest("Week");
 
                 }
                 else if(checkedId == R.id.monthRadioButton){
-                    getRequest(companyName);
-                    getChartRequest(companyName, "Month");
+                    mPeriodChecked = "Month";
+                    getRequest();
+                    getChartRequest("Month");
 
                 }
                 else if(checkedId == R.id.yearRadioButton){
-                    getRequest(companyName);
-                    getChartRequest(companyName, "Year");
+                    mPeriodChecked = "Year";
+                    getRequest();
+                    getChartRequest("Year");
 
                 }
             }
@@ -142,7 +163,7 @@ public class StockProfileActivity extends AppCompatActivity {
 
     }
 
-    private void getChartRequest(String companyName, final String period) {
+    private void getChartRequest(final String period) {
 
         int days = 0;
         String dataPeriod = "";
@@ -172,7 +193,7 @@ public class StockProfileActivity extends AppCompatActivity {
         Date today = new Date();
         String todaysDate = formatter.format(today);
 
-        jsonParams = String.format(jsonParams, todaysDate, days, dataPeriod, companyName);
+        jsonParams = String.format(jsonParams, todaysDate, days, dataPeriod, mCompanyName);
         String completeUrl = baseChartUrl + jsonParams;
 
         OkHttpClient client = new OkHttpClient();
@@ -194,17 +215,37 @@ public class StockProfileActivity extends AppCompatActivity {
 
                     if (response.isSuccessful()) {
 
-                        getChartInfo(jsonData, period);
-
+                        if (isValidSearch) {
+                            isValidChartSearch = getChartInfo(jsonData, period);
+                        }
+                        else{
+                            return;
+                        }
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                generateChart();
+                                if (isValidChartSearch) {
+                                    generateChart();
+                                }
+                                else{
+                                    displayError("OOPS! Your search didn't return any results");
+                                    Toast.makeText(StockProfileActivity.this, "OOPS! Your search didn't " +
+                                            "return any results.", Toast.LENGTH_LONG).show();
+                                }
                             }
                         });
 
                     } else {
-                        alertUserAboutError();
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(StockProfileActivity.this, "Period selected is"
+                                    + " unresponsive, try refreshing.", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "Exception caught: ", e);
@@ -221,10 +262,12 @@ public class StockProfileActivity extends AppCompatActivity {
     }
 
 
-    private void getRequest(String companyName) {
+
+
+    private void getRequest() {
 
         String baseUrl = "http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=%1$s";
-        String completeUrl = String.format(baseUrl, companyName);
+        String completeUrl = String.format(baseUrl, mCompanyName);
 
         Log.i(TAG, completeUrl);
 
@@ -256,14 +299,23 @@ public class StockProfileActivity extends AppCompatActivity {
                                     updateDisplay();
                                 }
                                 else{
-                                    Toast.makeText(StockProfileActivity.this, "OOPS! Your search didn't go " +
-                                            "through, please try again.", Toast.LENGTH_LONG).show();
+                                    displayError("OOPS! Your search didn't return any results");
+                                    Toast.makeText(StockProfileActivity.this, "OOPS! Your search didn't " +
+                                            "return any results.", Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
 
                     } else {
-                        alertUserAboutError();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+
+                                Toast.makeText(StockProfileActivity.this, "Period selected is"
+                                        + " unresponsive, try refreshing.", Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "Exception caught: ", e);
@@ -281,10 +333,15 @@ public class StockProfileActivity extends AppCompatActivity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x;
-        int height = size.y;
+        int width = mChartWebView.getWidth();
+        int height = mChartWebView.getHeight();
+        Log.i(TAG+" width", width+"");
+        Log.i(TAG+" height", height+"");
+
 
         String jsFunction = createFunction(mChartProfile.getSizeDates());
+        String widthAndHeight = "<div id=\"chart_div\" style=\"width: %dpx; height: %dpx;\"></div>";
+        widthAndHeight = String.format(widthAndHeight, width, height);
 
         String content = "<html>"
                 + "  <head>"
@@ -296,14 +353,19 @@ public class StockProfileActivity extends AppCompatActivity {
                 + "    </script>"
                 + "  </head>"
                 + "  <body>"
-                + "    <div id=\"chart_div\" style=\"width: 400px; height: 200px;\"></div>"
-                + "    <img style=\"padding: 0; margin: 0 0 0 330px; display: block;\"/>"
+                //+       widthAndHeight
+                + "<div id=\"chart_div\" width:\"100%\"></div>"
+                + "    <img style=\"padding: 0; margin: 0 0 0 0px; display: block;\"/>"
                 + "  </body>" + "</html>";
 
         WebSettings webSettings = mChartWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+
+        //webSettings.setUseWideViewPort(true);
+        //webSettings.setLoadWithOverviewMode(true);
+
         mChartWebView.requestFocusFromTouch();
-        mChartWebView.loadDataWithBaseURL("file:///android_asset/", content, "text/html", "utf-8", null );
+        mChartWebView.loadDataWithBaseURL("file:///android_asset/", content, "text/html", "utf-8", null);
 
         createFunction(mChartProfile.getSizeDates());
     }
@@ -334,7 +396,7 @@ public class StockProfileActivity extends AppCompatActivity {
                         +   "   dataset.push([xVals[i], yVals[i]]);"
                         +   "}"
                         +   "data.addRows(dataset);"
-                        +   "var options={ hAxis: { title: 'Date'}, vAxis: {title: 'Price'}};"
+                        +   "var options={vAxis: {title: 'Price'}, legend:'none'};"
                         +   "var chart = new google.visualization.LineChart(document.getElementById('chart_div'));"
                         +   "chart.draw(data, options);"
                         +   "}";
@@ -345,10 +407,20 @@ public class StockProfileActivity extends AppCompatActivity {
 
     }
 
-    private void getChartInfo(String jsonData, String period) throws JSONException, ParseException{
+    private boolean getChartInfo(String jsonData, String period) throws JSONException, ParseException{
 
         JSONObject wholeChartData = new JSONObject(jsonData);
+
+
+
+        if (wholeChartData.isNull("Dates")){
+            Log.i(TAG, "Dates element is null");
+            return false;
+        }
+
         JSONArray dates = wholeChartData.getJSONArray("Dates");
+
+
 
         Log.i(TAG+" getChartInfo", dates.toString());
 
@@ -369,6 +441,8 @@ public class StockProfileActivity extends AppCompatActivity {
             mChartProfile.setChartValue(values.getDouble(i));
             mChartProfile.addToValues();
         }
+
+        return true;
     }
 
     private void updateDisplay() {
@@ -382,14 +456,24 @@ public class StockProfileActivity extends AppCompatActivity {
     }
 
 
-    private void alertUserAboutError() {
-        //Toast.makeText(this, "response is not successful", Toast.LENGTH_LONG).show();
-        Log.i(TAG, "response is not successful");
+    private void displayError(String s) {
+        mChartWebView.setVisibility(View.INVISIBLE);
+        mListView.setVisibility(View.INVISIBLE);
+        mDisplayErrorMessage.setText(s);
+        mDisplayErrorMessage.setVisibility(View.VISIBLE);
+
+
+
     }
 
     private boolean getQuote(String jsonData) throws JSONException {
 
         JSONObject wholeQuote = new JSONObject(jsonData);
+
+        if (!wholeQuote.getString("Status").equals("SUCCESS")){
+            Log.i(TAG, "status != SUCCESS");
+            return false;
+        }
 
         if (wholeQuote.has("Message")){
             return false;
@@ -456,43 +540,57 @@ public class StockProfileActivity extends AppCompatActivity {
     }
 
     public String getFormattedDate(String unformattedDate, String period) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//
+//        java.util.Date date = formatter.parse(unformattedDate);
+//        long timeMili = date.getTime();
+//        SimpleDateFormat newFormatter = new SimpleDateFormat("yy-MM-dd");
+//        Log.i(TAG+" printme", newFormatter.format(timeMili));
+//        return newFormatter.format(timeMili);
 
-        java.util.Date date = formatter.parse(unformattedDate);
-        long timeMili = date.getTime();
-        SimpleDateFormat newFormatter = new SimpleDateFormat("yy-MM-dd");
-        Log.i(TAG+" printme", newFormatter.format(timeMili));
-        return newFormatter.format(timeMili);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+        Date date = formatter.parse(unformattedDate);
+        Log.i(TAG + " date", date.toString());
 
-//        TimeZone timezone = TimeZone.getTimeZone("America/New_York");
-//
-//        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
-//        Date date = formatter.parse(unformattedDate);
-//        Log.i(TAG + " date", date.toString());
-//        Calendar calendar = Calendar.getInstance(timezone, Locale.ENGLISH);
-//        calendar.setTime(date);
-//
-//
-//        if (period.equals("Week")) {
-//
-//            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-//            SimpleDateFormat newFormatter = new SimpleDateFormat("EE", Locale.ENGLISH);
-//            String dayOfWeekString = newFormatter.format(dayOfWeek);
-//            Log.i(TAG+" day of week", dayOfWeekString);
-//            return dayOfWeekString;
-//        }
-//        else if (period.equals("Month")){
-//
-//            int week = calendar.get(Calendar.WEEK_OF_MONTH);
-//            return week+"";
-//        }
-//        else{
-//
-//            int monthOfYear = calendar.get(Calendar.MONTH);
-//            SimpleDateFormat newFormatter = new SimpleDateFormat("MMM", Locale.ENGLISH);
-//            return newFormatter.format(monthOfYear);
-//        }
 
+
+        if (period.equals("Week")) {
+            SimpleDateFormat newFormatter = new SimpleDateFormat("EE", Locale.ENGLISH);
+            return newFormatter.format(date);
+        }
+        else if (period.equals("Month")){
+            SimpleDateFormat newFormatter = new SimpleDateFormat("dd", Locale.ENGLISH);
+            return newFormatter.format(date);
+        }
+        else{
+
+            SimpleDateFormat newFormatter = new SimpleDateFormat("MMM", Locale.ENGLISH);
+            return newFormatter.format(date);
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_stockprofile, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home){
+            Intent intent = new Intent(this, SearchActivity.class);
+            NavUtils.navigateUpTo(this, intent);
+        }
+        else if(id == R.id.refreshOption){
+            Log.i(TAG+" periodchecked", mPeriodChecked);
+            getRequest();
+            getChartRequest(mPeriodChecked);
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
