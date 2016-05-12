@@ -1,6 +1,7 @@
 package com.mine.stocksimulator.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -8,14 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +58,7 @@ public class StockProfileActivity extends AppCompatActivity {
     private WebView mChartWebView;
     private ChartProfile mChartProfile;
     private RadioGroup mRadioGroup;
+    private ProgressBar mProgressBar;
 
     /* this is for the listview */
     private static final int STOCK_PROFILE_SIZE = 12;
@@ -67,9 +71,8 @@ public class StockProfileActivity extends AppCompatActivity {
     private StockProfileFieldMember[] mStockProfileFieldMembers;
 
 
-    private LinearLayout mBuySellContainer;
-    private Button mBuyButton;
-    private Button mGetChartButton;
+    private LinearLayout mTradeContainer;
+    private Button mTradeButton;
     private Button mCancelButton;
 
     private String mCompanyName;
@@ -88,12 +91,12 @@ public class StockProfileActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.stockProfileListView);
         mRadioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         mDisplayErrorMessage = (TextView) findViewById(R.id.displayErrorMessage);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
 
-//        mBuySellContainer = (LinearLayout) findViewById(R.id.buySellContainer);
-//        mBuyButton = (Button) findViewById(R.id.buyButton);
-//        mGetChartButton = (Button) findViewById(R.id.getChartButton);
-//        mCancelButton = (Button) findViewById(R.id.cancelButton);
+        mTradeContainer = (LinearLayout) findViewById(R.id.tradeContainer);
+        mTradeButton = (Button) findViewById(R.id.tradeButton);
+        mCancelButton = (Button) findViewById(R.id.cancelButton);
 
         Intent intent = getIntent();
         mCompanyName = intent.getStringExtra(SearchActivity.QUERY_TICKER);
@@ -106,53 +109,25 @@ public class StockProfileActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+
+        mPeriodChecked = "Week";
         getRequest();
         getChartRequest("Week");
-
-//        mBuyButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(BuyActivity.this, PopupActivity.class);
-//                intent.putExtra(QUOTE_DETAILS, mStockProfile);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        mGetChartButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Intent intent = new Intent(BuyActivity.this, ChartActivity.class);
-//                intent.putExtra(CHART_DETAILS, mChartProfile);
-//                startActivity(intent);
-//
-//            }
-//        });
-//
-//        mCancelButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(BuyActivity.this, PortfolioActivity.class);
-//                startActivity(intent);
-//            }
-//        });
 
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.weekRadioButton){
+                if (checkedId == R.id.weekRadioButton) {
                     mPeriodChecked = "Week";
                     getRequest();
                     getChartRequest("Week");
 
-                }
-                else if(checkedId == R.id.monthRadioButton){
+                } else if (checkedId == R.id.monthRadioButton) {
                     mPeriodChecked = "Month";
                     getRequest();
                     getChartRequest("Month");
 
-                }
-                else if(checkedId == R.id.yearRadioButton){
+                } else if (checkedId == R.id.yearRadioButton) {
                     mPeriodChecked = "Year";
                     getRequest();
                     getChartRequest("Year");
@@ -161,6 +136,57 @@ public class StockProfileActivity extends AppCompatActivity {
             }
         });
 
+        mTradeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StockProfileActivity.this, /*TODO*/);
+                intent.putExtra(QUOTE_DETAILS, mStockProfile);
+                startActivity(intent);
+            }
+        });
+
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StockProfileActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+    }
+
+    private class WebClient extends WebViewClient{
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            mProgressBar.setVisibility(View.GONE);
+
+
+        }
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+
+            mProgressBar.setVisibility(View.VISIBLE);
+
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && mChartWebView.canGoBack()){
+            mChartWebView.goBack();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void getChartRequest(final String period) {
@@ -240,6 +266,7 @@ public class StockProfileActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                Log.i(TAG, "getChartRequest is unresponsive");
                                 Toast.makeText(StockProfileActivity.this, "Period selected is"
                                     + " unresponsive, try refreshing.", Toast.LENGTH_LONG).show();
                             }
@@ -358,8 +385,10 @@ public class StockProfileActivity extends AppCompatActivity {
                 + "    <img style=\"padding: 0; margin: 0 0 0 0px; display: block;\"/>"
                 + "  </body>" + "</html>";
 
-        WebSettings webSettings = mChartWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
+        mChartWebView.setWebViewClient(new WebClient());
+
+        //WebSettings webSettings = mChartWebView.getSettings();
+        mChartWebView.getSettings().setJavaScriptEnabled(true);
 
         //webSettings.setUseWideViewPort(true);
         //webSettings.setLoadWithOverviewMode(true);
@@ -367,7 +396,7 @@ public class StockProfileActivity extends AppCompatActivity {
         mChartWebView.requestFocusFromTouch();
         mChartWebView.loadDataWithBaseURL("file:///android_asset/", content, "text/html", "utf-8", null);
 
-        createFunction(mChartProfile.getSizeDates());
+
     }
 
     public String createFunction(int size) {

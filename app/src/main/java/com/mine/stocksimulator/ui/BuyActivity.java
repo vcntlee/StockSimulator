@@ -91,8 +91,8 @@ public class BuyActivity extends AppCompatActivity {
         mLow = (TextView) findViewById(R.id.lowValue);
         mOpen = (TextView) findViewById(R.id.openValue);
 
-        mBuySellContainer = (LinearLayout) findViewById(R.id.buySellContainer);
-        mBuyButton = (Button) findViewById(R.id.buyButton);
+        mBuySellContainer = (LinearLayout) findViewById(R.id.tradeContainer);
+        mBuyButton = (Button) findViewById(R.id.tradeButton);
         mGetChartButton = (Button) findViewById(R.id.getChartButton);
         mCancelButton = (Button) findViewById(R.id.cancelButton);
 

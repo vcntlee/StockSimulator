@@ -99,7 +99,7 @@ public class PortfolioActivity extends AppCompatActivity implements
         mListView = (ListView) findViewById(android.R.id.list);
         mEmptyTextView = (TextView) findViewById(android.R.id.empty);
 
-        mBuyButton = (Button) findViewById(R.id.buyButton);
+        mBuyButton = (Button) findViewById(R.id.tradeButton);
         mShortButton = (Button) findViewById(R.id.shortButton);
 
         mSharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);

@@ -138,7 +138,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginBottom="10dp"
             android:layout_below="@id/headerContainer"
-            android:layout_above="@+id/buyShortContainer"
+            android:layout_above="@+id/tradeContainer"
             android:background="@drawable/background_with_shadow"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"/>
@@ -159,7 +159,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/buyShortContainer"
+            android:id="@+id/tradeContainer"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -175,7 +175,7 @@
                 android:text="Buy"
                 android:textSize="18sp"
                 android:gravity="center"
-                android:id="@+id/buyButton"
+                android:id="@+id/tradeButton"
                 android:textColor="#e15258"
 
                 />

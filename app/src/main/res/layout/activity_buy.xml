@@ -326,7 +326,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/buySellContainer"
+        android:id="@+id/tradeContainer"
         android:visibility="invisible"
         tools:visibility="visible">
 
@@ -335,7 +335,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="BUY"
-            android:id="@+id/buyButton"
+            android:id="@+id/tradeButton"
             android:textColor="#e15258"
             android:textSize="14sp"
             android:gravity="center"/>
