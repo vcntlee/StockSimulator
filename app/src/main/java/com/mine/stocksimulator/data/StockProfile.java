@@ -3,7 +3,7 @@ package com.mine.stocksimulator.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Quote implements Parcelable{
+public class StockProfile implements Parcelable{
 
     private String mName;
     private String mSymbol;
@@ -18,7 +18,7 @@ public class Quote implements Parcelable{
     private double mLow;
     private double mOpen;
 
-    public Quote(){}
+    public StockProfile(){}
 
     public double getAbsoluteChange() {
         return mAbsoluteChange;
@@ -141,7 +141,7 @@ public class Quote implements Parcelable{
 
     }
 
-    private Quote(Parcel in){
+    private StockProfile(Parcel in){
         mName = in.readString();
         mSymbol = in.readString();
         mPrice = in.readDouble();
@@ -157,15 +157,15 @@ public class Quote implements Parcelable{
 
     }
 
-    public static final Creator<Quote> CREATOR = new Creator<Quote>() {
+    public static final Creator<StockProfile> CREATOR = new Creator<StockProfile>() {
         @Override
-        public Quote createFromParcel(Parcel source) {
-            return new Quote(source);
+        public StockProfile createFromParcel(Parcel source) {
+            return new StockProfile(source);
         }
 
         @Override
-        public Quote[] newArray(int size) {
-            return new Quote[size];
+        public StockProfile[] newArray(int size) {
+            return new StockProfile[size];
         }
     };
 }

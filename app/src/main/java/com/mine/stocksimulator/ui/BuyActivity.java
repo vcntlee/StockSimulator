@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.mine.stocksimulator.R;
 import com.mine.stocksimulator.data.ChartProfile;
-import com.mine.stocksimulator.data.Quote;
+import com.mine.stocksimulator.data.StockProfile;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +40,7 @@ public class BuyActivity extends AppCompatActivity {
     private EditText mSearchEditText;
     private TableLayout mFactsContainer;
 
-    private Quote mQuote;
+    private StockProfile mStockProfile;
     private TextView mCompanyValue;
     private TextView mPriceValue;
     private TextView mSymbolValue;
@@ -107,7 +107,7 @@ public class BuyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BuyActivity.this, PopupActivity.class);
-                intent.putExtra(QUOTE_DETAILS, mQuote);
+                intent.putExtra(QUOTE_DETAILS, mStockProfile);
                 startActivity(intent);
             }
         });
@@ -236,18 +236,18 @@ public class BuyActivity extends AppCompatActivity {
 
     private void updateDisplay() {
 
-        mCompanyValue.setText(mQuote.getName());
-        mSymbolValue.setText(mQuote.getSymbol());
-        mPriceValue.setText(mQuote.getPrice() + "");
-        mAbsoluteChange.setText(mQuote.getAbsoluteChange() + "");
-        mPercentChange.setText(mQuote.getPercentChange() + "");
-        mMarketCap.setText(mQuote.getMarketCap() + "");
-        mVolume.setText(mQuote.getVolume()+"");
-        mChangeYtd.setText(mQuote.getChangeYtd()+"");
-        mChangePercentYtd.setText(mQuote.getChangePercentYtd()+"");
-        mHigh.setText(mQuote.getHigh()+"");
-        mLow.setText(mQuote.getLow()+"");
-        mOpen.setText(mQuote.getOpen()+"");
+        mCompanyValue.setText(mStockProfile.getName());
+        mSymbolValue.setText(mStockProfile.getSymbol());
+        mPriceValue.setText(mStockProfile.getPrice() + "");
+        mAbsoluteChange.setText(mStockProfile.getAbsoluteChange() + "");
+        mPercentChange.setText(mStockProfile.getPercentChange() + "");
+        mMarketCap.setText(mStockProfile.getMarketCap() + "");
+        mVolume.setText(mStockProfile.getVolume()+"");
+        mChangeYtd.setText(mStockProfile.getChangeYtd()+"");
+        mChangePercentYtd.setText(mStockProfile.getChangePercentYtd()+"");
+        mHigh.setText(mStockProfile.getHigh()+"");
+        mLow.setText(mStockProfile.getLow()+"");
+        mOpen.setText(mStockProfile.getOpen()+"");
 
     }
 
@@ -282,32 +282,32 @@ public class BuyActivity extends AppCompatActivity {
             return false;
         }
 
-        mQuote = new Quote();
-        mQuote.setName(wholeQuote.getString("Name"));
-        mQuote.setSymbol(wholeQuote.getString("Symbol"));
-        mQuote.setPrice(wholeQuote.getDouble("LastPrice"));
-        mQuote.setAbsoluteChange(round(wholeQuote.getDouble("Change"), 2));
-        mQuote.setPercentChange(wholeQuote.getDouble("ChangePercent"));
-        mQuote.setMarketCap(wholeQuote.getLong("MarketCap"));
-        mQuote.setVolume(wholeQuote.getLong("Volume"));
-        mQuote.setChangeYtd(wholeQuote.getDouble("ChangeYTD"));
-        mQuote.setChangePercentYtd(wholeQuote.getDouble("ChangePercentYTD"));
-        mQuote.setHigh(wholeQuote.getDouble("High"));
-        mQuote.setLow(wholeQuote.getDouble("Low"));
-        mQuote.setOpen(wholeQuote.getDouble("Open"));
+        mStockProfile = new StockProfile();
+        mStockProfile.setName(wholeQuote.getString("Name"));
+        mStockProfile.setSymbol(wholeQuote.getString("Symbol"));
+        mStockProfile.setPrice(wholeQuote.getDouble("LastPrice"));
+        mStockProfile.setAbsoluteChange(round(wholeQuote.getDouble("Change"), 2));
+        mStockProfile.setPercentChange(wholeQuote.getDouble("ChangePercent"));
+        mStockProfile.setMarketCap(wholeQuote.getLong("MarketCap"));
+        mStockProfile.setVolume(wholeQuote.getLong("Volume"));
+        mStockProfile.setChangeYtd(wholeQuote.getDouble("ChangeYTD"));
+        mStockProfile.setChangePercentYtd(wholeQuote.getDouble("ChangePercentYTD"));
+        mStockProfile.setHigh(wholeQuote.getDouble("High"));
+        mStockProfile.setLow(wholeQuote.getDouble("Low"));
+        mStockProfile.setOpen(wholeQuote.getDouble("Open"));
 
-        Log.i(TAG, mQuote.getName());
-        Log.i(TAG, mQuote.getSymbol());
-        Log.i(TAG, mQuote.getPrice()+"");
-        Log.i(TAG, mQuote.getAbsoluteChange()+"");
-        Log.i(TAG, mQuote.getPercentChange()+"");
-        Log.i(TAG, mQuote.getMarketCap()+"");
-        Log.i(TAG, mQuote.getVolume()+"");
-        Log.i(TAG, mQuote.getChangeYtd()+"");
-        Log.i(TAG, mQuote.getChangePercentYtd()+"");
-        Log.i(TAG, mQuote.getHigh()+"");
-        Log.i(TAG, mQuote.getLow()+"");
-        Log.i(TAG, mQuote.getOpen()+"");
+        Log.i(TAG, mStockProfile.getName());
+        Log.i(TAG, mStockProfile.getSymbol());
+        Log.i(TAG, mStockProfile.getPrice()+"");
+        Log.i(TAG, mStockProfile.getAbsoluteChange()+"");
+        Log.i(TAG, mStockProfile.getPercentChange()+"");
+        Log.i(TAG, mStockProfile.getMarketCap()+"");
+        Log.i(TAG, mStockProfile.getVolume()+"");
+        Log.i(TAG, mStockProfile.getChangeYtd()+"");
+        Log.i(TAG, mStockProfile.getChangePercentYtd()+"");
+        Log.i(TAG, mStockProfile.getHigh()+"");
+        Log.i(TAG, mStockProfile.getLow()+"");
+        Log.i(TAG, mStockProfile.getOpen()+"");
 
         return true;
 

@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.mine.stocksimulator.R;
 import com.mine.stocksimulator.data.OpenPosition;
-import com.mine.stocksimulator.data.Quote;
+import com.mine.stocksimulator.data.StockProfile;
 
 
 public class PopupActivity extends AppCompatActivity {
@@ -55,9 +55,9 @@ public class PopupActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        final Quote quote = intent.getParcelableExtra(BuyActivity.QUOTE_DETAILS);
-        mSymbolValuePopup.setText(quote.getSymbol());
-        String priceString = quote.getPrice()+"";
+        final StockProfile stockProfile = intent.getParcelableExtra(BuyActivity.QUOTE_DETAILS);
+        mSymbolValuePopup.setText(stockProfile.getSymbol());
+        String priceString = stockProfile.getPrice()+"";
         mPriceValuePopup.setText(priceString);
 
         mNumSharesInput.addTextChangedListener(new TextWatcher() {
@@ -77,7 +77,7 @@ public class PopupActivity extends AppCompatActivity {
                 //TODO need to account for non-numeric
                 if (s.length() > 0) {
                     mNumShares = Integer.parseInt(s.toString());
-                    mTotal = BuyActivity.round((mNumShares * quote.getPrice()), 3);
+                    mTotal = BuyActivity.round((mNumShares * stockProfile.getPrice()), 3);
                 }
 
                 mTotalValuePopup.setText(mTotal + "");
@@ -92,9 +92,9 @@ public class PopupActivity extends AppCompatActivity {
                     Toast.makeText(PopupActivity.this, "Please enter number of shares", Toast.LENGTH_LONG).show();
                 } else {
                     mOpenPosition = new OpenPosition();
-                    mOpenPosition.setPrice(quote.getPrice());
-                    mOpenPosition.setCost(quote.getPrice());
-                    mOpenPosition.setCompanyTicker(quote.getSymbol());
+                    mOpenPosition.setPrice(stockProfile.getPrice());
+                    mOpenPosition.setCost(stockProfile.getPrice());
+                    mOpenPosition.setCompanyTicker(stockProfile.getSymbol());
                     mOpenPosition.setShares(mNumShares);
                     Intent intent = new Intent(PopupActivity.this, PortfolioActivity.class);
                     intent.putExtra(POSITION_DETAILS, mOpenPosition);

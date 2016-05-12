@@ -1,6 +1,5 @@
 package com.mine.stocksimulator.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -73,9 +71,9 @@ public class SearchActivity extends AppCompatActivity {
 
                 String search = mSearchEditText.getText().toString();
                 mSearchEditText.setText("");
-
-                InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                mgr.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
+                // this hides keyboard
+//                InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                mgr.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
 
                 resetAdapter();
 
@@ -92,7 +90,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String ticker = mSearchResults.get(position).getTicker();
-                Intent intent = new Intent(SearchActivity.this, BuyActivity.class);
+                Intent intent = new Intent(SearchActivity.this, StockProfileActivity.class);
                 intent.putExtra(QUERY_TICKER, ticker);
                 startActivity(intent);
             }
