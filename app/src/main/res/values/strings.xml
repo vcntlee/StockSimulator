@@ -7,4 +7,15 @@
     <string name="drawer_close">drawer close</string>
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
+    
+    <string-array name="tradeAction">
+        <item>Long</item>
+        <item>Short</item>
+        <item>Buy</item>
+        <item>Sell</item>
+
+    </string-array>
+
+    <string name="editText_hint_trade"><font size="14">Tap to input</font></string>
+    
 </resources>

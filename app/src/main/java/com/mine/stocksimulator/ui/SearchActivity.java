@@ -67,6 +67,13 @@ public class SearchActivity extends AppCompatActivity {
         final InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         manager.showSoftInput(mSearchEditText, InputMethodManager.SHOW_FORCED);
 
+        mSearchEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSearchEditText.setCursorVisible(true);
+            }
+        });
+
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

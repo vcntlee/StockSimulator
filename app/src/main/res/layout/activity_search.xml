@@ -39,6 +39,7 @@
             android:hint="Search company"
             android:textSize="14sp"
             android:layout_gravity="center"
+            android:cursorVisible="false"
             />
 
         <Button

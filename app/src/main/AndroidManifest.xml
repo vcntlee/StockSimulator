@@ -32,6 +32,8 @@
         </activity>
         <activity android:name=".ui.StockProfileActivity">
         </activity>
+        <activity android:name=".ui.TradeActivity">
+        </activity>
     </application>
 
 </manifest>

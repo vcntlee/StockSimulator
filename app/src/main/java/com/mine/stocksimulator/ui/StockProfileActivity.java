@@ -52,7 +52,6 @@ public class StockProfileActivity extends AppCompatActivity {
 
     public static final String TAG = StockProfileActivity.class.getSimpleName();
     public static final String QUOTE_DETAILS = "QUOTE_DETAILS";
-    public static final String CHART_DETAILS = "CHART_DETAILS";
 
     /* this is for the chart */
     private WebView mChartWebView;
@@ -139,7 +138,7 @@ public class StockProfileActivity extends AppCompatActivity {
         mTradeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StockProfileActivity.this, /*TODO*/);
+                Intent intent = new Intent(StockProfileActivity.this, TradeActivity.class);
                 intent.putExtra(QUOTE_DETAILS, mStockProfile);
                 startActivity(intent);
             }
