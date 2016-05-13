@@ -23,40 +23,115 @@
 
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/balanceContainer"
             android:background="@drawable/background_with_shadow"
-            android:padding="15dp"
-            android:layout_below="@+id/app_bar"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin">
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:padding="15dp"
+            android:layout_below="@+id/app_bar"
 
-            <TextView
+            >
+
+
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Total Balance:"
-                android:textSize="18sp"
-                android:gravity="right"
-                android:textColor="@color/fontColor"
-                />
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Portfolio Value:"
+                    android:textSize="14sp"
+                    android:gravity="right"
+                    android:textColor="@color/fontColor"
+                    />
 
-            <TextView
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="$---"
+                    android:id="@+id/portfolioValue"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left"
+                    android:textColor="@color/fontColor"
+
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="$1000000"
-                android:id="@+id/balanceValueTV"
-                android:textSize="18sp"
-                android:layout_marginLeft="10dp"
-                android:gravity="left"
-                android:textColor="@color/fontColor"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Available Cash:"
+                    android:textSize="14sp"
+                    android:gravity="right"
+                    android:textColor="@color/fontColor"
+                    />
 
-                />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="$----"
+                    android:id="@+id/availableCash"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left"
+                    android:textColor="@color/fontColor"
+
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Return:"
+                    android:textSize="14sp"
+                    android:gravity="right"
+                    android:textColor="@color/fontColor"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="-- %"
+                    android:id="@+id/percentReturn"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left"
+                    android:textColor="@color/fontColor"
+
+                    />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -71,6 +146,8 @@
             android:id="@+id/currentPositionsLabel"
 
             /> -->
+
+        <!-- this is for the header
 
         <LinearLayout
             android:orientation="horizontal"
@@ -123,10 +200,9 @@
                 android:textColor="@color/fontColor"
                 android:fontFamily="sans-serif"/>
 
-
-
-
         </LinearLayout>
+
+        -->
 
         <ListView
             android:layout_width="match_parent"
@@ -137,7 +213,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="10dp"
-            android:layout_below="@id/headerContainer"
+            android:layout_below="@id/balanceContainer"
             android:layout_above="@+id/tradeContainer"
             android:background="@drawable/background_with_shadow"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"

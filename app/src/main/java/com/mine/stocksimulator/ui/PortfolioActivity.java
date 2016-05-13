@@ -1,10 +1,10 @@
 package com.mine.stocksimulator.ui;
-import android.support.design.widget.NavigationView;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.mine.stocksimulator.R;
 import com.mine.stocksimulator.adapter.OpenPositionAdapter;
+import com.mine.stocksimulator.data.AccountSummary;
 import com.mine.stocksimulator.data.OpenPosition;
 import com.mine.stocksimulator.data.OpenPositionsContainer;
 
@@ -39,23 +40,16 @@ import okhttp3.Response;
 public class PortfolioActivity extends AppCompatActivity implements
     NavigationView.OnNavigationItemSelectedListener{
 
-    /*TODO List:
-        1. make sure that repeated buys don't get duplicated in listView
-        2. make a nav bar (search goes to the buy activity page) --> DONE
-        3. calculate the profit --> DONE
-        4. error check input
-        5. create an adapter with search results?
-        6. portfolio summary on different activity
-        7. watchlist
-        8. buy and short | sell to cover and buy to cover
-        9. take care of onRotate
-     */
 
-
-    public static final String TAG = PortfolioActivity.class.getSimpleName();
-    private static final String PREFS_FILE = "com.mine.stocksimulator.prefs_file" ;
+    private static final String TAG = PortfolioActivity.class.getSimpleName();
+    public static final String PREFS_FILE = "com.mine.stocksimulator.prefs_file";
     private static final String POSITIONS_ARRAY = "POSITIONS_ARRAY";
+    public static final String PREFS_ACCOUNT_SUMMARY = "com.mine.stocksimulator.acct_summary";
+    public static final String ACCOUNT_SUMMARY = "ACCOUNT_SUMMARY";
 
+    private TextView mPortfolioValue;
+    private TextView mAvailableCash;
+    private TextView mPercentReturn;
     private DrawerLayout mDrawer;
     private ListView mListView;
     private TextView mEmptyTextView;
@@ -63,9 +57,13 @@ public class PortfolioActivity extends AppCompatActivity implements
     private Button mShortButton;
     private OpenPosition mPosition = new OpenPosition();
     private OpenPositionsContainer mPositions = new OpenPositionsContainer();
-    private SharedPreferences mSharedPreferences;
-    private SharedPreferences.Editor mEditor;
+    private SharedPreferences mSharedPreferencesPositions;
+    private SharedPreferences.Editor mEditorPositions;
+    private SharedPreferences mSharedPreferencesSummary;
+    private SharedPreferences.Editor mEditorSummary;
 
+    /* This is for the account summary*/
+    private AccountSummary mAccountSummary;
 
     private String[] mOptionsMenu;
     private DrawerLayout mDrawerLayout;
@@ -77,6 +75,20 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        /*TODO List:
+        1. make sure that repeated buys don't get duplicated in listView
+        2. make a nav bar (search goes to the buy activity page) --> DONE
+        3. calculate the profit --> DONE
+        4. error check input
+        5. create an adapter with search results?
+        6. portfolio summary on different activity
+        7. watchlist
+        8. buy and short | sell to cover and buy to cover
+        9. take care of onRotate
+        10. init beginning balance
+     */
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_portfolio);
 
@@ -94,21 +106,22 @@ public class PortfolioActivity extends AppCompatActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.left_drawer);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Log.i(TAG, "entered onCreate");
-
+        mPortfolioValue = (TextView) findViewById(R.id.portfolioValue);
+        mAvailableCash = (TextView) findViewById(R.id.availableCash);
+        mPercentReturn = (TextView) findViewById(R.id.percentReturn);
         mListView = (ListView) findViewById(android.R.id.list);
         mEmptyTextView = (TextView) findViewById(android.R.id.empty);
-
         mBuyButton = (Button) findViewById(R.id.tradeButton);
         mShortButton = (Button) findViewById(R.id.shortButton);
 
-        mSharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
-        mEditor = mSharedPreferences.edit();
+        /* Shared prefs for positions and summary*/
 
-        Gson gson = new Gson();
-        String json = mSharedPreferences.getString(POSITIONS_ARRAY, "");
-        if (json != "") {
-            mPositions = gson.fromJson(json, OpenPositionsContainer.class);
+        mSharedPreferencesPositions = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
+        mEditorPositions = mSharedPreferencesPositions.edit();
+        String jsonPosition = mSharedPreferencesPositions.getString(POSITIONS_ARRAY, "");
+
+        if (jsonPosition != "") {
+            mPositions = new Gson().fromJson(jsonPosition, OpenPositionsContainer.class);
         }
         if (mPositions.getSize() > 0) {
             int size = mPositions.getSize();
@@ -119,7 +132,25 @@ public class PortfolioActivity extends AppCompatActivity implements
             }
         }
 
-        //Log.i(TAG, mPositions.getSize()+"");
+        mSharedPreferencesSummary = getSharedPreferences(PREFS_ACCOUNT_SUMMARY, Context.MODE_PRIVATE);
+        mEditorSummary = mSharedPreferencesSummary.edit();
+        String jsonSummary = mSharedPreferencesPositions.getString(ACCOUNT_SUMMARY, "");
+
+        if (jsonSummary == ""){
+            mAccountSummary = new AccountSummary();
+            mAccountSummary.setAvailableCash(1000000);
+            mAccountSummary.setPercentReturn(0);
+            mAccountSummary.setPortfolioValue(1000000);
+            populateAccountTextViews();
+        }
+
+        else{
+            mAccountSummary = new Gson().fromJson(jsonSummary, AccountSummary.class);
+            populateAccountTextViews();
+        }
+
+
+        // TODO fix popup activity doesn't exist anymore
         if (getIntent()!= null && getIntent().getExtras() != null) {
             Intent intent = getIntent();
             mPosition = intent.getParcelableExtra(PopupActivity.POSITION_DETAILS);
@@ -142,6 +173,33 @@ public class PortfolioActivity extends AppCompatActivity implements
         });
 
     }
+
+    public void populateAccountTextViews(){
+        mPortfolioValue.setText("$ " + mAccountSummary.getPortfolioValue());
+        mAvailableCash.setText("$ " + mAccountSummary.getAvailableCash());
+        mPercentReturn.setText(mAccountSummary.getPercentReturn()+" %");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "entered onPause");
+
+        // TODO fix popup activity doesn't exist anymore
+        if (getIntent()!= null && getIntent().getExtras() != null) {
+            getIntent().removeExtra(PopupActivity.POSITION_DETAILS);
+        }
+
+        String jsonPositions = new Gson().toJson(mPositions); // myObject - instance of MyObject
+        mEditorPositions.putString(POSITIONS_ARRAY, jsonPositions);
+        mEditorPositions.apply();
+
+        String jsonSummary = new Gson().toJson(mAccountSummary);
+        mEditorSummary.putString(ACCOUNT_SUMMARY, jsonSummary);
+        mEditorSummary.apply();
+
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -217,23 +275,6 @@ public class PortfolioActivity extends AppCompatActivity implements
     private void updatePosition(String jsonData, OpenPosition position) throws JSONException {
         JSONObject wholeQuote = new JSONObject(jsonData);
         position.setPrice(wholeQuote.getDouble("LastPrice"));
-
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG, "entered onPause");
-
-        if (getIntent()!= null && getIntent().getExtras() != null) {
-            getIntent().removeExtra(PopupActivity.POSITION_DETAILS);
-        }
-
-        Gson gson = new Gson();
-        String json = gson.toJson(mPositions); // myObject - instance of MyObject
-        mEditor.putString(POSITIONS_ARRAY, json);
-        mEditor.commit();
 
     }
 
