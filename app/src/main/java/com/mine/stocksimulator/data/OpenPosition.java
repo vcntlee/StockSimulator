@@ -11,6 +11,7 @@ public class OpenPosition implements Parcelable {
     //private double mProfit;
     private int mShares;
     //private double mPnL;
+    private String mType;
 
     public OpenPosition(){}
 
@@ -54,7 +55,13 @@ public class OpenPosition implements Parcelable {
         mShares = shares;
     }
 
+    public String getType() {
+        return mType;
+    }
 
+    public void setType(String type) {
+        mType = type;
+    }
 
     @Override
     public int describeContents() {
@@ -67,6 +74,7 @@ public class OpenPosition implements Parcelable {
         dest.writeDouble(mPrice);
         dest.writeDouble(mCost);
         dest.writeInt(mShares);
+        dest.writeString(mType);
     }
 
     private OpenPosition(Parcel in){
@@ -74,6 +82,7 @@ public class OpenPosition implements Parcelable {
         mPrice = in.readDouble();
         mCost = in.readDouble();
         mShares = in.readInt();
+        mType = in.readString();
     }
 
     public final static Creator<OpenPosition> CREATOR = new Creator<OpenPosition>() {

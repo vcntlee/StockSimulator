@@ -64,10 +64,10 @@ public class OpenPositionAdapter extends BaseAdapter {
         OpenPosition openPosition = mOpenPositions.get(position);
 
         holder.ticker.setText(openPosition.getCompanyTicker());
-        holder.numShares.setText(openPosition.getShares()+"");
+        holder.numShares.setText(openPosition.getType() + " "+ openPosition.getShares());
         //holder.price.setText(100+"");
-        holder.price.setText(openPosition.getPrice()+"");
-        holder.cost.setText(openPosition.getPrice() + "");
+        holder.price.setText(openPosition.getPrice() + "");
+        holder.cost.setText(openPosition.getCost() + "");
 
         Log.i(TAG + " Price", openPosition.getPrice() + "");
         Log.i(TAG + " Cost", openPosition.getCost() + "");

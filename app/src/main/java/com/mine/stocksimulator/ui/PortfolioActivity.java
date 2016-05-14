@@ -25,6 +25,7 @@ import com.mine.stocksimulator.adapter.OpenPositionAdapter;
 import com.mine.stocksimulator.data.AccountSummary;
 import com.mine.stocksimulator.data.OpenPosition;
 import com.mine.stocksimulator.data.OpenPositionsContainer;
+import com.mine.stocksimulator.data.OpenPositionsMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,10 +43,12 @@ public class PortfolioActivity extends AppCompatActivity implements
 
 
     private static final String TAG = PortfolioActivity.class.getSimpleName();
-    public static final String PREFS_FILE = "com.mine.stocksimulator.prefs_file";
-    private static final String POSITIONS_ARRAY = "POSITIONS_ARRAY";
-    public static final String PREFS_ACCOUNT_SUMMARY = "com.mine.stocksimulator.acct_summary";
+    public static final String PREFS_POSITIONS_FILE = "com.mine.stocksimulator.positions";
+    public static final String POSITIONS_ARRAY = "POSITIONS_ARRAY";
+    public static final String PREFS_ACCOUNT_SUMMARY_FILE = "com.mine.stocksimulator.acct_summary";
     public static final String ACCOUNT_SUMMARY = "ACCOUNT_SUMMARY";
+    public static final String PREFS_POSITIONS_MAP_FILE = "com.mine.stocksimulator.positions_map";
+    public static final String POSITIONS_MAP = "POSITIONS_MAP";
 
     private TextView mPortfolioValue;
     private TextView mAvailableCash;
@@ -57,10 +60,14 @@ public class PortfolioActivity extends AppCompatActivity implements
     private Button mShortButton;
     private OpenPosition mPosition = new OpenPosition();
     private OpenPositionsContainer mPositions = new OpenPositionsContainer();
+    private OpenPositionsMap mOpenPositionsMap = new OpenPositionsMap();
+
     private SharedPreferences mSharedPreferencesPositions;
     private SharedPreferences.Editor mEditorPositions;
     private SharedPreferences mSharedPreferencesSummary;
     private SharedPreferences.Editor mEditorSummary;
+    private SharedPreferences mSharedPreferencesPositionsMap;
+    private SharedPreferences.Editor mEditorPositionsMap;
 
     /* This is for the account summary*/
     private AccountSummary mAccountSummary;
@@ -92,12 +99,14 @@ public class PortfolioActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_portfolio);
 
+        // for the actionbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setTitle("Portfolio");
         }
 
+        // for the drawer
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
@@ -116,48 +125,27 @@ public class PortfolioActivity extends AppCompatActivity implements
 
         /* Shared prefs for positions and summary*/
 
-        mSharedPreferencesPositions = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
-        mEditorPositions = mSharedPreferencesPositions.edit();
-        String jsonPosition = mSharedPreferencesPositions.getString(POSITIONS_ARRAY, "");
+        setPositionsAndSummary();
 
-        if (jsonPosition != "") {
-            mPositions = new Gson().fromJson(jsonPosition, OpenPositionsContainer.class);
+        // setting AccountSummary portfolio value and return;
+        double portfolioValue = calculatePortfolioValue();
+        if (portfolioValue == 0){
+            portfolioValue = 1000000;
         }
-        if (mPositions.getSize() > 0) {
-            int size = mPositions.getSize();
-            for (int i = 0; i < size; i ++) {
-                refreshPositions(mPositions.getOpenPositions().get(i).getCompanyTicker(),
-                        mPositions.getOpenPositions().get(i));
-                Log.i(TAG + " price ", mPositions.getOpenPositions().get(i).getCost()+"");
-            }
-        }
+        double percentReturn = calculatePercentReturn(portfolioValue);
 
-        mSharedPreferencesSummary = getSharedPreferences(PREFS_ACCOUNT_SUMMARY, Context.MODE_PRIVATE);
-        mEditorSummary = mSharedPreferencesSummary.edit();
-        String jsonSummary = mSharedPreferencesPositions.getString(ACCOUNT_SUMMARY, "");
+        mAccountSummary.setPortfolioValue(portfolioValue);
+        mAccountSummary.setPercentReturn(percentReturn);
 
-        if (jsonSummary == ""){
-            mAccountSummary = new AccountSummary();
-            mAccountSummary.setAvailableCash(1000000);
-            mAccountSummary.setPercentReturn(0);
-            mAccountSummary.setPortfolioValue(1000000);
-            populateAccountTextViews();
-        }
-
-        else{
-            mAccountSummary = new Gson().fromJson(jsonSummary, AccountSummary.class);
-            populateAccountTextViews();
-        }
-
-
-        // TODO fix popup activity doesn't exist anymore
         if (getIntent()!= null && getIntent().getExtras() != null) {
             Intent intent = getIntent();
-            mPosition = intent.getParcelableExtra(PopupActivity.POSITION_DETAILS);
+            mPosition = intent.getParcelableExtra(TradeActivity.POSITION_DETAILS);
             mPositions.addItem(mPosition);
-            Log.i(TAG, "length of array " + mPositions.getSize()+"");
-
+            mAccountSummary = intent.getParcelableExtra(TradeActivity.ACCOUNT_DETAILS);
         }
+
+        // set the account details views
+        populateAccountTextViews();
 
         OpenPositionAdapter adapter = new OpenPositionAdapter(this, mPositions.getOpenPositions());
 
@@ -174,6 +162,70 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     }
 
+
+    private double calculatePortfolioValue() {
+        if (mPositions.getSize() > 0){
+            double totalValue = 0;
+            for (int i = 0; i < mPositions.getSize(); i++){
+                OpenPosition member = mPositions.getOpenPositions().get(i);
+                totalValue += member.getPrice() * member.getShares();
+            }
+            return totalValue;
+        }
+        return 0;
+    }
+
+    private double calculatePercentReturn(double portfolioValue){
+        if (mPositions.getSize() > 0){
+            double totalCost = 0;
+            for (int i = 0; i < mPositions.getSize(); i++){
+                OpenPosition member = mPositions.getOpenPositions().get(i);
+                totalCost += member.getCost() * member.getShares();
+            }
+            return (portfolioValue - totalCost) / totalCost;
+        }
+        return 0;
+    }
+
+    private void setPositionsAndSummary() {
+        mSharedPreferencesPositions = getSharedPreferences(PREFS_POSITIONS_FILE, Context.MODE_PRIVATE);
+        mEditorPositions = mSharedPreferencesPositions.edit();
+        String jsonPosition = mSharedPreferencesPositions.getString(POSITIONS_ARRAY, "");
+
+        if (!jsonPosition.equals("")) {
+            mPositions = new Gson().fromJson(jsonPosition, OpenPositionsContainer.class);
+        }
+        if (mPositions.getSize() > 0) {
+            int size = mPositions.getSize();
+            for (int i = 0; i < size; i ++) {
+                refreshPositions(mPositions.getOpenPositions().get(i).getCompanyTicker(),
+                        mPositions.getOpenPositions().get(i));
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.i(TAG + " price ", mPositions.getOpenPositions().get(i).getCost()+"");
+            }
+        }
+
+        mSharedPreferencesSummary = getSharedPreferences(PREFS_ACCOUNT_SUMMARY_FILE, Context.MODE_PRIVATE);
+        mEditorSummary = mSharedPreferencesSummary.edit();
+        String jsonSummary = mSharedPreferencesSummary.getString(ACCOUNT_SUMMARY, "");
+
+
+        if (jsonSummary.equals("")){
+            mAccountSummary = new AccountSummary();
+            mAccountSummary.setAvailableCash(1000000);
+            mAccountSummary.setPercentReturn(0);
+            mAccountSummary.setPortfolioValue(1000000);
+        }
+
+        else{
+            mAccountSummary = new Gson().fromJson(jsonSummary, AccountSummary.class);
+        }
+    }
+
     public void populateAccountTextViews(){
         mPortfolioValue.setText("$ " + mAccountSummary.getPortfolioValue());
         mAvailableCash.setText("$ " + mAccountSummary.getAvailableCash());
@@ -185,9 +237,9 @@ public class PortfolioActivity extends AppCompatActivity implements
         super.onPause();
         Log.i(TAG, "entered onPause");
 
-        // TODO fix popup activity doesn't exist anymore
         if (getIntent()!= null && getIntent().getExtras() != null) {
-            getIntent().removeExtra(PopupActivity.POSITION_DETAILS);
+            getIntent().removeExtra(TradeActivity.POSITION_DETAILS);
+            getIntent().removeExtra(TradeActivity.ACCOUNT_DETAILS);
         }
 
         String jsonPositions = new Gson().toJson(mPositions); // myObject - instance of MyObject
@@ -197,6 +249,23 @@ public class PortfolioActivity extends AppCompatActivity implements
         String jsonSummary = new Gson().toJson(mAccountSummary);
         mEditorSummary.putString(ACCOUNT_SUMMARY, jsonSummary);
         mEditorSummary.apply();
+
+        Log.i(TAG, mPositions.getSize()+"");
+
+        mSharedPreferencesPositionsMap = getSharedPreferences(PREFS_POSITIONS_MAP_FILE, Context.MODE_PRIVATE);
+        mEditorPositionsMap = mSharedPreferencesPositionsMap.edit();
+        for (int i = 0; i < mPositions.getSize(); i++) {
+            OpenPosition position = mPositions.getOpenPositions().get(i);
+            mOpenPositionsMap.setKey(position.getCompanyTicker(), position.getType());
+        }
+
+        String jsonPositionsMap = new Gson().toJson(mOpenPositionsMap);
+        mEditorPositionsMap.putString(POSITIONS_MAP, jsonPositionsMap);
+        mEditorPositionsMap.apply();
+
+
+
+
 
     }
 
@@ -274,6 +343,8 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     private void updatePosition(String jsonData, OpenPosition position) throws JSONException {
         JSONObject wholeQuote = new JSONObject(jsonData);
+
+        //FIXME this is a problem, is this actually updating the original member of mPositions?
         position.setPrice(wholeQuote.getDouble("LastPrice"));
 
     }

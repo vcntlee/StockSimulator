@@ -78,6 +78,7 @@
             android:gravity="left"
             android:hint="@string/editText_hint_trade"
             android:cursorVisible="false"
+            android:singleLine="true"
             />
 
     </LinearLayout>
@@ -120,8 +121,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:id="@+id/fourthRow"
+        android:id="@+id/thirdARow"
         android:layout_below="@+id/thirdRow"
+        android:padding="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Current Cash"
+            android:textColor="@color/fontColor"
+            android:gravity="left"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/currentCash"
+            android:text="$ 000000"
+            android:textColor="@color/fontColor"
+            android:gravity="left"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:id="@+id/fourthRow"
+        android:layout_below="@+id/thirdARow"
         android:padding="10dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
@@ -164,7 +198,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Remaining Balance"
+            android:text="Remaining Cash"
             android:textColor="@color/fontColor"
             android:gravity="left"/>
 
@@ -172,7 +206,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/remainingBalance"
+            android:id="@+id/remainingCash"
             android:text="$ 00000000"
             android:textColor="@color/fontColor"
             android:gravity="left"
