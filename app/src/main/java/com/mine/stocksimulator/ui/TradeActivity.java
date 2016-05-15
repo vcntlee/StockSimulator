@@ -65,6 +65,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
     TODO need to account for profit per position
     TODO when buying, the remaining cash is 0.0
     TODO need to figure out how to change textviews when another option is selected
+    TODO for PortfolioAcitivity, need to include Positions Value, Remaining Cash, Total Value, and percentage
      */
 
 
