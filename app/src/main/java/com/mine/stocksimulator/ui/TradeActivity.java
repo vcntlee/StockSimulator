@@ -36,8 +36,7 @@ import java.math.RoundingMode;
 public class TradeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     private static final String TAG = TradeActivity.class.getSimpleName();
-    public static final String POSITION_DETAILS = "POSITION_DETAILS";
-    public static final String ACCOUNT_DETAILS = "ACCOUNT_DETAILS";
+    public static final String ACCOUNT_REMAINING_CASH = "ACCOUNT_REMAINING_CASH";
     public static final String POSITIONS_ARRAY = "POSITIONS_ARRAY";
 
     private Spinner mActionSpinner;
@@ -57,11 +56,15 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
     private OpenPositionsMap mPositionsMap;
     private OpenPositionsList mPositions;
 
+    private double mRemainingCash;
+
     private StockProfile mStockProfile;
 
     /* TODO need to include number of shares to close out when selling or buying
     TODO need to make sure account summary is correct
     TODO need to account for profit per position
+    TODO when buying, the remaining cash is 0.0
+    TODO need to figure out how to change textviews when another option is selected
      */
 
 
@@ -115,6 +118,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
         mTradeButton = (Button) findViewById(R.id.okButton);
         mCancelButton = (Button) findViewById(R.id.cancelButton);
 
+        // setSpinnerAdapter also determines if position is in map
         final boolean isPositionInMap = setSpinnerAdapter();
 
         mCurrentCash = mAccountSummary.getAvailableCash();
@@ -200,7 +204,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                             for (int i = 0; i < mPositions.getSize(); i++){
                                 OpenPosition position = mPositions.getOpenPositions().get(i);
                                 if (mStockProfile.getSymbol().equals(position.getCompanyTicker())){
-                                    mAccountSummary.setAvailableCash(mCurrentCash - mTotalTransaction);
+                                    mRemainingCash = mCurrentCash - mTotalTransaction;
                                     position.setCompanyTicker(mStockProfile.getSymbol());
                                     position.setShares(mNumShares + position.getShares());
                                     position.setPrice(mStockProfile.getPrice()); //TODO need to fix here
@@ -227,7 +231,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
                     }
                     else{
-                        mAccountSummary.setAvailableCash(mCurrentCash - mTotalTransaction);
+                        mRemainingCash = mCurrentCash - mTotalTransaction;
                         OpenPosition position = new OpenPosition();
                         position.setCompanyTicker(mStockProfile.getSymbol());
                         position.setShares(mNumShares);
@@ -245,7 +249,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
                     Intent intent = new Intent(TradeActivity.this, PortfolioActivity.class);
                     intent.putExtra(POSITIONS_ARRAY, mPositions);
-                    intent.putExtra(ACCOUNT_DETAILS, mAccountSummary);
+                    intent.putExtra(ACCOUNT_REMAINING_CASH, mRemainingCash);
                     startActivity(intent);
                 }
             }
@@ -264,7 +268,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
     private boolean setSpinnerAdapter() {
         boolean isPositionInMap;
         SharedPreferences sharedPreferences = getSharedPreferences(PortfolioActivity.PREFS_POSITIONS_MAP_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        //SharedPreferences.Editor editor = sharedPreferences.edit();
         String json = sharedPreferences.getString(PortfolioActivity.POSITIONS_MAP, "");
 
         if (!json.equals("")){
@@ -315,10 +319,10 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                     return false;
                 }
                 if (type.equals("Sell")) {
-                    mAccountSummary.setAvailableCash(mCurrentCash + mTotalTransaction);
+                    mRemainingCash = mCurrentCash + mTotalTransaction;
                 }
                 else{
-                    mAccountSummary.setAvailableCash(mCurrentCash + 2 * (position.getCost() * position.getShares()) - mTotalTransaction);
+                    mRemainingCash = mCurrentCash + 2 * (position.getCost() * position.getShares()) - mTotalTransaction;
                 }
                 if (mNumShares < position.getShares()) {
                     position.setCompanyTicker(mStockProfile.getSymbol());

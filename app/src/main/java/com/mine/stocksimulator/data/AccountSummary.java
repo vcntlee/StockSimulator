@@ -9,9 +9,7 @@ public class AccountSummary implements Parcelable {
     private double mPortfolioValue;
     private double mPercentReturn;
 
-    public AccountSummary(){
-
-    }
+    public AccountSummary(){}
 
     public double getAvailableCash() {
         return mAvailableCash;
@@ -29,8 +27,13 @@ public class AccountSummary implements Parcelable {
         mPercentReturn = percentReturn;
     }
 
-    public double getPortfolioValue() {
-        return mPortfolioValue;
+    public double getPortfolioValue(OpenPositionsList positionsList) {
+        double total = 0;
+        for (int i = 0; i < positionsList.getSize(); i++){
+            OpenPosition position = positionsList.getOpenPositions().get(i);
+            total += position.getPrice() * position.getShares();
+        }
+        return total + mAvailableCash;
     }
 
     public void setPortfolioValue(double portfolioValue) {

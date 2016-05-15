@@ -72,6 +72,7 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     /* This is for the account summary*/
     private AccountSummary mAccountSummary;
+    private double mCachePortfolioValue;
 
     private String[] mOptionsMenu;
     private DrawerLayout mDrawerLayout;
@@ -125,16 +126,21 @@ public class PortfolioActivity extends AppCompatActivity implements
         mShortButton = (Button) findViewById(R.id.shortButton);
 
         /* Shared prefs for positions and summary*/
+
+        // mAccountSummary is set here
         setPositionsAndSummary();
-        callRefreshPositions();
 
         if (getIntent()!= null && getIntent().getExtras() != null) {
             Intent intent = getIntent();
             mPositions = intent.getParcelableExtra(TradeActivity.POSITIONS_ARRAY);
-            Log.i(TAG +" positions size", mPositions.getSize()+"");
-            // mPositions.addItem(mPosition);
-            mAccountSummary = intent.getParcelableExtra(TradeActivity.ACCOUNT_DETAILS);
+            double remainingCash = intent.getDoubleExtra(TradeActivity.ACCOUNT_REMAINING_CASH, 0);
+            mAccountSummary.setAvailableCash(remainingCash);
+
         }
+
+        // needs to happen after intent to account for added positions gotten from intent
+        refreshPositionsAndSummary();
+
 
         // set the account details views
         populateAccountTextViews();
@@ -144,16 +150,6 @@ public class PortfolioActivity extends AppCompatActivity implements
         mListView.setAdapter(adapter);
         mListView.setEmptyView(mEmptyTextView);
 
-        // setting AccountSummary portfolio value and return;
-        double portfolioValue = calculatePortfolioValue();
-        if (portfolioValue == 0){
-            portfolioValue = 1000000;
-        }
-        double percentReturn = calculatePercentReturn(portfolioValue);
-
-        mAccountSummary.setPortfolioValue(portfolioValue);
-        mAccountSummary.setPercentReturn(percentReturn);
-
         mBuyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,9 +158,11 @@ public class PortfolioActivity extends AppCompatActivity implements
             }
         });
 
+        Log.i(TAG + " cachedPortfolioValue", mCachePortfolioValue + "");
+
     }
 
-    private void callRefreshPositions() {
+    private void refreshPositionsAndSummary() {
         if (mPositions.getSize() > 0) {
             int size = mPositions.getSize();
             for (int i = 0; i < size; i ++) {
@@ -177,21 +175,17 @@ public class PortfolioActivity extends AppCompatActivity implements
                 }
                 Log.i(TAG + " price ", mPositions.getOpenPositions().get(i).getCost()+"");
             }
+            mCachePortfolioValue = mAccountSummary.getPortfolioValue(mPositions);
+            Log.i(TAG+" refresh", mCachePortfolioValue + "");
+            mAccountSummary.setPortfolioValue(mCachePortfolioValue);
+        }
+        else{
+            mCachePortfolioValue = 1000000;
+            mAccountSummary.setPortfolioValue(mCachePortfolioValue);
+            mAccountSummary.setPercentReturn(0);
         }
     }
 
-
-    private double calculatePortfolioValue() {
-        if (mPositions.getSize() > 0){
-            double totalValue = 0;
-            for (int i = 0; i < mPositions.getSize(); i++){
-                OpenPosition member = mPositions.getOpenPositions().get(i);
-                totalValue += member.getPrice() * member.getShares();
-            }
-            return totalValue;
-        }
-        return 0;
-    }
 
     private double calculatePercentReturn(double portfolioValue){
         if (mPositions.getSize() > 0){
@@ -211,7 +205,6 @@ public class PortfolioActivity extends AppCompatActivity implements
         String jsonPosition = mSharedPreferencesPositions.getString(POSITIONS_ARRAY, "");
 
         if (!jsonPosition.equals("")) {
-            Log.i(TAG ,"there is a positionsArray");
             mPositions = new Gson().fromJson(jsonPosition, OpenPositionsList.class);
         }
 
@@ -223,7 +216,8 @@ public class PortfolioActivity extends AppCompatActivity implements
             mAccountSummary = new AccountSummary();
             mAccountSummary.setAvailableCash(1000000);
             mAccountSummary.setPercentReturn(0);
-            mAccountSummary.setPortfolioValue(1000000);
+            mCachePortfolioValue = 1000000;
+            mAccountSummary.setPortfolioValue(mCachePortfolioValue);
         }
 
         else{
@@ -232,7 +226,7 @@ public class PortfolioActivity extends AppCompatActivity implements
     }
 
     public void populateAccountTextViews(){
-        mPortfolioValue.setText("$ " + mAccountSummary.getPortfolioValue());
+        mPortfolioValue.setText("$ " + mCachePortfolioValue);
         mAvailableCash.setText("$ " + mAccountSummary.getAvailableCash());
         mPercentReturn.setText(mAccountSummary.getPercentReturn()+" %");
     }
@@ -244,7 +238,7 @@ public class PortfolioActivity extends AppCompatActivity implements
 
         if (getIntent()!= null && getIntent().getExtras() != null) {
             getIntent().removeExtra(TradeActivity.POSITIONS_ARRAY);
-            getIntent().removeExtra(TradeActivity.ACCOUNT_DETAILS);
+            getIntent().removeExtra(TradeActivity.ACCOUNT_REMAINING_CASH);
         }
 
         String jsonPositions = new Gson().toJson(mPositions); // myObject - instance of MyObject
