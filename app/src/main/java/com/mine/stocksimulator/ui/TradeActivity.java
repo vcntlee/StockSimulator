@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import com.mine.stocksimulator.R;
 import com.mine.stocksimulator.data.AccountSummary;
 import com.mine.stocksimulator.data.OpenPosition;
+import com.mine.stocksimulator.data.OpenPositionsList;
 import com.mine.stocksimulator.data.OpenPositionsMap;
 import com.mine.stocksimulator.data.StockProfile;
 
@@ -37,21 +38,24 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
     private static final String TAG = TradeActivity.class.getSimpleName();
     public static final String POSITION_DETAILS = "POSITION_DETAILS";
     public static final String ACCOUNT_DETAILS = "ACCOUNT_DETAILS";
+    public static final String POSITIONS_ARRAY = "POSITIONS_ARRAY";
+
     private Spinner mActionSpinner;
     private String mAction;
     private EditText mEditText;
     private TextView mPricePerShareTextView;
-    private TextView mTotalCostTextView;
+    private TextView mTotalTransactionTextView;
     private TextView mRemainingCashTextView;
     private TextView mCurrentCashTextView;
     private Button mTradeButton;
     private Button mCancelButton;
-    private int mNumShares;
-    private double mTotalCost;
+    private int mNumShares = 0;
+    private double mTotalTransaction;
     private double mCurrentCash;
     private AccountSummary mAccountSummary;
     private OpenPosition mOpenPosition;
     private OpenPositionsMap mPositionsMap;
+    private OpenPositionsList mPositions;
 
     private StockProfile mStockProfile;
 
@@ -79,6 +83,16 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
             Log.e(TAG, "AccountSummary is not set");
         }
 
+        // get shared prefs of all positions
+        SharedPreferences sharedPreferencesPositions = getSharedPreferences(PortfolioActivity.PREFS_POSITIONS_FILE, Context.MODE_PRIVATE);
+        String jsonPositions = sharedPreferencesPositions.getString(PortfolioActivity.POSITIONS_ARRAY,"");
+        Log.i(TAG + " jsonPositions", jsonPositions);
+        if (!jsonPositions.equals("")){
+            mPositions = new Gson().fromJson(jsonPositions, OpenPositionsList.class);
+        }
+        else{
+            mPositions = new OpenPositionsList();
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tradeActionBar);
         if(toolbar != null){
@@ -91,21 +105,13 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
         mActionSpinner = (Spinner) findViewById(R.id.actionSpinner);
         mEditText = (EditText) findViewById(R.id.numberOfSharesInput);
         mPricePerShareTextView = (TextView) findViewById(R.id.pricePerShare);
-        mTotalCostTextView = (TextView) findViewById(R.id.totalCost);
+        mTotalTransactionTextView = (TextView) findViewById(R.id.totalTransaction);
         mRemainingCashTextView = (TextView) findViewById(R.id.remainingCash);
         mCurrentCashTextView = (TextView) findViewById(R.id.currentCash);
         mTradeButton = (Button) findViewById(R.id.okButton);
         mCancelButton = (Button) findViewById(R.id.cancelButton);
 
-        ArrayAdapter adapter =
-                ArrayAdapter.createFromResource(this,
-                        R.array.tradeAction,
-                        android.R.layout.simple_spinner_dropdown_item);
-
-        mActionSpinner.setAdapter(adapter);
-        mActionSpinner.setOnItemSelectedListener(this);
-
-        // populate price and remaining balance
+        final boolean isPositionInMap = setSpinnerAdapter();
 
         mCurrentCash = mAccountSummary.getAvailableCash();
         mPricePerShareTextView.setText("$ " + mStockProfile.getPrice());
@@ -133,30 +139,36 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void afterTextChanged(Editable s) {
 
-                //TODO need to account for non-numeric
 
+                try {
+                    mNumShares = Integer.parseInt(s.toString());
+                    mTotalTransaction = round((mNumShares * mStockProfile.getPrice()), 3);
+                    mTotalTransactionTextView.setText("$ " + mTotalTransaction);
 
-
-                // populating total cost
-                if (s.length() > 0) {
-                    try {
-                        mNumShares = Integer.parseInt(s.toString());
-                        mTotalCost = round((mNumShares * mStockProfile.getPrice()), 3);
-                        mTotalCostTextView.setText("$ " + mTotalCost);
-                        mRemainingCashTextView.setText("$ " + (mCurrentCash - mTotalCost));
-                    }catch (NumberFormatException nfe){
-                        Toast.makeText(TradeActivity.this,
-                                "please input valid numbers, + and - not allowed", Toast.LENGTH_LONG).show();
+                    if (mAction.equals("Long") || mAction.equals("Short")) {
+                        mRemainingCashTextView.setText("$ " + (mCurrentCash - mTotalTransaction));
+                    }
+                    else if(mAction.equals("Sell")){
+                        mRemainingCashTextView.setText("$ " + (mCurrentCash + mTotalTransaction));
                     }
 
+                    else if (mAction.equals("Buy")){
+                        double remainingCash = calculateAvailableCashWhenCovering();
+                        mRemainingCashTextView.setText("$ " + remainingCash);
+                    }
+
+                } catch (NumberFormatException nfe) {
+                    Toast.makeText(TradeActivity.this,
+                            "please input valid numbers, + and - not allowed", Toast.LENGTH_LONG).show();
                 }
+
             }
         });
 
         mEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     manager.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
 
@@ -175,30 +187,60 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
                 if (mNumShares <= 0){
                     Toast.makeText(TradeActivity.this,
-                            "very tough to buy <= 0 shares", Toast.LENGTH_LONG).show();
+                            "very tough to trade zero or less shares", Toast.LENGTH_LONG).show();
                 }
                 else{
+                    boolean isNumSharesInputValid = true;
+                    if (isPositionInMap) {
+                        if (mAction.equals("Long") || mAction.equals("Short")) {
+                            for (int i = 0; i < mPositions.getSize(); i++){
+                                OpenPosition position = mPositions.getOpenPositions().get(i);
+                                if (mStockProfile.getSymbol().equals(position.getCompanyTicker())){
+                                    mAccountSummary.setAvailableCash(mCurrentCash - mTotalTransaction);
+                                    position.setCompanyTicker(mStockProfile.getSymbol());
+                                    position.setShares(mNumShares + position.getShares());
+                                    position.setPrice(mStockProfile.getPrice()); //TODO need to fix here
 
-                    mAccountSummary.setAvailableCash(mCurrentCash - mTotalCost);
+                                    double pastWeight = position.getShares()/(position.getShares()+mNumShares);
+                                    double pastWeightedPrice = position.getCost() * pastWeight;
+                                    double nowWeight = mNumShares / (position.getShares() + mNumShares);
+                                    double nowWeightedPrice = mStockProfile.getPrice() * nowWeight;
+                                    double avgWeightedPrice = pastWeightedPrice + nowWeightedPrice;
 
-                    mOpenPosition = new OpenPosition();
-                    mOpenPosition.setCompanyTicker(mStockProfile.getSymbol());
-                    mOpenPosition.setShares(mNumShares);
-                    mOpenPosition.setPrice(mStockProfile.getPrice());
-                    mOpenPosition.setCost(mStockProfile.getPrice());
+                                    position.setCost(avgWeightedPrice);
+                                    position.setType(mAction);
+                                    mPositions.addItem(position);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (mAction.equals("Sell")){
+                            isNumSharesInputValid = traverseMap("Sell");
+                        }
+                        else if (mAction.equals("Buy")){
+                            isNumSharesInputValid = traverseMap("Buy");
+                        }
 
-                    if (!isActionValid()){
-                        Toast.makeText(TradeActivity.this,
-                                "Action chosen incompatible with portfolio transaction",
-                                Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        mAccountSummary.setAvailableCash(mCurrentCash - mTotalTransaction);
+                        OpenPosition position = new OpenPosition();
+                        position.setCompanyTicker(mStockProfile.getSymbol());
+                        position.setShares(mNumShares);
+                        position.setPrice(mStockProfile.getPrice());
+                        position.setCost(mStockProfile.getPrice());
+                        position.setType(mAction);
+
+                        mPositions.addItem(position);
+
+                    }
+
+                    if (isNumSharesInputValid == false){
                         return;
                     }
-//                    if (mAction.equals("Long") || mAction.equals("Short")) {
-//                        mOpenPosition.setType(mAction);
-//                    }
 
                     Intent intent = new Intent(TradeActivity.this, PortfolioActivity.class);
-                    intent.putExtra(POSITION_DETAILS, mOpenPosition);
+                    intent.putExtra(POSITIONS_ARRAY, mPositions);
                     intent.putExtra(ACCOUNT_DETAILS, mAccountSummary);
                     startActivity(intent);
                 }
@@ -212,12 +254,11 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                 startActivity(intent);
             }
         });
-
     }
 
     // check to see if there are duplicates and if actions match in the portfolio
-    private boolean isActionValid() {
-        boolean isValid = true;
+    private boolean setSpinnerAdapter() {
+        boolean isPositionInMap;
         SharedPreferences sharedPreferences = getSharedPreferences(PortfolioActivity.PREFS_POSITIONS_MAP_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String json = sharedPreferences.getString(PortfolioActivity.POSITIONS_MAP, "");
@@ -229,71 +270,89 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
             mPositionsMap = new OpenPositionsMap();
         }
 
-        if (mPositionsMap.doesKeyExist(mOpenPosition.getCompanyTicker())){
-            /* type = long, action = long --> ok
-                type = long, action = short --> no
-                type = long, action = buy --> no
-                type = long, action = sell --> ok */
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item, android.R.id.text1);
+        mActionSpinner.setAdapter(spinnerAdapter);
 
-            /** FIXME need to subtract from position
-             *  for all the trues, need to update textviews accordingly
-             *  for the double longs or double shorts, need to do a weighted average
-             *  */
+        if (mPositionsMap.doesKeyExist(mStockProfile.getSymbol())){
 
-
-            String mapType = mPositionsMap.getKey(mOpenPosition.getCompanyTicker());
-            if (mapType.equals("Long") && mAction.equals("Long")){
-                isValid = true;
+            String mapType = mPositionsMap.getKey(mStockProfile.getSymbol());
+            Log.i(TAG + " mapType", mapType);
+            if (mapType.equals("Long")){
+                spinnerAdapter.add("Long");
+                spinnerAdapter.add("Sell");
             }
-            else if (mapType.equals("Long") && mAction.equals("Short")){
-                isValid = false;
+            else if (mapType.equals("Short")){
+                spinnerAdapter.add("Short");
+                spinnerAdapter.add("Buy");
             }
-            else if (mapType.equals("Long") && mAction.equals("Buy")){
-                isValid = false;
-            }
-            else if (mapType.equals("Long") && mAction.equals("Sell")){
-                isValid = true;
-
-            }
-
-            /* type = short, action = long --> no
-                type = short, action = short --> yes
-                type = short, action = buy --> yes
-                type = short, action = sell --> no */
-
-            else if (mapType.equals("Short") && mAction.equals("Long")){
-                isValid = false;
-
-            }
-            else if (mapType.equals("Short") && mAction.equals("Short")){
-                isValid = true;
-            }
-            else if (mapType.equals("Short") && mAction.equals("Buy")){
-                isValid = true;
-            }
-            else if (mapType.equals("Short") && mAction.equals("Sell")){
-                isValid = false;
-            }
+            isPositionInMap = true;
+            spinnerAdapter.notifyDataSetChanged();
         }
         else{
             //only valid options are long and short
-            if (mAction.equals("Long")){
-                mOpenPosition.setType(mAction);
-                isValid = true;
-            }
-            else if (mAction.equals("Short")){
-                mOpenPosition.setType(mAction);
-                isValid = true;
-            }
-            else{
-                isValid = false;
-            }
-
+            spinnerAdapter.add("Long");
+            spinnerAdapter.add("Short");
+            isPositionInMap = false;
+            spinnerAdapter.notifyDataSetChanged();
         }
 
+        mActionSpinner.setOnItemSelectedListener(this);
 
-        return isValid;
+        return isPositionInMap;
     }
+
+    private boolean traverseMap(String type){
+        for (int i = 0; i < mPositions.getSize(); i++) {
+            OpenPosition position = mPositions.getOpenPositions().get(i);
+            if (mStockProfile.getSymbol().equals(position.getCompanyTicker())){
+                if(mNumShares > position.getShares()){
+                    Toast.makeText(TradeActivity.this,
+                            "cannot trade more than what you have", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+                if (type.equals("Sell")) {
+                    mAccountSummary.setAvailableCash(mCurrentCash + mTotalTransaction);
+                }
+                else{
+                    mAccountSummary.setAvailableCash(mCurrentCash + 2 * (position.getCost() * position.getShares()) - mTotalTransaction);
+                }
+                if (mNumShares < position.getShares()) {
+                    position.setCompanyTicker(mStockProfile.getSymbol());
+                    position.setShares(position.getShares() - mNumShares);
+                    position.setPrice(mStockProfile.getPrice());
+                    position.setCost(position.getCost());
+                    if (type.equals("Sell")){
+                        position.setType("Long");
+                    }
+                    else{
+                        position.setType("Short");
+                    }
+
+                    //mPositions.addItem(position);
+                }
+                else{
+                    mPositions.removeItem(position);
+                }
+                break;
+            }
+        }
+        return true;
+    }
+
+    private double calculateAvailableCashWhenCovering(){
+        double total = 0;
+        for (int i = 0; i < mPositions.getSize(); i++) {
+            OpenPosition position = mPositions.getOpenPositions().get(i);
+            if (mStockProfile.getSymbol().equals(position.getCompanyTicker())) {
+                total = mCurrentCash + 2 * (position.getCost() * position.getShares()) - mTotalTransaction;
+
+            }
+            break;
+        }
+        return total;
+    }
+
+
 
     public static double round(double value, int places) {
         //if (places < 0) throw new IllegalArgumentException();
@@ -307,6 +366,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         TextView actionText = (TextView) view;
         mAction = actionText.getText().toString();
+        Toast.makeText(TradeActivity.this, "selected "+mAction, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -323,5 +383,12 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
             NavUtils.navigateUpTo(this, intent);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Log.i(TAG, "entered on pause");
     }
 }
