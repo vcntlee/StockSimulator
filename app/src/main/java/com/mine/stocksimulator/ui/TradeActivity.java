@@ -59,6 +59,10 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private StockProfile mStockProfile;
 
+    /* TODO need to include number of shares to close out when selling or buying
+    TODO need to make sure account summary is correct
+    TODO need to account for profit per position
+     */
 
 
     @Override
