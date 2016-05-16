@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -86,14 +87,14 @@ public class PortfolioActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
 
         /*TODO List:
-        1. make sure that repeated buys don't get duplicated in listView
+        1. make sure that repeated buys don't get duplicated in listView --> DONE
         2. make a nav bar (search goes to the buy activity page) --> DONE
         3. calculate the profit --> DONE
-        4. error check input
-        5. create an adapter with search results?
-        6. portfolio summary on different activity
+        4. error check input --> DONE
+        5. create an adapter with search results --> DONE
+        6. portfolio summary on different activity --> NO NEED
         7. watchlist
-        8. buy and short | sell to cover and buy to cover
+        8. buy and short | sell to cover and buy to cover --> DONE
         9. take care of onRotate
         10. init beginning balance
      */
@@ -149,6 +150,17 @@ public class PortfolioActivity extends AppCompatActivity implements
         OpenPositionAdapter adapter = new OpenPositionAdapter(this, mPositions.getOpenPositions());
         mListView.setAdapter(adapter);
         mListView.setEmptyView(mEmptyTextView);
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String ticker = mPositions.getOpenPositions().get(position).getCompanyTicker();
+                Intent intent = new Intent(PortfolioActivity.this, StockProfileActivity.class);
+                intent.putExtra(SearchActivity.QUERY_TICKER, ticker);
+                startActivity(intent);
+            }
+        });
+
 
         mBuyButton.setOnClickListener(new View.OnClickListener() {
             @Override

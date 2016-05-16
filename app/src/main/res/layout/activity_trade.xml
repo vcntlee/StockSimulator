@@ -79,6 +79,41 @@
             android:hint="@string/editText_hint_trade"
             android:cursorVisible="false"
             android:singleLine="true"
+            android:inputType="number"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:id="@+id/invisibleShares"
+        android:layout_below="@+id/secondRow"
+        android:padding="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Available shares"
+            android:textColor="@color/fontColor"
+            android:gravity="left"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/availableShares"
+            android:text="000000"
+            android:textColor="@color/fontColor"
+            android:gravity="left"
             />
 
     </LinearLayout>
@@ -89,7 +124,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:id="@+id/thirdRow"
-        android:layout_below="@+id/secondRow"
+        android:layout_below="@+id/invisibleShares"
         android:padding="10dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"

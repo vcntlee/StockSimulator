@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,9 +40,12 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
     public static final String ACCOUNT_REMAINING_CASH = "ACCOUNT_REMAINING_CASH";
     public static final String POSITIONS_ARRAY = "POSITIONS_ARRAY";
 
+
     private Spinner mActionSpinner;
     private String mAction;
     private EditText mEditText;
+    private LinearLayout mAvailableSharesContainer;
+    private TextView mAvailableShares;
     private TextView mPricePerShareTextView;
     private TextView mTotalTransactionTextView;
     private TextView mRemainingCashTextView;
@@ -52,7 +56,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
     private double mTotalTransaction;
     private double mCurrentCash;
     private AccountSummary mAccountSummary;
-    private OpenPosition mOpenPosition;
+    private OpenPosition mCachedPosition;
     private OpenPositionsMap mPositionsMap;
     private OpenPositionsList mPositions;
 
@@ -60,10 +64,8 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private StockProfile mStockProfile;
 
-    /* TODO need to include number of shares to close out when selling or buying
-    TODO need to make sure account summary is correct
+    /* TODO need to include number of shares to close out when selling or buying --> DONE
     TODO need to account for profit per position
-    TODO when buying, the remaining cash is 0.0
     TODO need to figure out how to change textviews when another option is selected
     TODO for PortfolioAcitivity, need to include Positions Value, Remaining Cash, Total Value, and percentage
      */
@@ -76,7 +78,13 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
         // get intent from Profile
         Intent intent = getIntent();
+        if (intent == null){
+            Log.i(TAG, "intent is null");
+        }
         mStockProfile = intent.getParcelableExtra(StockProfileActivity.QUOTE_DETAILS);
+        if (mStockProfile == null){
+            Log.i(TAG, "mStockProfile is null");
+        }
         Log.i(TAG+" mStockProfile", mStockProfile.getSymbol());
 
         // get shared prefs of account summary
@@ -112,6 +120,8 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
         mActionSpinner = (Spinner) findViewById(R.id.actionSpinner);
         mEditText = (EditText) findViewById(R.id.numberOfSharesInput);
+        mAvailableSharesContainer = (LinearLayout) findViewById(R.id.invisibleShares);
+        mAvailableShares = (TextView) findViewById(R.id.availableShares);
         mPricePerShareTextView = (TextView) findViewById(R.id.pricePerShare);
         mTotalTransactionTextView = (TextView) findViewById(R.id.totalTransaction);
         mRemainingCashTextView = (TextView) findViewById(R.id.remainingCash);
@@ -121,6 +131,11 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
         // setSpinnerAdapter also determines if position is in map
         final boolean isPositionInMap = setSpinnerAdapter();
+        if (isPositionInMap){
+            mCachedPosition = iterateAllPositions();
+            Log.i(TAG+ " shares", mCachedPosition.getShares()+"");
+
+        }
 
         mCurrentCash = mAccountSummary.getAvailableCash();
         mPricePerShareTextView.setText("$ " + mStockProfile.getPrice());
@@ -202,32 +217,27 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                     boolean isNumSharesInputValid = true;
                     if (isPositionInMap) {
                         if (mAction.equals("Long") || mAction.equals("Short")) {
-                            for (int i = 0; i < mPositions.getSize(); i++){
-                                OpenPosition position = mPositions.getOpenPositions().get(i);
-                                if (mStockProfile.getSymbol().equals(position.getCompanyTicker())){
-                                    mRemainingCash = mCurrentCash - mTotalTransaction;
-                                    position.setCompanyTicker(mStockProfile.getSymbol());
-                                    position.setShares(mNumShares + position.getShares());
-                                    position.setPrice(mStockProfile.getPrice()); //TODO need to fix here
 
-                                    double pastWeight = position.getShares()/(position.getShares()+mNumShares);
-                                    double pastWeightedPrice = position.getCost() * pastWeight;
-                                    double nowWeight = mNumShares / (position.getShares() + mNumShares);
-                                    double nowWeightedPrice = mStockProfile.getPrice() * nowWeight;
-                                    double avgWeightedPrice = pastWeightedPrice + nowWeightedPrice;
+                            mRemainingCash = mCurrentCash - mTotalTransaction;
+                            mCachedPosition.setCompanyTicker(mStockProfile.getSymbol());
+                            mCachedPosition.setShares(mNumShares + mCachedPosition.getShares());
+                            mCachedPosition.setPrice(mStockProfile.getPrice()); //TODO need to fix here
 
-                                    position.setCost(avgWeightedPrice);
-                                    position.setType(mAction);
-                                    mPositions.addItem(position);
-                                    break;
-                                }
-                            }
+                            double pastWeight = mCachedPosition.getShares()/(mCachedPosition.getShares()+mNumShares);
+                            double pastWeightedPrice = mCachedPosition.getCost() * pastWeight;
+                            double nowWeight = mNumShares / (mCachedPosition.getShares() + mNumShares);
+                            double nowWeightedPrice = mStockProfile.getPrice() * nowWeight;
+                            double avgWeightedPrice = pastWeightedPrice + nowWeightedPrice;
+
+                            mCachedPosition.setCost(avgWeightedPrice);
+                            mCachedPosition.setType(mAction);
+
                         }
                         else if (mAction.equals("Sell")){
-                            isNumSharesInputValid = traverseMap("Sell");
+                            isNumSharesInputValid = setCachedPosition("Sell");
                         }
                         else if (mAction.equals("Buy")){
-                            isNumSharesInputValid = traverseMap("Buy");
+                            isNumSharesInputValid = setCachedPosition("Buy");
                         }
 
                     }
@@ -244,7 +254,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
                     }
 
-                    if (isNumSharesInputValid == false){
+                    if (!isNumSharesInputValid){
                         return;
                     }
 
@@ -310,54 +320,41 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
         return isPositionInMap;
     }
 
-    private boolean traverseMap(String type){
-        for (int i = 0; i < mPositions.getSize(); i++) {
-            OpenPosition position = mPositions.getOpenPositions().get(i);
-            if (mStockProfile.getSymbol().equals(position.getCompanyTicker())){
-                if(mNumShares > position.getShares()){
-                    Toast.makeText(TradeActivity.this,
-                            "cannot trade more than what you have", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-                if (type.equals("Sell")) {
-                    mRemainingCash = mCurrentCash + mTotalTransaction;
-                }
-                else{
-                    mRemainingCash = mCurrentCash + 2 * (position.getCost() * position.getShares()) - mTotalTransaction;
-                }
-                if (mNumShares < position.getShares()) {
-                    position.setCompanyTicker(mStockProfile.getSymbol());
-                    position.setShares(position.getShares() - mNumShares);
-                    position.setPrice(mStockProfile.getPrice());
-                    position.setCost(position.getCost());
-                    if (type.equals("Sell")){
-                        position.setType("Long");
-                    }
-                    else{
-                        position.setType("Short");
-                    }
+    private boolean setCachedPosition(String type){
 
-                    //mPositions.addItem(position);
-                }
-                else{
-                    mPositions.removeItem(position);
-                }
-                break;
+        if(mNumShares > mCachedPosition.getShares()){
+            Toast.makeText(TradeActivity.this,
+                    "cannot trade more than what you have", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (type.equals("Sell")) {
+            mRemainingCash = mCurrentCash + mTotalTransaction;
+        }
+        else{
+            mRemainingCash = mCurrentCash + 2 * (mCachedPosition.getCost() * mCachedPosition.getShares()) - mTotalTransaction;
+        }
+        if (mNumShares < mCachedPosition.getShares()) {
+            mCachedPosition.setCompanyTicker(mStockProfile.getSymbol());
+            mCachedPosition.setShares(mCachedPosition.getShares() - mNumShares);
+            mCachedPosition.setPrice(mStockProfile.getPrice());
+            mCachedPosition.setCost(mCachedPosition.getCost());
+            if (type.equals("Sell")){
+                mCachedPosition.setType("Long");
             }
+            else{
+                mCachedPosition.setType("Short");
+            }
+        }
+        else{
+            mPositions.removeItem(mCachedPosition);
         }
         return true;
     }
 
     private double calculateAvailableCashWhenCovering(){
-        double total = 0;
-        for (int i = 0; i < mPositions.getSize(); i++) {
-            OpenPosition position = mPositions.getOpenPositions().get(i);
-            if (mStockProfile.getSymbol().equals(position.getCompanyTicker())) {
-                total = mCurrentCash + 2 * (position.getCost() * position.getShares()) - mTotalTransaction;
 
-            }
-            break;
-        }
+        double total =  mCurrentCash + 2 * (mCachedPosition.getCost() * mCachedPosition.getShares()) - mTotalTransaction;
+        Log.i(TAG+" total", total+"");
         return total;
     }
 
@@ -371,11 +368,31 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
         return bd.doubleValue();
     }
 
+    public OpenPosition iterateAllPositions(){
+        OpenPosition position = new OpenPosition();
+        for (int i = 0; i < mPositions.getSize(); i++) {
+            position = mPositions.getOpenPositions().get(i);
+            if (mStockProfile.getSymbol().equals(position.getCompanyTicker())) {
+                return position;
+            }
+        }
+        // should never reach here
+        return position;
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         TextView actionText = (TextView) view;
         mAction = actionText.getText().toString();
-        Toast.makeText(TradeActivity.this, "selected "+mAction, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, mAction);
+
+        if (mAction.equals("Sell") || mAction.equals("Buy")){
+            mAvailableSharesContainer.setVisibility(View.VISIBLE);
+            mAvailableShares.setText(mCachedPosition.getShares() + "");
+        }
+        else{
+            mAvailableSharesContainer.setVisibility(View.INVISIBLE);
+        }
 
     }
 
