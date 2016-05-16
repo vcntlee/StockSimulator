@@ -214,7 +214,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginBottom="10dp"
             android:layout_below="@id/balanceContainer"
-            android:layout_above="@+id/tradeContainer"
+            android:layout_above="@+id/tradeButton"
             android:background="@drawable/background_with_shadow"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"/>
@@ -231,44 +231,21 @@
             android:textColor="@color/fontColor"
             />
 
-        <LinearLayout
-            android:orientation="horizontal"
+
+
+
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tradeContainer"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin">
+            android:text="TRADE"
+            android:id="@+id/tradeButton"
+            android:textColor="#eeeeee"
+            android:background="@color/toolbarBackground"
+            android:textSize="12sp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"/>
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Buy"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:id="@+id/tradeButton"
-                android:textColor="#e15258"
 
-                />
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Short"
-                android:id="@+id/shortButton"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:textColor="#e15258"
-                android:background="#ffffff"
-                />
-
-        </LinearLayout>
 
 
 

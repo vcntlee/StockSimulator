@@ -58,8 +58,7 @@ public class PortfolioActivity extends AppCompatActivity implements
     private DrawerLayout mDrawer;
     private ListView mListView;
     private TextView mEmptyTextView;
-    private Button mBuyButton;
-    private Button mShortButton;
+    private Button mTradeButton;
     private OpenPosition mPosition = new OpenPosition();
     private OpenPositionsList mPositions = new OpenPositionsList();
     private OpenPositionsMap mOpenPositionsMap = new OpenPositionsMap();
@@ -123,8 +122,7 @@ public class PortfolioActivity extends AppCompatActivity implements
         mPercentReturn = (TextView) findViewById(R.id.percentReturn);
         mListView = (ListView) findViewById(android.R.id.list);
         mEmptyTextView = (TextView) findViewById(android.R.id.empty);
-        mBuyButton = (Button) findViewById(R.id.tradeButton);
-        mShortButton = (Button) findViewById(R.id.shortButton);
+        mTradeButton = (Button) findViewById(R.id.tradeButton);
 
         /* Shared prefs for positions and summary*/
 
@@ -162,10 +160,10 @@ public class PortfolioActivity extends AppCompatActivity implements
         });
 
 
-        mBuyButton.setOnClickListener(new View.OnClickListener() {
+        mTradeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PortfolioActivity.this, BuyActivity.class);
+                Intent intent = new Intent(PortfolioActivity.this, SearchActivity.class);
                 startActivity(intent);
             }
         });
@@ -383,6 +381,7 @@ public class PortfolioActivity extends AppCompatActivity implements
 
             //TODO
             Log.i(TAG, "portfolio icon pressed");
+
         }
         else if (id == R.id.nav_watchlist){
             //TODO
@@ -391,6 +390,8 @@ public class PortfolioActivity extends AppCompatActivity implements
         else if (id == R.id.nav_settings){
             //TODO
             Log.i(TAG, "settings icon pressed");
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
 
 
