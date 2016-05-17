@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mine.stocksimulator.R;
-import com.mine.stocksimulator.data.OpenPosition;
+import com.mine.stocksimulator.data.Position;
 import com.mine.stocksimulator.data.StockProfile;
 
 
@@ -27,7 +27,7 @@ public class PopupActivity extends AppCompatActivity {
     private Button mBuyButton;
     private Button mCancelButton;
 
-    private OpenPosition mOpenPosition;
+    private Position mPosition;
 
     private int mNumShares;
     private double mTotal;
@@ -91,13 +91,13 @@ public class PopupActivity extends AppCompatActivity {
                 if (mNumSharesInput.getText().toString().length() == 0) {
                     Toast.makeText(PopupActivity.this, "Please enter number of shares", Toast.LENGTH_LONG).show();
                 } else {
-                    mOpenPosition = new OpenPosition();
-                    mOpenPosition.setPrice(stockProfile.getPrice());
-                    mOpenPosition.setCost(stockProfile.getPrice());
-                    mOpenPosition.setCompanyTicker(stockProfile.getSymbol());
-                    mOpenPosition.setShares(mNumShares);
+                    mPosition = new Position();
+                    mPosition.setPrice(stockProfile.getPrice());
+                    mPosition.setCost(stockProfile.getPrice());
+                    mPosition.setCompanyTicker(stockProfile.getSymbol());
+                    mPosition.setShares(mNumShares);
                     Intent intent = new Intent(PopupActivity.this, PortfolioActivity.class);
-                    intent.putExtra(POSITION_DETAILS, mOpenPosition);
+                    intent.putExtra(POSITION_DETAILS, mPosition);
                     startActivity(intent);
                 }
             }

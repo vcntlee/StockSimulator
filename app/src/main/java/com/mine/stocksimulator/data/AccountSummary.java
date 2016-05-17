@@ -27,18 +27,8 @@ public class AccountSummary implements Parcelable {
         mPercentReturn = percentReturn;
     }
 
-    public double getPortfolioValue(OpenPositionsList positionsList) {
-        double total = 0;
-        for (int i = 0; i < positionsList.getSize(); i++){
-            OpenPosition position = positionsList.getOpenPositions().get(i);
-            if (position.getType().equals("Long")) {
-                total += position.getPrice() * position.getShares();
-            }
-            else{
-                total += (position.getCost() * 2 - position.getPrice()) * position.getShares();
-            }
-        }
-        return total;
+    public double getPortfolioValue() {
+        return mPortfolioValue;
     }
 
     public void setPortfolioValue(double portfolioValue) {

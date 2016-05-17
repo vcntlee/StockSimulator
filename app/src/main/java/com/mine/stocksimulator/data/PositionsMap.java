@@ -3,11 +3,11 @@ package com.mine.stocksimulator.data;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OpenPositionsMap {
+public class PositionsMap {
 
     Map<String, String> mOpenPositionsMap;
 
-    public OpenPositionsMap(){
+    public PositionsMap(){
         mOpenPositionsMap = new HashMap<>();
     }
 

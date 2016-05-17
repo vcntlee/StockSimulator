@@ -9,30 +9,30 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.mine.stocksimulator.R;
-import com.mine.stocksimulator.data.OpenPosition;
+import com.mine.stocksimulator.data.Position;
 
 import java.util.ArrayList;
 
 
-public class OpenPositionAdapter extends BaseAdapter {
+public class PositionAdapter extends BaseAdapter {
 
-    private static final String TAG = OpenPositionAdapter.class.getSimpleName();
+    private static final String TAG = PositionAdapter.class.getSimpleName();
     private Context mContext;
-    private ArrayList<OpenPosition> mOpenPositions;
+    private ArrayList<Position> mPositions;
 
-    public OpenPositionAdapter(Context context, ArrayList<OpenPosition> openPositions){
+    public PositionAdapter(Context context, ArrayList<Position> positions){
         mContext = context;
-        mOpenPositions = openPositions;
+        mPositions = positions;
     }
 
     @Override
     public int getCount() {
-        return mOpenPositions.size();
+        return mPositions.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mOpenPositions.get(position);
+        return mPositions.get(position);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class OpenPositionAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int index, View convertView, ViewGroup parent) {
 
         ViewHolder holder;
 
@@ -61,18 +61,18 @@ public class OpenPositionAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        OpenPosition openPosition = mOpenPositions.get(position);
+        Position position = mPositions.get(index);
 
-        holder.ticker.setText(openPosition.getCompanyTicker());
-        holder.numShares.setText(openPosition.getType() + " "+ openPosition.getShares());
+        holder.ticker.setText(position.getCompanyTicker());
+        holder.numShares.setText(position.getType() + " "+ position.getShares());
         //holder.price.setText(100+"");
-        holder.price.setText(openPosition.getPrice() + "");
-        holder.cost.setText(openPosition.getCost() + "");
+        holder.price.setText("$ " + position.getPrice());
+        holder.cost.setText("$ " + position.getCost());
 
-        Log.i(TAG + " Price", openPosition.getPrice() + "");
-        Log.i(TAG + " Cost", openPosition.getCost() + "");
+        Log.i(TAG + " Price", position.getPrice() + "");
+        Log.i(TAG + " Cost", position.getCost() + "");
 
-        holder.profit.setText((openPosition.getPrice() - openPosition.getCost()) + "");
+        holder.profit.setText(position.getPercentReturn() + " %");
 
 
         return convertView;

@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,15 +16,18 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.mine.stocksimulator.R;
+import com.mine.stocksimulator.database.PositionSQLiteHelper;
 
 public class SettingsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
+    public final static String INITIAL_BALANCE = "INITIAL_BALANCE";
+    private static final String TAG = SettingsActivity.class.getSimpleName();
     private DrawerLayout mDrawer;
     private Button mResetButton;
     private Button mCancelButton;
     private SeekBar mSetBalanceSeekBar;
     private TextView mStartingBalanceTextView;
-    private int mStartingBalance;
+    private double mStartingBalance;
 
 
     @Override
@@ -49,7 +53,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         NavigationView navigationView = (NavigationView) findViewById(R.id.left_drawer);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mStartingBalance = Integer.parseInt(mStartingBalanceTextView.getText().toString());
+        mStartingBalance = Double.parseDouble(mStartingBalanceTextView.getText().toString());
 
         mSetBalanceSeekBar.setProgress(25000);
         mSetBalanceSeekBar.incrementProgressBy(5000);
@@ -78,6 +82,15 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
             @Override
             public void onClick(View v) {
                 // TODO send the intent of mStartingBalance
+
+                Log.i(TAG, mStartingBalance+"");
+                SettingsActivity.this.deleteDatabase(PositionSQLiteHelper.DB_NAME);
+                SettingsActivity.this.deleteFile(PortfolioActivity.PREFS_ACCOUNT_SUMMARY_FILE);
+
+                Intent intent = new Intent(SettingsActivity.this, PortfolioActivity.class);
+                intent.putExtra(INITIAL_BALANCE, mStartingBalance);
+                startActivity(intent);
+
             }
         });
 
