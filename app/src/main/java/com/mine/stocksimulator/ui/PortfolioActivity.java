@@ -130,14 +130,12 @@ public class PortfolioActivity extends AppCompatActivity implements
             double remainingCash = intent.getDoubleExtra(TradeActivity.ACCOUNT_REMAINING_CASH, -1);
 
             if (remainingCash == -1){
-                Log.i(TAG+" remainingBefore", remainingCash+"");
                 remainingCash = intent.getDoubleExtra(SettingsActivity.INITIAL_BALANCE, 0);
-                Log.i(TAG+" remainingAfter", remainingCash+"");
             }
 
             Log.i(TAG+" remainingCash", remainingCash+"");
 
-            mAccountSummary.setAvailableCash(remainingCash);
+            mAccountSummary.setAvailableCash(TradeActivity.round(remainingCash,2));
             intent.removeExtra(TradeActivity.ACCOUNT_REMAINING_CASH);
             intent.removeExtra(SettingsActivity.INITIAL_BALANCE);
         }

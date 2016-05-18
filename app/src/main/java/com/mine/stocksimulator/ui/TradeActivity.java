@@ -242,6 +242,12 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                         mPosition.setTotalCost(mTotalTransaction);
                     }
 
+                    if (mRemainingCash < 0){
+                        Toast.makeText(TradeActivity.this,
+                                "not enough buying power", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
                     if (!isNumSharesInputValid){
                         return;
                     }
