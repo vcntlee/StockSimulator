@@ -24,13 +24,17 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.mine.stocksimulator.R;
 import com.mine.stocksimulator.adapter.PositionAdapter;
-import com.mine.stocksimulator.background.UpdateAlarm;
+import com.mine.stocksimulator.background.UpdateReceiver;
 import com.mine.stocksimulator.data.AccountSummary;
 import com.mine.stocksimulator.data.Position;
 import com.mine.stocksimulator.database.PositionDataSource;
 import com.mine.stocksimulator.database.PositionSQLiteHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class PortfolioActivity extends AppCompatActivity implements
     NavigationView.OnNavigationItemSelectedListener{
@@ -156,7 +160,6 @@ public class PortfolioActivity extends AppCompatActivity implements
         //updateAccountSummary();
         // set the account details views
         populateAccountTextViews();
-
         scheduleAlarm();
 
 
@@ -184,12 +187,18 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     }
 
+
+
     private void scheduleAlarm() {
-        Intent intent = new Intent(getApplicationContext(), UpdateAlarm.class);
-        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, UpdateAlarm.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long firstMillis = System.currentTimeMillis();
-        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+
+        if (isWithinDayRange()){
+            Intent intent = new Intent(getApplicationContext(), UpdateReceiver.class);
+            final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, UpdateReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            long firstMillis = System.currentTimeMillis();
+            AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+            alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+
+        }
     }
 
     private void setSummary() {
@@ -228,15 +237,10 @@ public class PortfolioActivity extends AppCompatActivity implements
     }
 
     private void setPositions() {
-
         final PositionDataSource dataSource = new PositionDataSource(this);
-
         mPositions = dataSource.retrieve();
-
         mAdapter = new PositionAdapter(this, mPositions);
-
         mListView.setAdapter(mAdapter);
-
     }
 
     private double calculateReturn(double a, double b){
@@ -271,7 +275,7 @@ public class PortfolioActivity extends AppCompatActivity implements
         mPortfolioValue.setText("$ " + mCachePortfolioValue);
 
         mAvailableCash.setText("$ " + mAccountSummary.getAvailableCash());
-        mPercentReturn.setText(mAccountSummary.getPercentReturn()+" %");
+        mPercentReturn.setText(mAccountSummary.getPercentReturn() + " %");
     }
 
     @Override
@@ -349,6 +353,26 @@ public class PortfolioActivity extends AppCompatActivity implements
         return false;
     }
 
+    public static boolean isWithinDayRange(){
+        TimeZone newYorkTimeZone = TimeZone.getTimeZone("America/New_York");
+        Date date = Calendar.getInstance(newYorkTimeZone).getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+        String today = formatter.format(date);
+
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+
+        if (today.equals("Monday") || today.equals("Tuesday") || today.equals("Wednesday")
+                || today.equals("Thursday") || today.equals("Friday")) {
+            if (hour >= 9 && hour <= 16) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }
 
 //    @Override
 //    protected void onStop() {

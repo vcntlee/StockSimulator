@@ -1,6 +1,9 @@
 package com.mine.stocksimulator.background;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
@@ -9,6 +12,7 @@ import com.mine.stocksimulator.data.Position;
 import com.mine.stocksimulator.data.Watchlist;
 import com.mine.stocksimulator.database.PositionDataSource;
 import com.mine.stocksimulator.database.WatchlistDataSource;
+import com.mine.stocksimulator.ui.PortfolioActivity;
 import com.mine.stocksimulator.ui.TradeActivity;
 
 import org.json.JSONException;
@@ -40,6 +44,10 @@ public class UpdateService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
+        if (!PortfolioActivity.isWithinDayRange()){
+            cancelAlarm();
+        }
+
         Log.i(TAG, "Service is running");
 
         mPositionDataSource = new PositionDataSource(this);
@@ -51,6 +59,13 @@ public class UpdateService extends IntentService {
         mWatchlistDataSource = new WatchlistDataSource(this);
         mWatchlists = mWatchlistDataSource.retrieve();
         refreshAllWatchlists();
+    }
+
+    private void cancelAlarm() {
+        Intent intent = new Intent(getApplicationContext(), UpdateReceiver.class);
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this, UpdateReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarm.cancel(pIntent);
     }
 
     private void refreshAllWatchlists() {
