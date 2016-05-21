@@ -2,34 +2,29 @@
 
 
 
-
-
-
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.mine.stocksimulator.ui.WatchlistActivity"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/drawer_layout"
+    >
 
 
 
     <RelativeLayout
-
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
 
-        tools:context=".ui.PortfolioActivity"
-        android:background="@color/background">
+        >
 
-        <include android:id="@+id/app_bar"
-                 layout="@layout/main_actionbar" />
-
-
-
-
-
+        <include
+            android:id="@+id/watchlist_toolbar"
+            layout="@layout/main_actionbar"
+            />
 
 
 
@@ -41,47 +36,27 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="10dp"
-            android:layout_below="@id/app_bar"
-            android:layout_above="@+id/tradeButton"
+            android:layout_marginBottom="0dp"
             android:background="@drawable/background_with_shadow"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_below="@id/watchlist_toolbar"
             android:scrollbars="none"
             />
 
-
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="There are no open positions"-->
-            <!--android:id="@android:id/empty"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:textSize="18sp"-->
-            <!--android:fontFamily="sans-serif"-->
-            <!--android:textColor="@color/fontColor"-->
-            <!--/>-->
-
-
-
-
-        <Button
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TRADE"
-            android:id="@+id/tradeButton"
-            android:textColor="#eeeeee"
-            android:background="@color/toolbarBackground"
-            android:textSize="12sp"
+            android:text="Nothing being watched"
+            android:id="@android:id/empty"
+            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"/>
-
-
-
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/fontColor"
+            />
 
     </RelativeLayout>
-
 
     <android.support.design.widget.NavigationView
         android:id="@+id/left_drawer"
@@ -90,10 +65,8 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:menu="@menu/drawer_nav"
-
         />
 
+
+
 </android.support.v4.widget.DrawerLayout>
-
-
-

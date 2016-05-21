@@ -1,5 +1,7 @@
 package com.mine.stocksimulator.ui;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,27 +20,17 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.mine.stocksimulator.R;
 import com.mine.stocksimulator.adapter.PositionAdapter;
+import com.mine.stocksimulator.background.UpdateAlarm;
 import com.mine.stocksimulator.data.AccountSummary;
 import com.mine.stocksimulator.data.Position;
 import com.mine.stocksimulator.database.PositionDataSource;
 import com.mine.stocksimulator.database.PositionSQLiteHelper;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class PortfolioActivity extends AppCompatActivity implements
     NavigationView.OnNavigationItemSelectedListener{
@@ -55,9 +47,10 @@ public class PortfolioActivity extends AppCompatActivity implements
     private TextView mPercentReturn;
     private DrawerLayout mDrawer;
     private ListView mListView;
-    private TextView mEmptyTextView;
+    //private TextView mEmptyTextView;
     private Button mTradeButton;
     private PositionAdapter mAdapter;
+
 
     private ArrayList<Position> mPositions;
 
@@ -75,6 +68,10 @@ public class PortfolioActivity extends AppCompatActivity implements
     private ActionBarDrawerToggle mDrawerToogle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+
+    private View mHeaderView;
+
+    private double mRemainingCash;
 
 
     @Override
@@ -112,11 +109,20 @@ public class PortfolioActivity extends AppCompatActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.left_drawer);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mPortfolioValue = (TextView) findViewById(R.id.portfolioValue);
-        mAvailableCash = (TextView) findViewById(R.id.availableCash);
-        mPercentReturn = (TextView) findViewById(R.id.percentReturn);
+
+        mHeaderView = getLayoutInflater().inflate(R.layout.header_portfolio, null);
         mListView = (ListView) findViewById(android.R.id.list);
-        mEmptyTextView = (TextView) findViewById(android.R.id.empty);
+
+        mListView.addHeaderView(mHeaderView, null, false);
+
+
+
+
+        mPortfolioValue = (TextView) mHeaderView.findViewById(R.id.portfolioValue);
+        mAvailableCash = (TextView) mHeaderView.findViewById(R.id.availableCash);
+        mPercentReturn = (TextView) mHeaderView.findViewById(R.id.percentReturn);
+
+        //mEmptyTextView = (TextView) findViewById(android.R.id.empty);
         mTradeButton = (Button) findViewById(R.id.tradeButton);
 
         // mAccountSummary is set here
@@ -125,41 +131,46 @@ public class PortfolioActivity extends AppCompatActivity implements
         // adapter is set here and mPositions initialized
         setPositions();
 
+
         if (getIntent()!= null && getIntent().getExtras() != null) {
             Intent intent = getIntent();
-            double remainingCash = intent.getDoubleExtra(TradeActivity.ACCOUNT_REMAINING_CASH, -1);
+            mRemainingCash = intent.getDoubleExtra(TradeActivity.ACCOUNT_REMAINING_CASH, -1);
 
-            if (remainingCash == -1){
-                remainingCash = intent.getDoubleExtra(SettingsActivity.INITIAL_BALANCE, 0);
+            if (mRemainingCash == -1){
+                mRemainingCash = intent.getDoubleExtra(SettingsActivity.INITIAL_BALANCE, 0);
             }
 
-            Log.i(TAG+" remainingCash", remainingCash+"");
+            Log.i(TAG + " remainingCash", mRemainingCash + "");
 
-            mAccountSummary.setAvailableCash(TradeActivity.round(remainingCash,2));
+            mAccountSummary.setAvailableCash(TradeActivity.round(mRemainingCash, 2));
             intent.removeExtra(TradeActivity.ACCOUNT_REMAINING_CASH);
             intent.removeExtra(SettingsActivity.INITIAL_BALANCE);
         }
 
+
+
         // here we update the adapter
-        wrapperForRefreshPositions();
-        updatePositions();
-
+                //wrapperForRefreshPositions();
+                //updatePositions();
         // update account summary
-        updateAccountSummary();
-
+        //updateAccountSummary();
         // set the account details views
         populateAccountTextViews();
+
+        scheduleAlarm();
 
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String ticker = mPositions.get(position).getCompanyTicker();
+
+                String ticker = mPositions.get(position-1).getCompanyTicker();
                 Intent intent = new Intent(PortfolioActivity.this, StockProfileActivity.class);
                 intent.putExtra(SearchActivity.QUERY_TICKER, ticker);
                 startActivity(intent);
             }
         });
+
 
 
         mTradeButton.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +184,14 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     }
 
+    private void scheduleAlarm() {
+        Intent intent = new Intent(getApplicationContext(), UpdateAlarm.class);
+        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, UpdateAlarm.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long firstMillis = System.currentTimeMillis();
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+    }
+
     private void setSummary() {
 
         mSharedPreferencesSummary = getSharedPreferences(PREFS_ACCOUNT_SUMMARY_FILE, Context.MODE_PRIVATE);
@@ -180,8 +199,9 @@ public class PortfolioActivity extends AppCompatActivity implements
         String jsonSummary = mSharedPreferencesSummary.getString(ACCOUNT_SUMMARY, "");
 
         if (jsonSummary.equals("")){
+            mRemainingCash = 1000000;
             mAccountSummary = new AccountSummary();
-            mAccountSummary.setAvailableCash(1000000);
+            mAccountSummary.setAvailableCash(mRemainingCash);
             mAccountSummary.setPercentReturn(0);
             mCachePortfolioValue = 0;
             mAccountSummary.setPortfolioValue(mCachePortfolioValue);
@@ -190,10 +210,15 @@ public class PortfolioActivity extends AppCompatActivity implements
         else{
             PositionDataSource dataSource = new PositionDataSource(this);
             mAccountSummary = new Gson().fromJson(jsonSummary, AccountSummary.class);
+
+            mRemainingCash = mAccountSummary.getAvailableCash();
             double totalCost = dataSource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_COST);
             double totalMkt = dataSource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_MKT);
             if (totalMkt != 0 && totalCost != 0) {
-                mAccountSummary.setPortfolioValue(totalMkt);
+                Log.i(TAG+" totalMkt" , totalMkt+"");
+                Log.i(TAG+" totalCost" , totalCost+"");
+                mCachePortfolioValue = TradeActivity.round(totalMkt,2);
+                mAccountSummary.setPortfolioValue(mCachePortfolioValue);
                 mAccountSummary.setPercentReturn(calculateReturn(totalCost, totalMkt));
             }
 
@@ -203,11 +228,15 @@ public class PortfolioActivity extends AppCompatActivity implements
     }
 
     private void setPositions() {
-        PositionDataSource dataSource = new PositionDataSource(this);
+
+        final PositionDataSource dataSource = new PositionDataSource(this);
+
         mPositions = dataSource.retrieve();
+
         mAdapter = new PositionAdapter(this, mPositions);
+
         mListView.setAdapter(mAdapter);
-        mListView.setEmptyView(mEmptyTextView);
+
     }
 
     private double calculateReturn(double a, double b){
@@ -227,7 +256,7 @@ public class PortfolioActivity extends AppCompatActivity implements
     private void updateAccountSummary(){
         if (mPositions.size() > 0) {
             PositionDataSource datasource = new PositionDataSource(this);
-            mCachePortfolioValue = datasource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_MKT);
+            mCachePortfolioValue = TradeActivity.round(datasource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_MKT),2);
             double totalCost = datasource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_COST);
             double percentReturn = calculateReturn(totalCost, mCachePortfolioValue);
             mAccountSummary.setPercentReturn(percentReturn);
@@ -235,26 +264,12 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     }
 
-    private void wrapperForRefreshPositions() {
-        if (mPositions.size() > 0) {
-            for (int i = 0; i < mPositions.size(); i ++) {
-                refreshPositions(mPositions.get(i).getCompanyTicker(),
-                        mPositions.get(i));
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-
-
 
     public void populateAccountTextViews(){
+        Log.i(TAG + " totalCached3", mCachePortfolioValue + "");
+
         mPortfolioValue.setText("$ " + mCachePortfolioValue);
+
         mAvailableCash.setText("$ " + mAccountSummary.getAvailableCash());
         mPercentReturn.setText(mAccountSummary.getPercentReturn()+" %");
     }
@@ -303,71 +318,7 @@ public class PortfolioActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    private void refreshPositions(String companyName, final Position position) {
-        String completeUrl;
-        String baseUrl = "http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=%1$s";
-        completeUrl = String.format(baseUrl, companyName);
 
-        Log.i(TAG, completeUrl);
-
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request
-                .Builder()
-                .url(completeUrl)
-                .build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    String jsonData = response.body().string();
-                    Log.v(TAG, jsonData);
-
-                    //TODO check network availability
-
-                    if (response.isSuccessful()) {
-                        updatePosition(jsonData, position);
-
-                    } else {
-                        alertUserAboutError();
-                    }
-                } catch (IOException e) {
-                    Log.e(TAG, "Exception caught: ", e);
-                } catch (JSONException e) {
-                    Log.e(TAG, "JSONException caught: ", e);
-                    Toast.makeText(PortfolioActivity.this, "oops!", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-
-
-
-    private void updatePosition(String jsonData, Position position) throws JSONException {
-        JSONObject wholeQuote = new JSONObject(jsonData);
-
-        double newPrice = wholeQuote.getDouble("LastPrice");
-        double oldPrice = position.getCost();
-
-        Log.i(TAG + " newPrice", newPrice+"");
-        Log.i(TAG + " oldPrice", oldPrice+"");
-
-        double percentReturn = TradeActivity.round(((newPrice - oldPrice) / oldPrice),3);
-        Log.i(TAG + " percent return", percentReturn+"");
-        position.setPrice(wholeQuote.getDouble("LastPrice"));
-        position.setPercentReturn(percentReturn);
-
-    }
-
-    private void alertUserAboutError() {
-        //Toast.makeText(this, "response is not successful", Toast.LENGTH_LONG).show();
-        Log.i(TAG, "response is not successful");
-
-    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -382,6 +333,8 @@ public class PortfolioActivity extends AppCompatActivity implements
         else if (id == R.id.nav_watchlist){
             //TODO
             Log.i(TAG, "watchlist icon pressed");
+            Intent intent = new Intent(this, WatchlistActivity.class);
+            startActivity(intent);
         }
         else if (id == R.id.nav_settings){
             //TODO

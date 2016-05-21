@@ -22,20 +22,21 @@
             <!-- <meta-data android:name="android.support.PARENT_ACTIVITY" -->
             <!-- android:value=".ui.PortfolioActivity"/> -->
         </activity>
-        <activity android:name=".ui.BuyActivity">
-        </activity>
-        <activity
-            android:name=".ui.PopupActivity"
-            android:theme="@style/AppTheme.CustomTheme">
-        </activity>
-        <activity android:name=".ui.ChartActivity">
-        </activity>
         <activity android:name=".ui.StockProfileActivity">
         </activity>
         <activity android:name=".ui.TradeActivity">
         </activity>
         <activity android:name=".ui.SettingsActivity">
         </activity>
+        <activity android:name=".ui.WatchlistActivity">
+        </activity>
+
+        <receiver android:name=".background.UpdateAlarm"
+                  android:process=":remote"
+                  />
+        <service android:name=".background.UpdateService"
+                 android:exported="false"/>
+
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -28,6 +29,8 @@ import com.mine.stocksimulator.adapter.StockProfileAdapter;
 import com.mine.stocksimulator.data.ChartProfile;
 import com.mine.stocksimulator.data.StockProfile;
 import com.mine.stocksimulator.data.StockProfileFieldMember;
+import com.mine.stocksimulator.data.Watchlist;
+import com.mine.stocksimulator.database.WatchlistDataSource;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,11 +83,18 @@ public class StockProfileActivity extends AppCompatActivity {
     private boolean isValidChartSearch;
     private TextView mDisplayErrorMessage;
     private String mPeriodChecked;
+    private boolean mInWatchlist;
+    private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stockprofile);
+
+        Intent intent = getIntent();
+        mCompanyName = intent.getStringExtra(SearchActivity.QUERY_TICKER);
+
+        mInWatchlist = new WatchlistDataSource(this).retrieveOne(mCompanyName);
 
         mChartWebView = (WebView) findViewById(R.id.chartWebView);
         mListView = (ListView) findViewById(R.id.stockProfileListView);
@@ -97,8 +107,7 @@ public class StockProfileActivity extends AppCompatActivity {
         mTradeButton = (Button) findViewById(R.id.tradeButton);
         mCancelButton = (Button) findViewById(R.id.cancelButton);
 
-        Intent intent = getIntent();
-        mCompanyName = intent.getStringExtra(SearchActivity.QUERY_TICKER);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.stockProfileActivityAppBar);
         if(toolbar!=null){
@@ -110,8 +119,9 @@ public class StockProfileActivity extends AppCompatActivity {
 
 
         mPeriodChecked = "Week";
-        getRequest();
         getChartRequest("Week");
+        getRequest();
+
 
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -147,7 +157,7 @@ public class StockProfileActivity extends AppCompatActivity {
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StockProfileActivity.this, SearchActivity.class);
+                Intent intent = new Intent(StockProfileActivity.this, PortfolioActivity.class);
                 startActivity(intent);
             }
         });
@@ -601,6 +611,11 @@ public class StockProfileActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_stockprofile, menu);
+        if (mInWatchlist){
+            MenuItem item = menu.findItem(R.id.starOption);
+            item.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.star_fill, null));
+        }
+        mMenu = menu;
         return true;
     }
 
@@ -616,6 +631,26 @@ public class StockProfileActivity extends AppCompatActivity {
             getRequest();
             getChartRequest(mPeriodChecked);
 
+        }
+
+        else if (id == R.id.starOption){
+
+            WatchlistDataSource dataSource = new WatchlistDataSource(this);
+            item = mMenu.findItem(R.id.starOption);
+            if (mInWatchlist){
+                // change the star to empty
+                item.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.star_empty, null));
+                // delete from watchlist
+                dataSource.delete(mStockProfile.getSymbol());
+            }
+            else{
+                // change star to full
+
+                item.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.star_fill, null));
+                // create item in watchlist
+                Watchlist watchlist = new Watchlist(mStockProfile.getSymbol(), mStockProfile.getPrice(), mStockProfile.getPercentChange(), mStockProfile.getChangePercentYtd());
+                dataSource.create(watchlist);
+            }
         }
 
         return super.onOptionsItemSelected(item);

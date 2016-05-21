@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:background="@color/background">
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+                <!--xmlns:tools="http://schemas.android.com/tools"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--tools:background="@color/background">-->
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:background="@color/background"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -87,4 +90,4 @@
 
 
 
-</RelativeLayout>
+<!--</RelativeLayout>-->

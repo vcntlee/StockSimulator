@@ -7,7 +7,7 @@ import android.provider.BaseColumns;
 
 public class PositionSQLiteHelper extends SQLiteOpenHelper {
 
-    public static final String DB_NAME = "open_positions.db";
+    public static final String DB_NAME = "positions.db";
     public static final int DB_VERSION = 1;
 
     public static final String POSITIONS_TABLE = "POSITIONS";

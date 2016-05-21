@@ -81,7 +81,6 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         mResetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO send the intent of mStartingBalance
 
                 Log.i(TAG, mStartingBalance+"");
                 SettingsActivity.this.deleteDatabase(PositionSQLiteHelper.DB_NAME);
@@ -113,7 +112,8 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
             startActivity(intent);
         }
         else if (id == R.id.nav_watchlist){
-
+            Intent intent = new Intent(this, WatchlistActivity.class);
+            startActivity(intent);
         }
         else if (id == R.id.nav_settings){
 

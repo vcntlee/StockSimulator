@@ -209,18 +209,26 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                         if (mAction.equals("Long") || mAction.equals("Short")) {
 
                             mRemainingCash = mCurrentCash - mTotalTransaction;
-                            mPosition.setShares(mNumShares + mPosition.getShares());
-                            mPosition.setPrice(mStockProfile.getPrice()); //TODO need to fix here
+                            if (mRemainingCash > 0) {
+                                mPosition.setShares(mNumShares + mPosition.getShares());
 
-                            double pastWeight = (double) mPosition.getShares()/(mPosition.getShares()+mNumShares);
-                            double pastWeightedPrice =  mPosition.getCost() * pastWeight;
-                            double nowWeight = (double) mNumShares / (mPosition.getShares() + mNumShares);
-                            double nowWeightedPrice = mStockProfile.getPrice() * nowWeight;
-                            double avgWeightedPrice = pastWeightedPrice + nowWeightedPrice;
+                                mPosition.setPrice(mStockProfile.getPrice()); //TODO need to fix here
 
-                            mPosition.setCost(avgWeightedPrice);
-                            mTotalCostPortfolio = mPosition.getTotalCost() + mTotalTransaction;
-                            mPosition.setTotalCost(mTotalCostPortfolio);
+                                double pastWeight = (double) mPosition.getShares() / (mPosition.getShares() + mNumShares);
+                                double pastWeightedPrice = mPosition.getCost() * pastWeight;
+                                double nowWeight = (double) mNumShares / (mPosition.getShares() + mNumShares);
+                                double nowWeightedPrice = mStockProfile.getPrice() * nowWeight;
+                                double avgWeightedPrice = pastWeightedPrice + nowWeightedPrice;
+
+                                mPosition.setCost(avgWeightedPrice);
+                                mTotalCostPortfolio = mPosition.getTotalCost() + mTotalTransaction;
+                                mPosition.setTotalCost(mTotalCostPortfolio);
+                            }
+                            else{
+                                Toast.makeText(TradeActivity.this,
+                                        "not enough buying power", Toast.LENGTH_LONG).show();
+                                return;
+                            }
 
                         }
                         else if (mAction.equals("Sell")){
@@ -233,20 +241,24 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                     }
                     else{
                         mRemainingCash = mCurrentCash - mTotalTransaction;
-                        mPosition = new Position();
-                        mPosition.setCompanyTicker(mStockProfile.getSymbol());
-                        mPosition.setShares(mNumShares);
-                        mPosition.setPrice(mStockProfile.getPrice());
-                        mPosition.setCost(mStockProfile.getPrice());
-                        mPosition.setType(mAction);
-                        mPosition.setTotalCost(mTotalTransaction);
+                        if (mRemainingCash > 0) {
+                            mPosition = new Position();
+                            mPosition.setCompanyTicker(mStockProfile.getSymbol());
+                            mPosition.setPrice(mStockProfile.getPrice());
+                            mPosition.setCost(mStockProfile.getPrice());
+                            mPosition.setShares(mNumShares);
+                            mPosition.setType(mAction);
+                            mPosition.setPercentReturn(0);
+                            mPosition.setTotalMkt(mTotalTransaction);
+                            mPosition.setTotalCost(mTotalTransaction);
+                        }
+                        else{
+                            Toast.makeText(TradeActivity.this,
+                                    "not enough buying power", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                     }
 
-                    if (mRemainingCash < 0){
-                        Toast.makeText(TradeActivity.this,
-                                "not enough buying power", Toast.LENGTH_LONG).show();
-                        return;
-                    }
 
                     if (!isNumSharesInputValid){
                         return;
@@ -283,7 +295,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
         PositionDataSource dataSource = new PositionDataSource(this);
         // if position in db:
         if (!mCreateNeeded) {
-            dataSource.update(mPosition, mPosition.getPrice(), mPosition.getCost(), mPosition.getShares(), -1, -1, mTotalCostPortfolio);
+            dataSource.update(mPosition, mPosition.getPrice(), mPosition.getCost(), mPosition.getShares(), -1, mPosition.getPrice() * mPosition.getShares(), mTotalCostPortfolio);
         }
         else {
             dataSource.create(mPosition);

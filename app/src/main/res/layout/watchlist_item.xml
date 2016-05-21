@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/background"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <!-- ticker -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Ticker"
+        android:id="@+id/tickerLabel"
+        android:textSize="14sp"
+        />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        >
+
+         <!--price and arrow-->
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:id="@+id/triangleImage"
+            android:src="@drawable/triangle_up"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="$ 800.00"
+            android:id="@+id/priceLabel"
+            android:gravity="left"
+            android:textSize="14sp"
+
+            />
+
+
+    </LinearLayout>
+
+
+    <!-- change -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="-10.00 %"
+        android:id="@+id/changeLabel"
+        android:gravity="right"
+        android:textSize="14sp"
+
+        />
+
+    <!-- change ytd -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="-80.00 %"
+        android:id="@+id/changeYtdLabel"
+        android:gravity="right"
+        android:textSize="14sp"
+
+        />
+
+</LinearLayout>
+
