@@ -1,8 +1,11 @@
 package com.mine.stocksimulator.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.res.ResourcesCompat;
@@ -144,17 +147,17 @@ public class StockProfileActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.weekRadioButton) {
                     mPeriodChecked = "Week";
-                    getRequest();
+                    //getRequest();
                     getChartRequest("Week");
 
                 } else if (checkedId == R.id.monthRadioButton) {
                     mPeriodChecked = "Month";
-                    getRequest();
+                    //getRequest();
                     getChartRequest("Month");
 
                 } else if (checkedId == R.id.yearRadioButton) {
                     mPeriodChecked = "Year";
-                    getRequest();
+                    //getRequest();
                     getChartRequest("Year");
 
                 }
@@ -322,63 +325,75 @@ public class StockProfileActivity extends AppCompatActivity {
 
         Log.i(TAG, completeUrl);
 
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request
-                .Builder()
-                .url(completeUrl)
-                .build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
+        if (isNetworkAvailable()) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request
+                    .Builder()
+                    .url(completeUrl)
+                    .build();
+            Call call = client.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
 
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    String jsonData = response.body().string();
-                    Log.v(TAG, jsonData);
-
-                    if (response.isSuccessful()) {
-
-                        isValidSearch = getQuote(jsonData);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (isValidSearch) {
-                                    updateDisplay();
-                                }
-                                else{
-
-                                    updateUiWithErrorState("Stock info unavailable");
-                                    //Toast.makeText(StockProfileActivity.this, "OOPS! Your search didn't " +
-                                      //      "return any results.", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-
-                                Toast.makeText(StockProfileActivity.this, "Period selected is"
-                                        + " unresponsive, try refreshing.", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                } catch (IOException e) {
-                    Log.e(TAG, "Exception caught: ", e);
-                } catch (JSONException e) {
-                    Log.e(TAG, "JSONException caught: ", e);
-                    Toast.makeText(StockProfileActivity.this, "oops!", Toast.LENGTH_LONG).show();
                 }
-            }
-        });
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try {
+                        String jsonData = response.body().string();
+                        Log.v(TAG, jsonData);
+
+                        if (response.isSuccessful()) {
+
+                            isValidSearch = getQuote(jsonData);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (isValidSearch) {
+                                        updateDisplay();
+                                    }
+                                    else {
+                                        updateUiWithErrorState("Stock info unavailable");
+                                    }
+                                }
+                            });
+
+                        } else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(StockProfileActivity.this, "Failed to get a response", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG, "Exception caught: ", e);
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSONException caught: ", e);
+                        Toast.makeText(StockProfileActivity.this, "oops!", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
+        else{
+            updateUiWithErrorState("No Internet connection");
+        }
 
 
+    }
+
+    private boolean isNetworkAvailable() {
+
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        boolean isAvailable = false;
+        if (networkInfo != null && networkInfo.isConnected()){
+            isAvailable = true;
+        }
+
+        return isAvailable;
     }
 
     private void generateChart() {
@@ -519,9 +534,6 @@ public class StockProfileActivity extends AppCompatActivity {
         mListView.setVisibility(View.INVISIBLE);
         mDisplayErrorMessage.setText(s);
         mDisplayErrorMessage.setVisibility(View.VISIBLE);
-
-
-
 
     }
 

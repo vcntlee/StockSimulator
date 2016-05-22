@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.mine.stocksimulator.R;
@@ -178,10 +181,15 @@ public class PortfolioActivity extends AppCompatActivity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String ticker = mPositions.get(position-1).getCompanyTicker();
-                Intent intent = new Intent(PortfolioActivity.this, StockProfileActivity.class);
-                intent.putExtra(SearchActivity.QUERY_TICKER, ticker);
-                startActivity(intent);
+                if (isNetworkAvailable()) {
+                    String ticker = mPositions.get(position - 1).getCompanyTicker();
+                    Intent intent = new Intent(PortfolioActivity.this, StockProfileActivity.class);
+                    intent.putExtra(SearchActivity.QUERY_TICKER, ticker);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(PortfolioActivity.this, "No Internet connection", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -390,6 +398,19 @@ public class PortfolioActivity extends AppCompatActivity implements
         else{
             return false;
         }
+    }
+
+    private boolean isNetworkAvailable() {
+
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        boolean isAvailable = false;
+        if (networkInfo != null && networkInfo.isConnected()){
+            isAvailable = true;
+        }
+
+        return isAvailable;
     }
 
 //    @Override

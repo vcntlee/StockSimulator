@@ -5,6 +5,8 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -50,15 +52,20 @@ public class UpdateService extends IntentService {
 
         Log.i(TAG, "Service is running");
 
-        mPositionDataSource = new PositionDataSource(this);
-        mPositions = mPositionDataSource.retrieve();
+        if (isNetworkAvailable()) {
+            mPositionDataSource = new PositionDataSource(this);
+            mPositions = mPositionDataSource.retrieve();
 
 
-        refreshAllPositions();
+            refreshAllPositions();
 
-        mWatchlistDataSource = new WatchlistDataSource(this);
-        mWatchlists = mWatchlistDataSource.retrieve();
-        refreshAllWatchlists();
+            mWatchlistDataSource = new WatchlistDataSource(this);
+            mWatchlists = mWatchlistDataSource.retrieve();
+            refreshAllWatchlists();
+        }
+        else{
+            Log.i(TAG, "No Internet connection");
+        }
     }
 
     private void cancelAlarm() {
@@ -132,7 +139,7 @@ public class UpdateService extends IntentService {
         double changeReturn = wholeQuote.getDouble("ChangePercent");
         double changeReturnYtd = wholeQuote.getDouble("ChangePercentYTD");
 
-        changeReturn = TradeActivity.round(changeReturn,2);
+        changeReturn = TradeActivity.round(changeReturn, 2);
         changeReturnYtd = TradeActivity.round(changeReturnYtd, 2);
         watchlist.setPrice(newPrice);
         watchlist.setChange(changeReturn);
@@ -225,5 +232,18 @@ public class UpdateService extends IntentService {
         //Toast.makeText(this, "response is not successful", Toast.LENGTH_LONG).show();
         Log.i(TAG, "response is not successful");
 
+    }
+
+    private boolean isNetworkAvailable() {
+
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        boolean isAvailable = false;
+        if (networkInfo != null && networkInfo.isConnected()){
+            isAvailable = true;
+        }
+
+        return isAvailable;
     }
 }

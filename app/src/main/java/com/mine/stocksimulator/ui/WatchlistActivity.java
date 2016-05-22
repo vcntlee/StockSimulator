@@ -4,6 +4,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mine.stocksimulator.R;
 import com.mine.stocksimulator.adapter.WatchlistAdapter;
@@ -77,10 +80,17 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String ticker = mWatchlists.get(position-1).getTicker();
-                Intent intent = new Intent(WatchlistActivity.this, StockProfileActivity.class);
-                intent.putExtra(SearchActivity.QUERY_TICKER, ticker);
-                startActivity(intent);
+
+                if (isNetworkAvailable()) {
+                    String ticker = mWatchlists.get(position - 1).getTicker();
+                    Intent intent = new Intent(WatchlistActivity.this, StockProfileActivity.class);
+                    intent.putExtra(SearchActivity.QUERY_TICKER, ticker);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(WatchlistActivity.this, "No Internet connection", Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
 
@@ -155,5 +165,18 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
         mDrawer.closeDrawer(GravityCompat.START);
 
         return false;
+    }
+
+    private boolean isNetworkAvailable() {
+
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        boolean isAvailable = false;
+        if (networkInfo != null && networkInfo.isConnected()){
+            isAvailable = true;
+        }
+
+        return isAvailable;
     }
 }

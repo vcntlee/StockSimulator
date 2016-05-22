@@ -2,6 +2,8 @@ package com.mine.stocksimulator.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -99,10 +101,17 @@ public class SearchActivity extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String ticker = mSearchResults.get(position).getTicker();
-                Intent intent = new Intent(SearchActivity.this, StockProfileActivity.class);
-                intent.putExtra(QUERY_TICKER, ticker);
-                startActivity(intent);
+
+                if (isNetworkAvailable()) {
+                    String ticker = mSearchResults.get(position).getTicker();
+                    Intent intent = new Intent(SearchActivity.this, StockProfileActivity.class);
+                    intent.putExtra(QUERY_TICKER, ticker);
+                    startActivity(intent);
+                }
+
+                else{
+                    Toast.makeText(SearchActivity.this, "No Internet connection", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -116,55 +125,61 @@ public class SearchActivity extends AppCompatActivity {
 
         Log.i(TAG + " completeURL ", completeUrl);
 
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request
-                .Builder()
-                .url(completeUrl)
-                .build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
+        if (isNetworkAvailable()) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request
+                    .Builder()
+                    .url(completeUrl)
+                    .build();
+            Call call = client.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
 
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    String jsonData = response.body().string();
-                    if (response.isSuccessful()) {
-                        mIsValidSearch = getSearchResults(jsonData);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mIsValidSearch) {
-                                    updateDisplay();
-                                } else {
-                                    mFailedSearch.setVisibility(View.VISIBLE);
-                                    mFailedSearch.setText("Search produced 0 results");
-                                }
-                            }
-                        });
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(SearchActivity.this, "OOPS! Your search didn't go " +
-                                        "through, please try again.", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                        alertUserAboutError();
-                    }
-
-                } catch (IOException e) {
-                    Log.e(TAG, "Exception caught: ", e);
-                } catch (JSONException e) {
-                    Log.e(TAG, "JSONException caught: ", e);
                 }
-            }
 
-        });
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try {
+                        String jsonData = response.body().string();
+                        if (response.isSuccessful()) {
+                            mIsValidSearch = getSearchResults(jsonData);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mIsValidSearch) {
+                                        updateDisplay();
+                                    } else {
+                                        mFailedSearch.setVisibility(View.VISIBLE);
+                                        mFailedSearch.setText("Search produced 0 results");
+                                    }
+                                }
+                            });
+                        } else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    displayErrorMessage("Your search failed, please try again");
+                                }
+                            });
+                            alertUserAboutError();
+                        }
+
+                    } catch (IOException e) {
+                        Log.e(TAG, "Exception caught: ", e);
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSONException caught: ", e);
+                    }
+                }
+
+            });
+        }
+        else{
+            displayErrorMessage("No Internet connection");
+        }
     }
+
+
 
     private boolean getSearchResults(String jsonData) throws JSONException{
         JSONArray searchArray = new JSONArray(jsonData);
@@ -204,6 +219,24 @@ public class SearchActivity extends AppCompatActivity {
         Log.i(TAG, "something went wrong");
     }
 
+    private void displayErrorMessage(String s) {
+        TextView errorMessage = (TextView) findViewById(R.id.emptyMessage);
+        errorMessage.setText(s);
+        errorMessage.setVisibility(View.VISIBLE);
+    }
+
+    private boolean isNetworkAvailable() {
+
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        boolean isAvailable = false;
+        if (networkInfo != null && networkInfo.isConnected()){
+            isAvailable = true;
+        }
+
+        return isAvailable;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
