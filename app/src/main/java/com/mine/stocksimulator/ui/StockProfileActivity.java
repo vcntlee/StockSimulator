@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mine.stocksimulator.R;
@@ -79,13 +80,17 @@ public class StockProfileActivity extends AppCompatActivity {
 
     private boolean isValidSearch;
     private boolean isValidChartSearch;
-    //private TextView mDisplayErrorMessage;
+    private TextView mDisplayErrorMessage;
     private String mPeriodChecked;
     private boolean mInWatchlist;
     private Menu mMenu;
+    private MenuItem mStarItem;
+    private MenuItem mRefreshItem;
+
 
     private View mHeader;
     private View mFooter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +106,9 @@ public class StockProfileActivity extends AppCompatActivity {
         mFooter = getLayoutInflater().inflate(R.layout.footer_stockprofile, null);
         mChartWebView = (WebView) mHeader.findViewById(R.id.chartWebView);
         mRadioGroup = (RadioGroup) mHeader.findViewById(R.id.radioGroup);
-        //mDisplayErrorMessage = (TextView) findViewById(R.id.displayErrorMessage);
+        mDisplayErrorMessage = (TextView) findViewById(R.id.displayErrorMessage);
         mProgressBar = (ProgressBar) mHeader.findViewById(R.id.progressBar);
+
 
         mListView = (ListView) findViewById(R.id.stockProfileListView);
         mListView.addHeaderView(mHeader, null, false);
@@ -117,6 +123,7 @@ public class StockProfileActivity extends AppCompatActivity {
 
 
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.stockProfileActivityAppBar);
         if(toolbar!=null){
             setSupportActionBar(toolbar);
@@ -127,8 +134,9 @@ public class StockProfileActivity extends AppCompatActivity {
 
 
         mPeriodChecked = "Week";
-        getChartRequest("Week");
         getRequest();
+        getChartRequest("Week");
+
 
 
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -271,9 +279,8 @@ public class StockProfileActivity extends AppCompatActivity {
                                     generateChart();
                                 }
                                 else{
-                                    displayError("OOPS! Your search didn't return any results");
-                                    Toast.makeText(StockProfileActivity.this, "OOPS! Your search didn't " +
-                                            "return any results.", Toast.LENGTH_LONG).show();
+                                    updateUiWithErrorState("Stock info unavailable");
+
                                 }
                             }
                         });
@@ -343,9 +350,10 @@ public class StockProfileActivity extends AppCompatActivity {
                                     updateDisplay();
                                 }
                                 else{
-                                    displayError("OOPS! Your search didn't return any results");
-                                    Toast.makeText(StockProfileActivity.this, "OOPS! Your search didn't " +
-                                            "return any results.", Toast.LENGTH_LONG).show();
+
+                                    updateUiWithErrorState("Stock info unavailable");
+                                    //Toast.makeText(StockProfileActivity.this, "OOPS! Your search didn't " +
+                                      //      "return any results.", Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -502,11 +510,18 @@ public class StockProfileActivity extends AppCompatActivity {
     }
 
 
-    private void displayError(String s) {
+    private void updateUiWithErrorState(String s) {
+
+        mStarItem.setVisible(false);
+        mRefreshItem.setVisible(false);
+
         mChartWebView.setVisibility(View.INVISIBLE);
         mListView.setVisibility(View.INVISIBLE);
-        //mDisplayErrorMessage.setText(s);
-        //mDisplayErrorMessage.setVisibility(View.VISIBLE);
+        mDisplayErrorMessage.setText(s);
+        mDisplayErrorMessage.setVisibility(View.VISIBLE);
+
+
+
 
     }
 
@@ -617,9 +632,13 @@ public class StockProfileActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_stockprofile, menu);
+
+        mStarItem = menu.findItem(R.id.starOption);
+        mRefreshItem = menu.findItem(R.id.refreshOption);
+
+
         if (mInWatchlist){
-            MenuItem item = menu.findItem(R.id.starOption);
-            item.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.star_fill, null));
+            mStarItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.star_fill, null));
         }
         mMenu = menu;
         return true;

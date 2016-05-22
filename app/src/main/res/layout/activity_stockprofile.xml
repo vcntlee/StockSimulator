@@ -11,18 +11,24 @@
              layout="@layout/main_actionbar" />
 
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/displayErrorMessage"-->
-        <!--android:textSize="14sp"-->
-        <!--android:fontFamily="sans-serif"-->
-        <!--android:textColor="@color/fontColor"-->
-        <!--android:visibility="invisible"-->
-        <!--android:gravity="center_vertical|center_horizontal"-->
-        <!--tools:visibility="visible"-->
-        <!--tools:text="error"-->
-        <!--android:layout_gravity="center_horizontal|center_vertical"/>-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/displayErrorMessage"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/fontColorLight"
+        android:textStyle="italic"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        tools:text="error"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+
+
+
 
     <ListView
         android:layout_width="match_parent"
@@ -37,6 +43,8 @@
         >
 
     </ListView>
+
+
 
 
 

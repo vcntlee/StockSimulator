@@ -15,7 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.mine.stocksimulator.R;
 import com.mine.stocksimulator.adapter.WatchlistAdapter;
@@ -29,12 +31,13 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
 
     private static final String TAG = WatchlistActivity.class.getSimpleName();
     private ListView mListView;
-    //private TextView mEmpty;
+    private TextView mEmpty;
     private DrawerLayout mDrawer;
     private ArrayList<Watchlist> mWatchlists;
     private WatchlistAdapter mAdapter;
     private View mHeaderView;
     private View mFooterView;
+    private LinearLayout mHeaderContainer;
 
 
     @Override
@@ -43,10 +46,11 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
         setContentView(R.layout.activity_watchlist);
 
         mListView = (ListView) findViewById(android.R.id.list);
-        //mEmpty = (TextView) findViewById(android.R.id.empty);
+        mEmpty = (TextView) findViewById(R.id.emptyMessage);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mHeaderView = getLayoutInflater().inflate(R.layout.header_watchlist, null);
         mFooterView = getLayoutInflater().inflate(R.layout.footer_watchlist, null);
+        mHeaderContainer = (LinearLayout) mHeaderView.findViewById(R.id.headerContainer);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.watchlist_toolbar);
@@ -66,7 +70,6 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
         mWatchlists = setWatchlist();
         mAdapter = new WatchlistAdapter(this, mWatchlists);
         mListView.setAdapter(mAdapter);
-        //mListView.setEmptyView(mEmpty);
 
         mListView.addHeaderView(mHeaderView, null, false);
         mListView.addFooterView(mFooterView, null, false);
@@ -100,6 +103,11 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
         ArrayList<Watchlist> watchlists;
         WatchlistDataSource dataSource = new WatchlistDataSource(this);
         watchlists = dataSource.retrieve();
+
+        if (watchlists.size() == 0){
+            mEmpty.setVisibility(View.VISIBLE);
+            mHeaderContainer.setVisibility(View.INVISIBLE);
+        }
 
         return watchlists;
     }

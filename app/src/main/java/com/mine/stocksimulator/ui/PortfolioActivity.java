@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ import java.util.TimeZone;
 public class PortfolioActivity extends AppCompatActivity implements
     NavigationView.OnNavigationItemSelectedListener{
 
+    // EmptyTextView doesn't work here
 
     public static final int PORTFOLIO_OPTION = 0;
     public static final int WATCHLIST_OPTION = 1;
@@ -54,7 +56,6 @@ public class PortfolioActivity extends AppCompatActivity implements
     private TextView mPercentReturn;
     private DrawerLayout mDrawer;
     private ListView mListView;
-    //private TextView mEmptyTextView;
     //private Button mTradeButton;
     private PositionAdapter mAdapter;
 
@@ -78,6 +79,9 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     private View mHeaderView;
     private View mFooterView;
+
+    private LinearLayout mHeaderContainer;
+    private TextView mEmpty;
 
     private double mRemainingCash;
 
@@ -122,18 +126,16 @@ public class PortfolioActivity extends AppCompatActivity implements
         mHeaderView = getLayoutInflater().inflate(R.layout.header_portfolio, null);
         mFooterView = getLayoutInflater().inflate(R.layout.footer_watchlist, null);
         mListView = (ListView) findViewById(android.R.id.list);
+        mEmpty = (TextView) findViewById(R.id.emptyMessage);
 
         mListView.addHeaderView(mHeaderView, null, false);
         mListView.addFooterView(mFooterView, null, false);
 
-
-
-
         mPortfolioValue = (TextView) mHeaderView.findViewById(R.id.portfolioValue);
         mAvailableCash = (TextView) mHeaderView.findViewById(R.id.availableCash);
         mPercentReturn = (TextView) mHeaderView.findViewById(R.id.percentReturn);
+        mHeaderContainer = (LinearLayout) mHeaderView.findViewById(R.id.headerContainer);
 
-        //mEmptyTextView = (TextView) findViewById(android.R.id.empty);
         //mTradeButton = (Button) findViewById(R.id.tradeButton);
 
         // mAccountSummary is set here
@@ -154,6 +156,8 @@ public class PortfolioActivity extends AppCompatActivity implements
             Log.i(TAG + " remainingCash", mRemainingCash + "");
 
             mAccountSummary.setAvailableCash(TradeActivity.round(mRemainingCash, 2));
+
+            saveSummary();
             intent.removeExtra(TradeActivity.ACCOUNT_REMAINING_CASH);
             intent.removeExtra(SettingsActivity.INITIAL_BALANCE);
         }
@@ -246,6 +250,13 @@ public class PortfolioActivity extends AppCompatActivity implements
     private void setPositions() {
         final PositionDataSource dataSource = new PositionDataSource(this);
         mPositions = dataSource.retrieve();
+
+        if (mPositions.size() == 0){
+            mEmpty.setVisibility(View.VISIBLE);
+            mHeaderContainer.setVisibility(View.INVISIBLE);
+
+        }
+
         mAdapter = new PositionAdapter(this, mPositions);
         mListView.setAdapter(mAdapter);
     }
@@ -285,21 +296,25 @@ public class PortfolioActivity extends AppCompatActivity implements
         mPercentReturn.setText(mAccountSummary.getPercentReturn() + " %");
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG, "entered onPause");
-
-        if (getIntent()!= null && getIntent().getExtras() != null) {
-            getIntent().removeExtra(TradeActivity.ACCOUNT_REMAINING_CASH);
-        }
-
+    private void saveSummary(){
         String jsonSummary = new Gson().toJson(mAccountSummary);
         Log.i(TAG + " jsonSummary", jsonSummary);
         mEditorSummary.putString(ACCOUNT_SUMMARY, jsonSummary);
         mEditorSummary.apply();
-
     }
+
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        Log.i(TAG, "entered onPause");
+//
+//        if (getIntent()!= null && getIntent().getExtras() != null) {
+//            getIntent().removeExtra(TradeActivity.ACCOUNT_REMAINING_CASH);
+//        }
+//
+//        saveSummary();
+//
+//    }
 
 
     @Override
