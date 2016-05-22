@@ -21,8 +21,8 @@
 
             android:layout_gravity="center_vertical"
             android:text="Company"
-            android:textSize="14sp"
-            android:textColor="@color/fontColor"
+            android:textSize="16sp"
+            android:textColor="@color/fontColorLight"
             android:fontFamily="sans-serif"/>
 
         <TextView
@@ -33,7 +33,7 @@
             android:text="Apple Inc."
             android:layout_gravity="center_vertical"
             android:gravity="right"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="@color/fontColor"
             android:fontFamily="sans-serif"/>
 

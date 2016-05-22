@@ -17,11 +17,9 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mine.stocksimulator.R;
@@ -73,7 +71,7 @@ public class StockProfileActivity extends AppCompatActivity {
     private StockProfileFieldMember[] mStockProfileFieldMembers;
 
 
-    private LinearLayout mTradeContainer;
+    //private LinearLayout mTradeContainer;
     private Button mTradeButton;
     private Button mCancelButton;
 
@@ -81,10 +79,13 @@ public class StockProfileActivity extends AppCompatActivity {
 
     private boolean isValidSearch;
     private boolean isValidChartSearch;
-    private TextView mDisplayErrorMessage;
+    //private TextView mDisplayErrorMessage;
     private String mPeriodChecked;
     private boolean mInWatchlist;
     private Menu mMenu;
+
+    private View mHeader;
+    private View mFooter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,16 +97,23 @@ public class StockProfileActivity extends AppCompatActivity {
 
         mInWatchlist = new WatchlistDataSource(this).retrieveOne(mCompanyName);
 
-        mChartWebView = (WebView) findViewById(R.id.chartWebView);
+        mHeader = getLayoutInflater().inflate(R.layout.header_stockprofile, null);
+        mFooter = getLayoutInflater().inflate(R.layout.footer_stockprofile, null);
+        mChartWebView = (WebView) mHeader.findViewById(R.id.chartWebView);
+        mRadioGroup = (RadioGroup) mHeader.findViewById(R.id.radioGroup);
+        //mDisplayErrorMessage = (TextView) findViewById(R.id.displayErrorMessage);
+        mProgressBar = (ProgressBar) mHeader.findViewById(R.id.progressBar);
+
         mListView = (ListView) findViewById(R.id.stockProfileListView);
-        mRadioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        mDisplayErrorMessage = (TextView) findViewById(R.id.displayErrorMessage);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mListView.addHeaderView(mHeader, null, false);
 
 
-        mTradeContainer = (LinearLayout) findViewById(R.id.tradeContainer);
-        mTradeButton = (Button) findViewById(R.id.tradeButton);
-        mCancelButton = (Button) findViewById(R.id.cancelButton);
+        //mTradeContainer = (LinearLayout) findViewById(R.id.tradeContainer);
+
+        mTradeButton = (Button) mFooter.findViewById(R.id.tradeButton);
+        mCancelButton = (Button) mFooter.findViewById(R.id.cancelButton);
+
+        mListView.addFooterView(mFooter, null, false);
 
 
 
@@ -497,10 +505,8 @@ public class StockProfileActivity extends AppCompatActivity {
     private void displayError(String s) {
         mChartWebView.setVisibility(View.INVISIBLE);
         mListView.setVisibility(View.INVISIBLE);
-        mDisplayErrorMessage.setText(s);
-        mDisplayErrorMessage.setVisibility(View.VISIBLE);
-
-
+        //mDisplayErrorMessage.setText(s);
+        //mDisplayErrorMessage.setVisibility(View.VISIBLE);
 
     }
 
@@ -623,7 +629,7 @@ public class StockProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home){
-            Intent intent = new Intent(this, SearchActivity.class);
+            Intent intent = new Intent(this, PortfolioActivity.class);
             NavUtils.navigateUpTo(this, intent);
         }
         else if(id == R.id.refreshOption){
@@ -648,7 +654,9 @@ public class StockProfileActivity extends AppCompatActivity {
 
                 item.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.star_fill, null));
                 // create item in watchlist
-                Watchlist watchlist = new Watchlist(mStockProfile.getSymbol(), mStockProfile.getPrice(), mStockProfile.getPercentChange(), mStockProfile.getChangePercentYtd());
+                Watchlist watchlist = new Watchlist(mStockProfile.getSymbol(), mStockProfile.getPrice(),
+                        TradeActivity.round(mStockProfile.getPercentChange(), 2),
+                        TradeActivity.round(mStockProfile.getChangePercentYtd(), 2));
                 dataSource.create(watchlist);
             }
         }

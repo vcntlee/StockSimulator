@@ -24,7 +24,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
     private static final String TAG = SettingsActivity.class.getSimpleName();
     private DrawerLayout mDrawer;
     private Button mResetButton;
-    private Button mCancelButton;
+    //private Button mCancelButton;
     private SeekBar mSetBalanceSeekBar;
     private TextView mStartingBalanceTextView;
     private double mStartingBalance;
@@ -38,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         Toolbar toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mResetButton = (Button) findViewById(R.id.resetButton);
-        mCancelButton = (Button) findViewById(R.id.cancelButton);
+        //mCancelButton = (Button) findViewById(R.id.cancelButton);
         mSetBalanceSeekBar = (SeekBar) findViewById(R.id.setBalanceSeekBar);
         mStartingBalanceTextView = (TextView) findViewById(R.id.startingBalance);
 
@@ -52,6 +52,8 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.left_drawer);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(PortfolioActivity.SETTINGS_OPTION).setChecked(true);
+
 
         mStartingBalance = Double.parseDouble(mStartingBalanceTextView.getText().toString());
 
@@ -93,13 +95,13 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
             }
         });
 
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, PortfolioActivity.class);
-                startActivity(intent);
-            }
-        });
+//        mCancelButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(SettingsActivity.this, PortfolioActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
     }
 

@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.mine.stocksimulator.R;
 import com.mine.stocksimulator.adapter.WatchlistAdapter;
@@ -30,10 +29,12 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
 
     private static final String TAG = WatchlistActivity.class.getSimpleName();
     private ListView mListView;
-    private TextView mEmpty;
+    //private TextView mEmpty;
     private DrawerLayout mDrawer;
     private ArrayList<Watchlist> mWatchlists;
     private WatchlistAdapter mAdapter;
+    private View mHeaderView;
+    private View mFooterView;
 
 
     @Override
@@ -42,8 +43,11 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
         setContentView(R.layout.activity_watchlist);
 
         mListView = (ListView) findViewById(android.R.id.list);
-        mEmpty = (TextView) findViewById(android.R.id.empty);
+        //mEmpty = (TextView) findViewById(android.R.id.empty);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mHeaderView = getLayoutInflater().inflate(R.layout.header_watchlist, null);
+        mFooterView = getLayoutInflater().inflate(R.layout.footer_watchlist, null);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.watchlist_toolbar);
         if (toolbar != null){
@@ -56,16 +60,21 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.left_drawer);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(PortfolioActivity.WATCHLIST_OPTION).setChecked(true);
+
 
         mWatchlists = setWatchlist();
         mAdapter = new WatchlistAdapter(this, mWatchlists);
         mListView.setAdapter(mAdapter);
-        mListView.setEmptyView(mEmpty);
+        //mListView.setEmptyView(mEmpty);
+
+        mListView.addHeaderView(mHeaderView, null, false);
+        mListView.addFooterView(mFooterView, null, false);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String ticker = mWatchlists.get(position).getTicker();
+                String ticker = mWatchlists.get(position-1).getTicker();
                 Intent intent = new Intent(WatchlistActivity.this, StockProfileActivity.class);
                 intent.putExtra(SearchActivity.QUERY_TICKER, ticker);
                 startActivity(intent);

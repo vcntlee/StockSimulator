@@ -1,154 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.StockProfileActivity">
+    tools:context=".ui.StockProfileActivity"
+    android:background="@color/background">
 
     <include android:id="@+id/stockProfileActivityAppBar"
              layout="@layout/main_actionbar" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
 
-        >
-
-        <RadioButton
-            android:id="@+id/weekRadioButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/radiobutton_selector"
-            android:button="@null"
-            android:checked="true"
-            android:gravity="center"
-            android:text="Week"
-            android:textColor="@drawable/radiobutton_textcolor_selector"
-            android:padding="5dp"/>
-
-        <RadioButton
-            android:id="@+id/monthRadioButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/radiobutton_selector"
-            android:button="@null"
-            android:gravity="center"
-            android:text="Month"
-            android:textColor="@drawable/radiobutton_textcolor_selector"
-            android:padding="5dp"/>
-
-        <RadioButton
-            android:id="@+id/yearRadioButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/radiobutton_selector"
-            android:button="@null"
-            android:gravity="center"
-            android:text="Year"
-            android:textColor="@drawable/radiobutton_textcolor_selector"
-            android:padding="5dp"/>
-
-
-    </RadioGroup>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        >
-
-
-
-
-        <WebView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/chartWebView"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            />
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/progressBar"
-            android:layout_centerInParent="true"
-            />
-
-    </RelativeLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/displayErrorMessage"
-        android:textSize="14sp"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/fontColor"
-        android:visibility="invisible"
-        android:gravity="center_vertical|center_horizontal"
-        tools:visibility="visible"
-        tools:text="error"
-        android:layout_gravity="center_horizontal|center_vertical"/>
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/displayErrorMessage"-->
+        <!--android:textSize="14sp"-->
+        <!--android:fontFamily="sans-serif"-->
+        <!--android:textColor="@color/fontColor"-->
+        <!--android:visibility="invisible"-->
+        <!--android:gravity="center_vertical|center_horizontal"-->
+        <!--tools:visibility="visible"-->
+        <!--tools:text="error"-->
+        <!--android:layout_gravity="center_horizontal|center_vertical"/>-->
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:id="@+id/stockProfileListView"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:layout_below="@id/stockProfileActivityAppBar"
+        android:scrollbars="none"
+        android:background="@drawable/background_with_shadow"
+
         >
 
     </ListView>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/tradeContainer"
-
-        >
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TRADE"
-            android:id="@+id/tradeButton"
-            android:textColor="#eeeeee"
-            android:background="@color/toolbarBackground"
-            android:textSize="12sp"
-            android:gravity="center"/>
 
 
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="CANCEL"
-            android:id="@+id/cancelButton"
-            android:textColor="#eeeeee"
-            android:background="@color/toolbarBackground"
-            android:textSize="12sp"
-            android:gravity="center"
-            android:layout_marginLeft="2dp"/>
 
-    </LinearLayout>
-
-
-
-</LinearLayout>
+</RelativeLayout>

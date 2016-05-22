@@ -52,7 +52,7 @@ public class WatchlistAdapter extends BaseAdapter {
             holder.triangle = (ImageView) convertView.findViewById(R.id.triangleImage);
             holder.price = (TextView) convertView.findViewById(R.id.priceLabel);
             holder.change = (TextView) convertView.findViewById(R.id.changeLabel);
-            holder.changeYtd = (TextView) convertView.findViewById(R.id.changeYtdLabel);
+            //holder.changeYtd = (TextView) convertView.findViewById(R.id.changeYtdLabel);
 
             convertView.setTag(holder);
         }
@@ -79,7 +79,7 @@ public class WatchlistAdapter extends BaseAdapter {
             holder.triangle.setVisibility(View.INVISIBLE);
         }
 
-        holder.changeYtd.setText(watchlist.getChangeYtd()+ " %");
+        //holder.changeYtd.setText(watchlist.getChangeYtd()+ " %");
 
         return convertView;
     }
@@ -90,7 +90,7 @@ public class WatchlistAdapter extends BaseAdapter {
         ImageView triangle;
         TextView price;
         TextView change;
-        TextView changeYtd;
+        //TextView changeYtd;
 
     }
 }

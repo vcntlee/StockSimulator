@@ -26,60 +26,82 @@
            android:layout_centerHorizontal="true"
            android:layout_below="@id/settings_toolbar"
            android:text="Set a starting balance"
-           android:layout_marginTop="15dp"/>
+           android:layout_marginTop="35dp"
+           android:textSize="18sp"
+           android:textColor="@color/fontColorLight"
+           />
 
-        <SeekBar
-            android:id="@+id/setBalanceSeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_below="@+id/instructions"
-            android:max="975000"
-            android:padding="15dp"/>
         <TextView
             android:id="@+id/startingBalance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/setBalanceSeekBar"
-            android:text="25000"/>
+            android:layout_below="@+id/instructions"
+            android:textSize="18sp"
+            android:layout_marginTop="35dp"
+            android:textColor="@color/fontColor"
+            android:text="25000"
+            />
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <SeekBar
+            android:id="@+id/setBalanceSeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/confirmContainer"
+            android:layout_margin="15dp"
+            android:layout_below="@+id/startingBalance"
+            android:max="975000"
+            android:padding="15dp"
+            android:layout_marginTop="35dp"
+            android:thumb="@drawable/thumb_image"/>
 
 
-            >
+        <!--<LinearLayout-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:id="@+id/confirmContainer"-->
+
+
+            <!-->-->
+
+            <!--<Button-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Cancel"-->
+                <!--android:id="@+id/cancelButton"-->
+                <!--android:textColor="#eeeeee"-->
+                <!--android:background="@color/toolbarBackground"-->
+                <!--android:textSize="14sp"-->
+                <!--android:gravity="center"-->
+                <!--android:layout_marginLeft="2dp"/>-->
 
             <Button
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="RESET!"
+                android:text="Reset"
                 android:id="@+id/resetButton"
                 android:textColor="#eeeeee"
                 android:background="@color/toolbarBackground"
-                android:textSize="12sp"
-                android:gravity="center"/>
+                android:textSize="14sp"
+                android:layout_centerHorizontal="true"
+                android:paddingRight="82dp"
+                android:paddingLeft="82dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="35dp"
+
+
+                />
 
 
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Just Kidding!"
-                android:id="@+id/cancelButton"
-                android:textColor="#eeeeee"
-                android:background="@color/toolbarBackground"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:layout_marginLeft="2dp"/>
 
-        </LinearLayout>
+
+        <!--</LinearLayout>-->
 
 
     </RelativeLayout>

@@ -8,7 +8,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:padding="15dp">
 
     <!-- ticker -->
     <TextView
@@ -17,7 +17,8 @@
         android:layout_weight="1"
         android:text="Ticker"
         android:id="@+id/tickerLabel"
-        android:textSize="14sp"
+        android:textSize="16sp"
+        android:textColor="@color/fontColor"
         />
 
     <LinearLayout
@@ -44,7 +45,8 @@
             android:text="$ 800.00"
             android:id="@+id/priceLabel"
             android:gravity="left"
-            android:textSize="14sp"
+            android:textSize="16sp"
+            android:textColor="@color/fontColor"
 
             />
 
@@ -60,21 +62,22 @@
         android:text="-10.00 %"
         android:id="@+id/changeLabel"
         android:gravity="right"
-        android:textSize="14sp"
+        android:textSize="16sp"
+        android:textColor="@color/fontColor"
 
         />
 
     <!-- change ytd -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="-80.00 %"
-        android:id="@+id/changeYtdLabel"
-        android:gravity="right"
-        android:textSize="14sp"
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:text="-80.00 %"-->
+        <!--android:id="@+id/changeYtdLabel"-->
+        <!--android:gravity="right"-->
+        <!--android:textSize="16sp"-->
 
-        />
+        <!--/>-->
 
 </LinearLayout>
 

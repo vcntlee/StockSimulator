@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/background"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin">
+
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:id="@+id/headerContainer"
+    android:background="@drawable/background_without_shadow"
+    android:layout_below="@id/balanceContainer"
+    android:padding="15dp"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+
+
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Ticker"
+        android:textSize="16sp"
+        android:textColor="@color/fontColor"
+        android:fontFamily="sans-serif"
+        android:visibility="invisible"
+        />
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Price"
+        android:textSize="16sp"
+        android:textColor="@color/fontColor"
+        android:fontFamily="sans-serif"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="% Change"
+        android:textSize="16sp"
+        android:textColor="@color/fontColor"
+        android:fontFamily="sans-serif"
+        android:gravity="right"/>
+
+</LinearLayout>
+</RelativeLayout>

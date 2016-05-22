@@ -255,6 +255,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:id="@+id/confirmContainer"
+        android:layout_margin="@dimen/activity_horizontal_margin"
 
         >
 
@@ -262,12 +263,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="OK!"
+            android:text="Trade"
+            android:textAllCaps="false"
             android:id="@+id/okButton"
             android:textColor="#eeeeee"
             android:background="@color/toolbarBackground"
-            android:textSize="12sp"
-            android:gravity="center"/>
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginRight="8dp"/>
 
 
 
@@ -275,13 +278,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Just Kidding!"
+            android:text="Cancel"
+            android:textAllCaps="false"
             android:id="@+id/cancelButton"
             android:textColor="#eeeeee"
             android:background="@color/toolbarBackground"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:gravity="center"
-            android:layout_marginLeft="2dp"/>
+            android:layout_marginLeft="8dp"/>
 
     </LinearLayout>
 

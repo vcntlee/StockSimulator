@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- for checked state -->
-
-    <item
-        android:state_checked="true">
-        <shape>
-            <solid android:color="#eeeeee"/>
-            <stroke android:width="1dp" android:color="#eeeeee"/>
-        </shape>
-    </item>
-
-
     <!-- for unchecked state -->
 
     <item
         android:state_checked="false">
+        <shape>
+            <solid android:color="#eeeeee"/>
+            <stroke android:width="1dp" android:color="#00bcd4"/>
+            <corners android:radius="0dp"/>
+
+        </shape>
+    </item>
+
+
+    <!-- for checked state -->
+
+    <item
+        android:state_checked="true">
         <shape android:shape="rectangle">
             <solid android:color="#00bcd4"/>
-            <stroke android:width="1dp" android:color="#eeeeee"/>
+            <stroke android:width="0dp" android:color="#00bcd4"/>
+            <corners android:radius="0dp"/>
+
         </shape>
     </item>
 

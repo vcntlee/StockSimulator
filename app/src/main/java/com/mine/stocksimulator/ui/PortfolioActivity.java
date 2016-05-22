@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -40,6 +39,10 @@ public class PortfolioActivity extends AppCompatActivity implements
     NavigationView.OnNavigationItemSelectedListener{
 
 
+    public static final int PORTFOLIO_OPTION = 0;
+    public static final int WATCHLIST_OPTION = 1;
+    public static final int SETTINGS_OPTION = 2;
+
     private static final String TAG = PortfolioActivity.class.getSimpleName();
 
     public static final String PREFS_ACCOUNT_SUMMARY_FILE = "com.mine.stocksimulator.acct_summary";
@@ -52,7 +55,7 @@ public class PortfolioActivity extends AppCompatActivity implements
     private DrawerLayout mDrawer;
     private ListView mListView;
     //private TextView mEmptyTextView;
-    private Button mTradeButton;
+    //private Button mTradeButton;
     private PositionAdapter mAdapter;
 
 
@@ -74,6 +77,7 @@ public class PortfolioActivity extends AppCompatActivity implements
     private CharSequence mTitle;
 
     private View mHeaderView;
+    private View mFooterView;
 
     private double mRemainingCash;
 
@@ -112,12 +116,15 @@ public class PortfolioActivity extends AppCompatActivity implements
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.left_drawer);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(PORTFOLIO_OPTION).setChecked(true);
 
 
         mHeaderView = getLayoutInflater().inflate(R.layout.header_portfolio, null);
+        mFooterView = getLayoutInflater().inflate(R.layout.footer_watchlist, null);
         mListView = (ListView) findViewById(android.R.id.list);
 
         mListView.addHeaderView(mHeaderView, null, false);
+        mListView.addFooterView(mFooterView, null, false);
 
 
 
@@ -127,7 +134,7 @@ public class PortfolioActivity extends AppCompatActivity implements
         mPercentReturn = (TextView) mHeaderView.findViewById(R.id.percentReturn);
 
         //mEmptyTextView = (TextView) findViewById(android.R.id.empty);
-        mTradeButton = (Button) findViewById(R.id.tradeButton);
+        //mTradeButton = (Button) findViewById(R.id.tradeButton);
 
         // mAccountSummary is set here
         setSummary();
@@ -176,13 +183,13 @@ public class PortfolioActivity extends AppCompatActivity implements
 
 
 
-        mTradeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(PortfolioActivity.this, SearchActivity.class);
-                startActivity(intent);
-            }
-        });
+//        mTradeButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(PortfolioActivity.this, SearchActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
 
     }
@@ -329,19 +336,15 @@ public class PortfolioActivity extends AppCompatActivity implements
 
         int id = item.getItemId();
         if (id == R.id.nav_portfolio){
-
-            //TODO
             Log.i(TAG, "portfolio icon pressed");
 
         }
         else if (id == R.id.nav_watchlist){
-            //TODO
             Log.i(TAG, "watchlist icon pressed");
             Intent intent = new Intent(this, WatchlistActivity.class);
             startActivity(intent);
         }
         else if (id == R.id.nav_settings){
-            //TODO
             Log.i(TAG, "settings icon pressed");
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);

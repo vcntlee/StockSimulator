@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Positions Value:"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:gravity="right"
                 android:textColor="@color/fontColor"
                 />
@@ -52,7 +52,7 @@
                 android:layout_weight="1"
                 android:text="$---"
                 android:id="@+id/portfolioValue"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:layout_marginLeft="10dp"
                 android:gravity="left"
                 android:textColor="@color/fontColor"
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Available Cash:"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:gravity="right"
                 android:textColor="@color/fontColor"
                 />
@@ -84,7 +84,7 @@
                 android:layout_weight="1"
                 android:text="$----"
                 android:id="@+id/availableCash"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:layout_marginLeft="10dp"
                 android:gravity="left"
                 android:textColor="@color/fontColor"
@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Return:"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:gravity="right"
                 android:textColor="@color/fontColor"
                 />
@@ -115,7 +115,7 @@
                 android:layout_weight="1"
                 android:text="-- %"
                 android:id="@+id/percentReturn"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:layout_marginLeft="10dp"
                 android:gravity="left"
                 android:textColor="@color/fontColor"
@@ -158,9 +158,10 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Ticker"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textColor="@color/fontColor"
         android:fontFamily="sans-serif"
+        android:visibility="invisible"
         />
 
 
@@ -169,27 +170,31 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Price"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textColor="@color/fontColor"
-        android:fontFamily="sans-serif"/>
+        android:fontFamily="sans-serif"
+        android:visibility="invisible"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Price"
+        android:textSize="16sp"
+        android:textColor="@color/fontColor"
+        android:fontFamily="sans-serif"
+        android:gravity="center"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Cost"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textColor="@color/fontColor"
-        android:fontFamily="sans-serif"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Profit"
-        android:textSize="14sp"
-        android:textColor="@color/fontColor"
-        android:fontFamily="sans-serif"/>
+        android:fontFamily="sans-serif"
+        android:gravity="right"/>
 
     </LinearLayout>
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/tradeContainer"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:background="@color/background"
+
+        >
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Cancel"
+        android:id="@+id/cancelButton"
+        android:textColor="#eeeeee"
+        android:background="@color/toolbarBackground"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Trade"
+        android:id="@+id/tradeButton"
+        android:textColor="#eeeeee"
+        android:background="@color/toolbarBackground"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+
+
+
+
+
+</LinearLayout>

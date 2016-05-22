@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="background"> #eeeeee</color>
     <color name="containerBackground">#FFFFFF</color>
-    <color name="fontColor">#545555</color>
+    <color name="fontColor">#393939</color>
+    <color name="fontColorLight">#9b9b9b</color>
     <color name="toolbarBackground">#00bcd4</color>
 </resources>

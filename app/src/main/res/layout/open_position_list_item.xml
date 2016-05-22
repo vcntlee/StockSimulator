@@ -28,7 +28,7 @@
                 android:layout_weight="1"
                 android:text="AAPL"
                 android:id="@+id/tickerLabelPortfolioItem"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textColor="@color/fontColor"
                 android:fontFamily="sans-serif"
                 />
@@ -39,7 +39,7 @@
                 android:layout_weight="1"
                 android:text="500 shares"
                 android:id="@+id/numSharesLabelPortfolioItem"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 android:fontFamily="sans-serif"
                 android:textColor="#9b9b9b"
 
@@ -47,16 +47,27 @@
 
         </LinearLayout>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:id="@+id/triangleImage"
+        android:gravity="end"
+        android:src="@drawable/triangle_up"
+        />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="1000"
             android:id="@+id/priceLabelPortfolioItem"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="@color/fontColor"
             android:fontFamily="sans-serif"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            android:gravity="center"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -64,21 +75,23 @@
             android:layout_weight="1"
             android:text="1000"
             android:id="@+id/costLabelPortfolioItem"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="@color/fontColor"
             android:fontFamily="sans-serif"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            android:gravity="right"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1000"
-            android:id="@+id/profitLabelPortfolioItem"
-            android:textSize="14sp"
-            android:textColor="@color/fontColor"
-            android:fontFamily="sans-serif"
-            android:layout_gravity="center_vertical"/>
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:text="1000"-->
+            <!--android:id="@+id/profitLabelPortfolioItem"-->
+            <!--android:textSize="16sp"-->
+            <!--android:textColor="@color/fontColor"-->
+            <!--android:fontFamily="sans-serif"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:gravity="right"/>-->
 
 
 
