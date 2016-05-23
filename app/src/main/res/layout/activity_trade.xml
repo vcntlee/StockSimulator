@@ -25,6 +25,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
+
         >
 
         <TextView
@@ -36,7 +37,8 @@
             android:text="Select Action"
             android:gravity="left"
             android:layout_gravity="center"
-            android:textColor="@color/fontColor"
+            android:textColor="@color/fontColorLight"
+            android:textSize="16sp"
             />
 
         <Spinner
@@ -45,6 +47,7 @@
             android:id="@+id/actionSpinner"
             android:layout_weight="1"
 
+            android:textSize="16sp"
             />
     </LinearLayout>
 
@@ -66,7 +69,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Number of Shares"
-            android:textColor="@color/fontColor"
+            android:textColor="@color/fontColorLight"
+            android:textSize="16sp"
             android:gravity="left"
             />
 
@@ -80,6 +84,7 @@
             android:cursorVisible="false"
             android:singleLine="true"
             android:inputType="number"
+            android:textSize="16sp"
             />
 
     </LinearLayout>
@@ -103,7 +108,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Available shares"
-            android:textColor="@color/fontColor"
+            android:textColor="@color/fontColorLight"
+            android:textSize="16sp"
             android:gravity="left"/>
 
         <TextView
@@ -114,6 +120,7 @@
             android:text="000000"
             android:textColor="@color/fontColor"
             android:gravity="left"
+            android:textSize="16sp"
             />
 
     </LinearLayout>
@@ -136,7 +143,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Price/Share"
-            android:textColor="@color/fontColor"
+            android:textColor="@color/fontColorLight"
+            android:textSize="16sp"
             android:gravity="left"/>
 
         <TextView
@@ -147,6 +155,7 @@
             android:text="$ 000000"
             android:textColor="@color/fontColor"
             android:gravity="left"
+            android:textSize="16sp"
             />
 
     </LinearLayout>
@@ -169,7 +178,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Current Cash"
-            android:textColor="@color/fontColor"
+            android:textColor="@color/fontColorLight"
+            android:textSize="16sp"
             android:gravity="left"/>
 
         <TextView
@@ -179,6 +189,7 @@
             android:id="@+id/currentCash"
             android:text="$ 000000"
             android:textColor="@color/fontColor"
+            android:textSize="16sp"
             android:gravity="left"
             />
 
@@ -202,7 +213,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Total"
-            android:textColor="@color/fontColor"
+            android:textColor="@color/fontColorLight"
+            android:textSize="16sp"
             android:gravity="left"/>
 
         <TextView
@@ -213,6 +225,7 @@
             android:text="$ 00000000"
             android:textColor="@color/fontColor"
             android:gravity="left"
+            android:textSize="16sp"
             />
 
     </LinearLayout>
@@ -234,7 +247,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Remaining Cash"
-            android:textColor="@color/fontColor"
+            android:textColor="@color/fontColorLight"
+            android:textSize="16sp"
             android:gravity="left"/>
 
         <TextView
@@ -245,6 +259,7 @@
             android:text="$ 00000000"
             android:textColor="@color/fontColor"
             android:gravity="left"
+            android:textSize="16sp"
             />
 
     </LinearLayout>

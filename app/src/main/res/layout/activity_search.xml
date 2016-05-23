@@ -53,7 +53,8 @@
             android:textColor="#eeeeee"
             android:background="@color/toolbarBackground"
             android:textSize="14sp"
-            android:gravity="center"/>
+            android:gravity="center"
+            />
 
     </LinearLayout>
 

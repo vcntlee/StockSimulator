@@ -40,7 +40,7 @@
         android:layout_weight="1"
         android:text="Price"
         android:textSize="16sp"
-        android:textColor="@color/fontColor"
+        android:textColor="@android:color/white"
         android:fontFamily="sans-serif"
         android:gravity="center"/>
 
@@ -50,7 +50,7 @@
         android:layout_weight="1"
         android:text="% Change"
         android:textSize="16sp"
-        android:textColor="@color/fontColor"
+        android:textColor="@android:color/white"
         android:fontFamily="sans-serif"
         android:gravity="right"/>
 

@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -59,7 +60,7 @@ public class PortfolioActivity extends AppCompatActivity implements
     private TextView mPercentReturn;
     private DrawerLayout mDrawer;
     private ListView mListView;
-    //private Button mTradeButton;
+    private Button mTradeButton;
     private PositionAdapter mAdapter;
 
 
@@ -139,7 +140,7 @@ public class PortfolioActivity extends AppCompatActivity implements
         mPercentReturn = (TextView) mHeaderView.findViewById(R.id.percentReturn);
         mHeaderContainer = (LinearLayout) mHeaderView.findViewById(R.id.headerContainer);
 
-        //mTradeButton = (Button) findViewById(R.id.tradeButton);
+        mTradeButton = (Button) findViewById(R.id.tradeButton);
 
         // mAccountSummary is set here
         setSummary();
@@ -195,13 +196,13 @@ public class PortfolioActivity extends AppCompatActivity implements
 
 
 
-//        mTradeButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(PortfolioActivity.this, SearchActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        mTradeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PortfolioActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
     }
@@ -262,6 +263,7 @@ public class PortfolioActivity extends AppCompatActivity implements
         if (mPositions.size() == 0){
             mEmpty.setVisibility(View.VISIBLE);
             mHeaderContainer.setVisibility(View.INVISIBLE);
+            mTradeButton.setVisibility(View.VISIBLE);
 
         }
 

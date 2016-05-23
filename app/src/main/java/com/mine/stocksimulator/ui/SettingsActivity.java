@@ -44,7 +44,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
         if (toolbar!=null){
             setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle("Settings");
+            getSupportActionBar().setTitle("Account Settings");
         }
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);

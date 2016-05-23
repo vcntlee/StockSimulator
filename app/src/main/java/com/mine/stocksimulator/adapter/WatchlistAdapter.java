@@ -69,11 +69,11 @@ public class WatchlistAdapter extends BaseAdapter {
         holder.change.setText(watchlist.getChange() + " %");
         if (watchlist.getChange() > 0) {
             holder.triangle.setImageResource(R.drawable.triangle_up);
-            holder.change.setTextColor(Color.GREEN);
+            holder.change.setTextColor(Color.parseColor("#4dd14d"));
         }
         else if (watchlist.getChange() < 0){
             holder.triangle.setImageResource(R.drawable.triangle_down);
-            holder.change.setTextColor(Color.RED);
+            holder.change.setTextColor(Color.parseColor("#f1575a"));
         }
         else{
             holder.triangle.setVisibility(View.INVISIBLE);

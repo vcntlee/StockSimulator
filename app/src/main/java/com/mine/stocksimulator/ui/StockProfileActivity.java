@@ -465,7 +465,7 @@ public class StockProfileActivity extends AppCompatActivity {
                         +   "   dataset.push([xVals[i], yVals[i]]);"
                         +   "}"
                         +   "data.addRows(dataset);"
-                        +   "var options={vAxis: {title: 'Price'}, legend:'none'};"
+                        +   "var options={vAxis: {title: 'Price'}, series: {0: {color:'#f1b927', visibleInLegend:false}}, chartArea:{width:'90%'}};"
                         +   "var chart = new google.visualization.LineChart(document.getElementById('chart_div'));"
                         +   "chart.draw(data, options);"
                         +   "}";

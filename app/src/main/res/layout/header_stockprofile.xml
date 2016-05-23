@@ -39,6 +39,7 @@
                 android:textColor="@drawable/radiobutton_textcolor_selector"
                 android:padding="10dp"
                 android:textSize="14sp"
+
                 />
 
             <RadioButton
