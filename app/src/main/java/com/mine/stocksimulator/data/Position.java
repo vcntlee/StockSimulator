@@ -1,9 +1,6 @@
 package com.mine.stocksimulator.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class Position implements Parcelable {
+public class Position  {
 
     private int mId;
     private String mCompanyTicker;
@@ -16,7 +13,10 @@ public class Position implements Parcelable {
     private double mTotalMkt;
     private double mTotalCost;
 
-    public Position(){}
+    public Position(){
+        mShares = 0;
+        mTotalCost = 0;
+    }
     public Position(int id, String ticker, double price, double cost, int shares,
                     String type, double percentReturn, double totalMkt, double totalCost){
         mId = id;
@@ -62,7 +62,7 @@ public class Position implements Parcelable {
     }
 
     public void setPercentReturn(double percentReturn) {
-        mPercentReturn = percentReturn;
+        mPercentReturn = percentReturn * 100;
     }
 
     public double getPrice() {
@@ -77,8 +77,8 @@ public class Position implements Parcelable {
         return mShares;
     }
 
-    public void setShares(int shares) {
-        mShares = shares;
+    public void setShares(int newShares) {
+        mShares = newShares;
     }
 
     public String getType() {
@@ -93,54 +93,65 @@ public class Position implements Parcelable {
         return mTotalMkt;
     }
 
-    public void setTotalMkt(double totalMkt) {
-        mTotalMkt = totalMkt;
+    public void setTotalMkt() {
+        mTotalMkt = mShares * mPrice;
     }
 
     public double getTotalCost() {
         return mTotalCost;
     }
 
-    public void setTotalCost(double totalCost) {
-        mTotalCost = totalCost;
+    public void setTotalCost(double newCost) {
+        mTotalCost += newCost;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+    public void setWeightedCost(int newNumShares, double newPrice){
+        double pastWeight = (double) mShares / (mShares + newNumShares);
+        double pastWeightPrice = mCost * pastWeight;
+        double newWeight = (double) newNumShares / (mShares + newNumShares);
+        double newWeightPrice = newPrice * newWeight;
+        double avgCost = pastWeightPrice + newWeightPrice;
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mId);
-        dest.writeString(mCompanyTicker);
-        dest.writeDouble(mPrice);
-        dest.writeDouble(mCost);
-        dest.writeInt(mShares);
-        dest.writeString(mType);
-        dest.writeDouble(mPercentReturn);
-    }
-
-    private Position(Parcel in){
-        mId = in.readInt();
-        mCompanyTicker = in.readString();
-        mPrice = in.readDouble();
-        mCost = in.readDouble();
-        mShares = in.readInt();
-        mType = in.readString();
-        mPercentReturn = in.readDouble();
+        mCost = avgCost;
 
     }
 
-    public final static Creator<Position> CREATOR = new Creator<Position>() {
-        @Override
-        public Position createFromParcel(Parcel source) {
-            return new Position(source) ;
-        }
-
-        @Override
-        public Position[] newArray(int size) {
-            return new Position[size];
-        }
-    };
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeInt(mId);
+//        dest.writeString(mCompanyTicker);
+//        dest.writeDouble(mPrice);
+//        dest.writeDouble(mCost);
+//        dest.writeInt(mShares);
+//        dest.writeString(mType);
+//        dest.writeDouble(mPercentReturn);
+//    }
+//
+//    private Position(Parcel in){
+//        mId = in.readInt();
+//        mCompanyTicker = in.readString();
+//        mPrice = in.readDouble();
+//        mCost = in.readDouble();
+//        mShares = in.readInt();
+//        mType = in.readString();
+//        mPercentReturn = in.readDouble();
+//
+//    }
+//
+//    public final static Creator<Position> CREATOR = new Creator<Position>() {
+//        @Override
+//        public Position createFromParcel(Parcel source) {
+//            return new Position(source) ;
+//        }
+//
+//        @Override
+//        public Position[] newArray(int size) {
+//            return new Position[size];
+//        }
+//    };
 }

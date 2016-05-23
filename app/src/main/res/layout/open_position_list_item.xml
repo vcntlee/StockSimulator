@@ -47,17 +47,30 @@
 
         </LinearLayout>
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:id="@+id/triangleImage"
-        android:gravity="end"
-        android:src="@drawable/triangle_up"
-        />
+        <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:id="@+id/triangleImage"-->
+            <!--android:gravity="end"-->
+            <!--android:src="@drawable/triangle_up"-->
+        <!--/>-->
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0.0%"
+            android:id="@+id/percentPortfolioItem"
+            android:textSize="16sp"
+            android:textColor="@color/fontColor"
+            android:fontFamily="sans-serif"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"/>
+
+
+    <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

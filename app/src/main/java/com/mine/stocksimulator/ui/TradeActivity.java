@@ -37,8 +37,6 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private static final String TAG = TradeActivity.class.getSimpleName();
     public static final String ACCOUNT_REMAINING_CASH = "ACCOUNT_REMAINING_CASH";
-//    public static final String POSITIONS_ARRAY = "POSITIONS_ARRAY";
-
 
     private Spinner mActionSpinner;
     private String mAction;
@@ -57,19 +55,9 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
     private AccountSummary mAccountSummary;
     private Position mPosition;
 
-    private double mTotalCostPortfolio;
-
     private boolean mCreateNeeded;
-
     private double mRemainingCash;
-
     private StockProfile mStockProfile;
-
-    /*
-    TODO need to account for profit per position
-    TODO need to figure out how to change textviews when another option is selected
-    TODO need to error check when balance goes negative, when we going over buying power
-     */
 
 
     @Override
@@ -120,7 +108,8 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
         mCancelButton = (Button) findViewById(R.id.cancelButton);
 
         // Position is set here
-        retrievePosition();
+        PositionDataSource dataSource = new PositionDataSource(this);
+        mPosition = dataSource.retrieveOne(mStockProfile.getSymbol());
 
         // Spinner is set here
         setSpinnerAdapter();
@@ -155,7 +144,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
                 try {
                     mNumShares = Integer.parseInt(s.toString());
-                    mTotalTransaction = round((mNumShares * mStockProfile.getPrice()), 3);
+                    mTotalTransaction = round((mNumShares * mStockProfile.getPrice()), 2);
                     mTotalTransactionTextView.setText("$ " + mTotalTransaction);
 
                     if (mAction.equals("Long") || mAction.equals("Short")) {
@@ -172,7 +161,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
                 } catch (NumberFormatException nfe) {
                     Toast.makeText(TradeActivity.this,
-                            "please input valid numbers, + and - not allowed", Toast.LENGTH_LONG).show();
+                            "please input valid numbers, + and - not allowed", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -191,7 +180,6 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
             }
         });
 
-        // ticker, price, cost, shares, return
 
         mTradeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,44 +190,8 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                             "very tough to trade zero or less shares", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    boolean isNumSharesInputValid = true;
 
-                    // if mCreatedNeed == false;
-                    if (mPosition != null) {
-                        if (mAction.equals("Long") || mAction.equals("Short")) {
-
-                            mRemainingCash = mCurrentCash - mTotalTransaction;
-                            if (mRemainingCash > 0) {
-                                mPosition.setShares(mNumShares + mPosition.getShares());
-
-                                mPosition.setPrice(mStockProfile.getPrice()); //TODO need to fix here
-
-                                double pastWeight = (double) mPosition.getShares() / (mPosition.getShares() + mNumShares);
-                                double pastWeightedPrice = mPosition.getCost() * pastWeight;
-                                double nowWeight = (double) mNumShares / (mPosition.getShares() + mNumShares);
-                                double nowWeightedPrice = mStockProfile.getPrice() * nowWeight;
-                                double avgWeightedPrice = pastWeightedPrice + nowWeightedPrice;
-
-                                mPosition.setCost(avgWeightedPrice);
-                                mTotalCostPortfolio = mPosition.getTotalCost() + mTotalTransaction;
-                                mPosition.setTotalCost(mTotalCostPortfolio);
-                            }
-                            else{
-                                Toast.makeText(TradeActivity.this,
-                                        "not enough buying power", Toast.LENGTH_LONG).show();
-                                return;
-                            }
-
-                        }
-                        else if (mAction.equals("Sell")){
-                            isNumSharesInputValid = setPosition("Sell");
-                        }
-                        else if (mAction.equals("Buy")){
-                            isNumSharesInputValid = setPosition("Buy");
-                        }
-
-                    }
-                    else{
+                    if (mPosition == null){
                         mRemainingCash = mCurrentCash - mTotalTransaction;
                         if (mRemainingCash > 0) {
                             mPosition = new Position();
@@ -249,7 +201,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                             mPosition.setShares(mNumShares);
                             mPosition.setType(mAction);
                             mPosition.setPercentReturn(0);
-                            mPosition.setTotalMkt(mTotalTransaction);
+                            mPosition.setTotalMkt();
                             mPosition.setTotalCost(mTotalTransaction);
                         }
                         else{
@@ -259,10 +211,50 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                         }
                     }
 
+                    else{
+                        if (mAction.equals("Long") || mAction.equals("Short")) {
+                            mRemainingCash = mCurrentCash - mTotalTransaction;
+                            if (mRemainingCash > 0) {
+                                mPosition.setShares(mNumShares + mPosition.getShares());
+                                mPosition.setPrice(mStockProfile.getPrice());
+                                mPosition.setWeightedCost(mNumShares, mStockProfile.getPrice());
+                                mPosition.setTotalMkt();
+                                mPosition.setTotalCost(mTotalTransaction);
+                                Log.i(TAG+" weighted", mPosition.getCost()+"");
+                            }
+                            else{
+                                Toast.makeText(TradeActivity.this,
+                                        "not enough buying power", Toast.LENGTH_LONG).show();
+                                return;
+                            }
 
-                    if (!isNumSharesInputValid){
-                        return;
+                        }
+                        else if (mAction.equals("Sell") || mAction.equals("Buy")){
+                            if(mNumShares > mPosition.getShares()){
+                                Toast.makeText(TradeActivity.this,
+                                        "cannot trade more than what you have", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            if(mAction.equals("Sell"))
+                                mRemainingCash = mCurrentCash + mTotalTransaction;
+                            else
+                                mRemainingCash = mCurrentCash + 2 * (mPosition.getCost() * mPosition.getShares()) - mTotalTransaction;
+                            if (mNumShares < mPosition.getShares()) {
+                                mPosition.setShares(mPosition.getShares() - mNumShares);
+                                mPosition.setPrice(mStockProfile.getPrice());
+                                mPosition.setTotalMkt();
+                                mPosition.setTotalCost((-1) * mTotalTransaction);
+                            }
+                            else{
+                                PositionDataSource dataSource = new PositionDataSource(TradeActivity.this);
+                                dataSource.delete(mPosition.getId());
+                            }
+                        }
+
+
                     }
+
+
                     Log.i(TAG+" positionCost", mPosition.getCost()+"");
                     savePositionToDatabase();
 
@@ -282,12 +274,6 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
         });
     }
 
-    private void retrievePosition(){
-        PositionDataSource dataSource = new PositionDataSource(this);
-        mPosition = dataSource.retrieveOne(mStockProfile.getSymbol());
-        Log.i(TAG, "print me");
-    }
-
     private void savePositionToDatabase(){
         Log.i(TAG+" mPosition", mPosition.getPrice()+"");
         Log.i(TAG+" mPosition", mPosition.getType());
@@ -295,7 +281,13 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
         PositionDataSource dataSource = new PositionDataSource(this);
         // if position in db:
         if (!mCreateNeeded) {
-            dataSource.update(mPosition, mPosition.getPrice(), mPosition.getCost(), mPosition.getShares(), -1, mPosition.getPrice() * mPosition.getShares(), mTotalCostPortfolio);
+            dataSource.update(mPosition,
+                    mPosition.getPrice(),
+                    mPosition.getCost(),
+                    mPosition.getShares(),
+                    -1,
+                    mPosition.getTotalMkt(),
+                    mPosition.getTotalCost());
         }
         else {
             dataSource.create(mPosition);
@@ -333,34 +325,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
         mActionSpinner.setOnItemSelectedListener(this);
     }
 
-    private boolean setPosition(String type){
 
-        if(mNumShares > mPosition.getShares()){
-            Toast.makeText(TradeActivity.this,
-                    "cannot trade more than what you have", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if (type.equals("Sell")) {
-            mRemainingCash = mCurrentCash + mTotalTransaction;
-        }
-        else{
-            mRemainingCash = mCurrentCash + 2 * (mPosition.getCost() * mPosition.getShares()) - mTotalTransaction;
-        }
-        if (mNumShares < mPosition.getShares()) {
-            mPosition.setShares(mPosition.getShares() - mNumShares);
-            mPosition.setPrice(mStockProfile.getPrice());
-
-            mTotalCostPortfolio = mPosition.getTotalCost() - mTotalTransaction;
-            mPosition.setTotalCost(mTotalCostPortfolio);
-
-        }
-        else{
-
-            PositionDataSource dataSource = new PositionDataSource(this);
-            dataSource.delete(mPosition.getId());
-        }
-        return true;
-    }
 
     private double calculateAvailableCashWhenCovering(){
 

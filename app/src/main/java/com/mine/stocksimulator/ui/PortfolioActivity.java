@@ -150,16 +150,31 @@ public class PortfolioActivity extends AppCompatActivity implements
 
 
         if (getIntent()!= null && getIntent().getExtras() != null) {
-            Intent intent = getIntent();
-            mRemainingCash = intent.getDoubleExtra(TradeActivity.ACCOUNT_REMAINING_CASH, -1);
 
-            if (mRemainingCash == -1){
-                mRemainingCash = intent.getDoubleExtra(SettingsActivity.INITIAL_BALANCE, 0);
+            Log.i(TAG, " entering here");
+            Log.i(TAG + " extraTrade", getIntent().getDoubleExtra(TradeActivity.ACCOUNT_REMAINING_CASH, -1)+"");
+            Log.i(TAG + " extraSetting", getIntent().getDoubleExtra(SettingsActivity.INITIAL_BALANCE, -1)+"");
+
+            Intent intent = getIntent();
+            double remainingCash = intent.getDoubleExtra(TradeActivity.ACCOUNT_REMAINING_CASH, -1);
+            double initBal = intent.getDoubleExtra(SettingsActivity.INITIAL_BALANCE, -1);
+
+
+            // this is to get intent from settings
+            if (remainingCash == -1 && initBal != -1){
+                mRemainingCash = initBal;
+                mAccountSummary.setAvailableCash(mRemainingCash);
+                mAccountSummary.setPercentReturn(0);
+                mAccountSummary.setPortfolioValue(0);
             }
 
-            Log.i(TAG + " remainingCash", mRemainingCash + "");
+            // this is to get intent from trade
+            else if (remainingCash != -1 && initBal == -1){
+                mRemainingCash = TradeActivity.round(remainingCash,2);
+                mAccountSummary.setAvailableCash(mRemainingCash);
+            }
 
-            mAccountSummary.setAvailableCash(TradeActivity.round(mRemainingCash, 2));
+            Log.i(TAG+" cash", mAccountSummary.getAvailableCash() +"");
 
             saveSummary();
             intent.removeExtra(TradeActivity.ACCOUNT_REMAINING_CASH);
@@ -240,15 +255,26 @@ public class PortfolioActivity extends AppCompatActivity implements
             PositionDataSource dataSource = new PositionDataSource(this);
             mAccountSummary = new Gson().fromJson(jsonSummary, AccountSummary.class);
 
+            Log.i(TAG+" summary", mAccountSummary.getAvailableCash()+"");
+            Log.i(TAG+" summary", mAccountSummary.getPortfolioValue()+"");
+            Log.i(TAG+" summary", mAccountSummary.getPercentReturn()+"");
+            Log.i(TAG+" summary", mAccountSummary.getAvailableCash()+"");
+
+
             mRemainingCash = mAccountSummary.getAvailableCash();
+
             double totalCost = dataSource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_COST);
             double totalMkt = dataSource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_MKT);
             if (totalMkt != 0 && totalCost != 0) {
                 Log.i(TAG+" totalMkt" , totalMkt+"");
                 Log.i(TAG+" totalCost" , totalCost+"");
-                mCachePortfolioValue = TradeActivity.round(totalMkt,2);
+
+
+                mCachePortfolioValue = totalMkt;
                 mAccountSummary.setPortfolioValue(mCachePortfolioValue);
                 mAccountSummary.setPercentReturn(calculateReturn(totalCost, totalMkt));
+                Log.i(TAG + " return", mAccountSummary.getPercentReturn()+"");
+
             }
 
 
@@ -272,33 +298,32 @@ public class PortfolioActivity extends AppCompatActivity implements
     }
 
     private double calculateReturn(double a, double b){
-        return TradeActivity.round((b - a)/ a, 2);
+        return TradeActivity.round((b - a)/ a, 5);
     }
 
-    private void updatePositions(){
-        PositionDataSource dataSource = new PositionDataSource(this);
-        for (int i = 0; i < mPositions.size(); i++) {
-            double percentReturn = calculateReturn(mPositions.get(i).getCost(), mPositions.get(i).getPrice());
-            double totalMkt = mPositions.get(i).getPrice() * mPositions.get(i).getShares();
-            dataSource.update(mPositions.get(i), mPositions.get(i).getPrice(), -1, -1, percentReturn, totalMkt, -1);
-        }
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void updateAccountSummary(){
-        if (mPositions.size() > 0) {
-            PositionDataSource datasource = new PositionDataSource(this);
-            mCachePortfolioValue = TradeActivity.round(datasource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_MKT),2);
-            double totalCost = datasource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_COST);
-            double percentReturn = calculateReturn(totalCost, mCachePortfolioValue);
-            mAccountSummary.setPercentReturn(percentReturn);
-        }
-
-    }
+//    private void updatePositions(){
+//        PositionDataSource dataSource = new PositionDataSource(this);
+//        for (int i = 0; i < mPositions.size(); i++) {
+//            double percentReturn = calculateReturn(mPositions.get(i).getCost(), mPositions.get(i).getPrice());
+//            double totalMkt = mPositions.get(i).getPrice() * mPositions.get(i).getShares();
+//            dataSource.update(mPositions.get(i), mPositions.get(i).getPrice(), -1, -1, percentReturn, totalMkt, -1);
+//        }
+//        mAdapter.notifyDataSetChanged();
+//    }
+//
+//    private void updateAccountSummary(){
+//        if (mPositions.size() > 0) {
+//            PositionDataSource datasource = new PositionDataSource(this);
+//            mCachePortfolioValue = TradeActivity.round(datasource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_MKT),2);
+//            double totalCost = datasource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_COST);
+//            double percentReturn = calculateReturn(totalCost, mCachePortfolioValue);
+//            mAccountSummary.setPercentReturn(percentReturn);
+//        }
+//
+//    }
 
 
     public void populateAccountTextViews(){
-        Log.i(TAG + " totalCached3", mCachePortfolioValue + "");
 
         mPortfolioValue.setText("$ " + mCachePortfolioValue);
 
@@ -313,18 +338,20 @@ public class PortfolioActivity extends AppCompatActivity implements
         mEditorSummary.apply();
     }
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        Log.i(TAG, "entered onPause");
-//
-//        if (getIntent()!= null && getIntent().getExtras() != null) {
-//            getIntent().removeExtra(TradeActivity.ACCOUNT_REMAINING_CASH);
-//        }
-//
-//        saveSummary();
-//
-//    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "entered onPause");
+
+        if (getIntent()!= null && getIntent().getExtras() != null) {
+            Log.i(TAG, "entered onPause's remove extras");
+            getIntent().removeExtra(TradeActivity.ACCOUNT_REMAINING_CASH);
+            getIntent().removeExtra(SettingsActivity.INITIAL_BALANCE);
+        }
+
+        saveSummary();
+
+    }
 
 
     @Override

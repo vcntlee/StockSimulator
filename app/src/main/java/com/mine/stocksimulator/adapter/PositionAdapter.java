@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mine.stocksimulator.R;
@@ -53,9 +52,8 @@ public class PositionAdapter extends BaseAdapter {
             holder.numShares = (TextView) convertView.findViewById(R.id.numSharesLabelPortfolioItem);
             holder.price = (TextView) convertView.findViewById(R.id.priceLabelPortfolioItem);
             holder.cost = (TextView) convertView.findViewById(R.id.costLabelPortfolioItem);
-            //holder.profit = (TextView) convertView.findViewById(R.id.profitLabelPortfolioItem);
-            //holder.percent = (TextView) convertView.findViewById(R.id.percentProfitItemLabel);
-            holder.triangle = (ImageView) convertView.findViewById(R.id.triangleImage);
+            holder.percent = (TextView) convertView.findViewById(R.id.percentPortfolioItem);
+            //holder.triangle = (ImageView) convertView.findViewById(R.id.triangleImage);
 
             convertView.setTag(holder);
         }
@@ -71,17 +69,19 @@ public class PositionAdapter extends BaseAdapter {
 
         holder.price.setText("$ " + position.getPrice());
         holder.cost.setText("$ " + position.getCost());
+        holder.percent.setText(position.getPercentReturn() + " %");
 
         Log.i(TAG + " Price", position.getPrice() + "");
         Log.i(TAG + " Cost", position.getCost() + "");
 
-        if (position.getPercentReturn() >= 0){
-            holder.triangle.setImageResource(R.drawable.triangle_up);
-        }
-        else{
-            holder.triangle.setImageResource(R.drawable.triangle_down);
 
-        }
+//        if (position.getPercentReturn() >= 0){
+//            holder.triangle.setImageResource(R.drawable.triangle_up);
+//        }
+//        else{
+//            holder.triangle.setImageResource(R.drawable.triangle_down);
+//
+//        }
 
         //holder.profit.setText(position.getPercentReturn() + " %");
 
@@ -96,9 +96,8 @@ public class PositionAdapter extends BaseAdapter {
         TextView numShares;
         TextView price;
         TextView cost;
-        ImageView triangle;
-        //TextView profit;
-        //TextView percent;
+        //ImageView triangle;
+        TextView percent;
     }
 
 }

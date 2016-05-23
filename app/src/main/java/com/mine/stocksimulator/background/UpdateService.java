@@ -217,10 +217,10 @@ public class UpdateService extends IntentService {
 
         double percentReturn = 0;
         if (position.getType().equals("Long")) {
-            percentReturn = TradeActivity.round(((newPrice - oldPrice) / oldPrice), 3);
+            percentReturn = (newPrice - oldPrice) / oldPrice;
         }
         else{
-            percentReturn = TradeActivity.round(((oldPrice - newPrice) / newPrice), 3);
+            percentReturn = (oldPrice - newPrice) / newPrice;
         }
         Log.i(TAG + " percent return", percentReturn+"");
         position.setPrice(wholeQuote.getDouble("LastPrice"));

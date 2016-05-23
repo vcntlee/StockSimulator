@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
 import com.mine.stocksimulator.data.Position;
+import com.mine.stocksimulator.ui.TradeActivity;
 
 import java.util.ArrayList;
 
@@ -33,14 +34,14 @@ public class PositionDataSource {
 
         ContentValues value = new ContentValues();
         value.put(PositionSQLiteHelper.COLUMN_TICKER, position.getCompanyTicker());
-        value.put(PositionSQLiteHelper.COLUMN_PRICE, position.getPrice());
-        value.put(PositionSQLiteHelper.COLUMN_COST, position.getPrice()); // this starts as the same price
+        value.put(PositionSQLiteHelper.COLUMN_PRICE, TradeActivity.round(position.getPrice(), 2));
+        value.put(PositionSQLiteHelper.COLUMN_COST, TradeActivity.round(position.getPrice(), 2)); // this starts as the same price
         value.put(PositionSQLiteHelper.COLUMN_SHARES, position.getShares());
         value.put(PositionSQLiteHelper.COLUMN_TYPE, position.getType());
-        value.put(PositionSQLiteHelper.COLUMN_RETURN, position.getPercentReturn());
+        value.put(PositionSQLiteHelper.COLUMN_RETURN, TradeActivity.round(position.getPercentReturn(),2));
 
-        value.put(PositionSQLiteHelper.COLUMN_TOTAL_MKT, position.getPrice() * position.getShares());
-        value.put(PositionSQLiteHelper.COLUMN_TOTAL_COST, position.getCost() * position.getShares());
+        value.put(PositionSQLiteHelper.COLUMN_TOTAL_MKT, TradeActivity.round(position.getPrice() * position.getShares(),2));
+        value.put(PositionSQLiteHelper.COLUMN_TOTAL_COST, TradeActivity.round(position.getCost() * position.getShares(),2));
 
         database.insert(PositionSQLiteHelper.POSITIONS_TABLE, null, value);
 
@@ -118,22 +119,22 @@ public class PositionDataSource {
 
         ContentValues value = new ContentValues();
         if (price != -1) {
-            value.put(PositionSQLiteHelper.COLUMN_PRICE, price);
+            value.put(PositionSQLiteHelper.COLUMN_PRICE, TradeActivity.round(price,2));
         }
         if (cost != -1) {
-            value.put(PositionSQLiteHelper.COLUMN_COST, cost); // TODO need to fix??
+            value.put(PositionSQLiteHelper.COLUMN_COST, TradeActivity.round(cost,2)); // TODO need to fix??
         }
         if (shares != -1) {
             value.put(PositionSQLiteHelper.COLUMN_SHARES, shares);
         }
         if (percentReturn != -1) {
-            value.put(PositionSQLiteHelper.COLUMN_RETURN, percentReturn);
+            value.put(PositionSQLiteHelper.COLUMN_RETURN, TradeActivity.round(percentReturn,2));
         }
         if (totalMkt != -1){
-            value.put(PositionSQLiteHelper.COLUMN_TOTAL_MKT, totalMkt);
+            value.put(PositionSQLiteHelper.COLUMN_TOTAL_MKT, TradeActivity.round(totalMkt,2));
         }
         if (totalCost != -1){
-            value.put(PositionSQLiteHelper.COLUMN_TOTAL_COST, totalCost);
+            value.put(PositionSQLiteHelper.COLUMN_TOTAL_COST, TradeActivity.round(totalCost,2));
         }
         database.update(PositionSQLiteHelper.POSITIONS_TABLE,
                 value, String.format("%s=%d", BaseColumns._ID, position.getId()), null);
