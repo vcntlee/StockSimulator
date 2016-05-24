@@ -1,6 +1,7 @@
 package com.mine.stocksimulator.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,12 +47,12 @@ public class PositionAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null){
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.open_position_list_item, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.position_list_item, null);
             holder = new ViewHolder();
             holder.ticker = (TextView) convertView.findViewById(R.id.tickerLabelPortfolioItem);
             holder.numShares = (TextView) convertView.findViewById(R.id.numSharesLabelPortfolioItem);
             holder.price = (TextView) convertView.findViewById(R.id.priceLabelPortfolioItem);
-            holder.cost = (TextView) convertView.findViewById(R.id.costLabelPortfolioItem);
+            //holder.cost = (TextView) convertView.findViewById(R.id.costLabelPortfolioItem);
             holder.percent = (TextView) convertView.findViewById(R.id.percentPortfolioItem);
             //holder.triangle = (ImageView) convertView.findViewById(R.id.triangleImage);
 
@@ -64,12 +65,21 @@ public class PositionAdapter extends BaseAdapter {
         Position position = mPositions.get(index);
 
         holder.ticker.setText(position.getCompanyTicker());
-        //holder.ticker.setTypeface(Typer.set(mContext).getFont(Font.ROBOTO_REGULAR));
-        holder.numShares.setText(position.getType() + " "+ position.getShares());
+        holder.numShares.setText(position.getType() + " "+ position.getShares() +  " @ " + position.getCost());
 
         holder.price.setText("$ " + position.getPrice());
-        holder.cost.setText("$ " + position.getCost());
+        /// /holder.cost.setText("$ " + position.getCost());
+
         holder.percent.setText(position.getPercentReturn() + " %");
+
+        if (position.getPercentReturn() >= 0){
+            holder.percent.setTextColor(Color.parseColor("#4dd14d"));
+        }
+        else{
+            holder.percent.setTextColor(Color.parseColor("#f1575a"));
+
+        }
+
 
         Log.i(TAG + " Price", position.getPrice() + "");
         Log.i(TAG + " Cost", position.getCost() + "");
@@ -95,7 +105,7 @@ public class PositionAdapter extends BaseAdapter {
         TextView ticker;
         TextView numShares;
         TextView price;
-        TextView cost;
+        //TextView cost;
         //ImageView triangle;
         TextView percent;
     }

@@ -74,12 +74,6 @@ public class PortfolioActivity extends AppCompatActivity implements
     private AccountSummary mAccountSummary;
     private double mCachePortfolioValue;
 
-    private String[] mOptionsMenu;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToogle;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
 
     private View mHeaderView;
     private View mFooterView;
@@ -94,16 +88,7 @@ public class PortfolioActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
 
         /*TODO List:
-        1. make sure that repeated buys don't get duplicated in listView --> DONE
-        2. make a nav bar (search goes to the buy activity page) --> DONE
-        3. calculate the profit --> DONE
-        4. error check input --> DONE
-        5. create an adapter with search results --> DONE
-        6. portfolio summary on different activity --> NO NEED
-        7. watchlist
-        8. buy and short | sell to cover and buy to cover --> DONE
         9. take care of onRotate
-        10. init beginning balance
      */
 
         super.onCreate(savedInstanceState);
@@ -418,7 +403,7 @@ public class PortfolioActivity extends AppCompatActivity implements
 
         if (today.equals("Monday") || today.equals("Tuesday") || today.equals("Wednesday")
                 || today.equals("Thursday") || today.equals("Friday")) {
-            if (hour >= 9 && hour <= 16) {
+            if (hour >= 9 && hour < 16) {
                 return true;
             } else {
                 return false;
