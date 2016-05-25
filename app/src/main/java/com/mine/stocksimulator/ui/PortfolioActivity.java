@@ -57,7 +57,7 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     private TextView mPortfolioValue;
     private TextView mAvailableCash;
-    private TextView mPercentReturn;
+    //private TextView mPercentReturn;
     private DrawerLayout mDrawer;
     private ListView mListView;
     private Button mTradeButton;
@@ -122,7 +122,7 @@ public class PortfolioActivity extends AppCompatActivity implements
 
         mPortfolioValue = (TextView) mHeaderView.findViewById(R.id.portfolioValue);
         mAvailableCash = (TextView) mHeaderView.findViewById(R.id.availableCash);
-        mPercentReturn = (TextView) mHeaderView.findViewById(R.id.percentReturn);
+        //mPercentReturn = (TextView) mHeaderView.findViewById(R.id.percentReturn);
         mHeaderContainer = (LinearLayout) mHeaderView.findViewById(R.id.headerContainer);
 
         mTradeButton = (Button) findViewById(R.id.tradeButton);
@@ -254,15 +254,13 @@ public class PortfolioActivity extends AppCompatActivity implements
                 Log.i(TAG+" totalMkt" , totalMkt+"");
                 Log.i(TAG+" totalCost" , totalCost+"");
 
-
                 mCachePortfolioValue = totalMkt;
                 mAccountSummary.setPortfolioValue(mCachePortfolioValue);
-                mAccountSummary.setPercentReturn(calculateReturn(totalCost, totalMkt));
+                double percentReturn = (totalMkt - totalCost) / totalCost * 100;
+                mAccountSummary.setPercentReturn(TradeActivity.round(percentReturn,2));
                 Log.i(TAG + " return", mAccountSummary.getPercentReturn()+"");
 
             }
-
-
 
         }
     }
@@ -283,7 +281,7 @@ public class PortfolioActivity extends AppCompatActivity implements
     }
 
     private double calculateReturn(double a, double b){
-        return TradeActivity.round((b - a)/ a, 5);
+        return TradeActivity.round((b - a)/ a, 2) * 100;
     }
 
 //    private void updatePositions(){
@@ -313,7 +311,7 @@ public class PortfolioActivity extends AppCompatActivity implements
         mPortfolioValue.setText("$ " + mCachePortfolioValue);
 
         mAvailableCash.setText("$ " + mAccountSummary.getAvailableCash());
-        mPercentReturn.setText(mAccountSummary.getPercentReturn() + " %");
+        //mPercentReturn.setText(mAccountSummary.getPercentReturn() + " %");
     }
 
     private void saveSummary(){

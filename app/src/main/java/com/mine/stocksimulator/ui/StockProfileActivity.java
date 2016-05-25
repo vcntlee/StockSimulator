@@ -363,7 +363,7 @@ public class StockProfileActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(StockProfileActivity.this, "Failed to get a response", Toast.LENGTH_SHORT).show();
+                                    updateUiWithErrorState("Failed to get a response");
                                 }
                             });
                         }

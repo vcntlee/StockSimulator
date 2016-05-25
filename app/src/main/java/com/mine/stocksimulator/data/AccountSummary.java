@@ -24,7 +24,7 @@ public class AccountSummary implements Parcelable {
     }
 
     public void setPercentReturn(double percentReturn) {
-        mPercentReturn = percentReturn * 100;
+        mPercentReturn = percentReturn;
     }
 
     public double getPortfolioValue() {

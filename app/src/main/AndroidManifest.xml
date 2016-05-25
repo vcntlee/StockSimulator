@@ -12,25 +12,37 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.PortfolioActivity">
+        <activity android:name=".ui.PortfolioActivity"
+                  android:screenOrientation="portrait"
+                  android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SearchActivity">
+        <activity android:name=".ui.SearchActivity"
+                  android:screenOrientation="portrait"
+                  android:configChanges="keyboardHidden|orientation|screenSize">
 
             <!-- <meta-data android:name="android.support.PARENT_ACTIVITY" -->
             <!-- android:value=".ui.PortfolioActivity"/> -->
         </activity>
-        <activity android:name=".ui.StockProfileActivity">
+        <activity android:name=".ui.StockProfileActivity"
+                  android:screenOrientation="portrait"
+                  android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
-        <activity android:name=".ui.TradeActivity">
+        <activity android:name=".ui.TradeActivity"
+                  android:screenOrientation="portrait"
+                  android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
-        <activity android:name=".ui.SettingsActivity">
+        <activity android:name=".ui.SettingsActivity"
+                  android:screenOrientation="portrait"
+                  android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
-        <activity android:name=".ui.WatchlistActivity">
+        <activity android:name=".ui.WatchlistActivity"
+                  android:screenOrientation="portrait"
+                  android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
 
         <receiver android:name=".background.UpdateReceiver"
