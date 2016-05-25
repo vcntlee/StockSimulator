@@ -12,7 +12,7 @@
 
     <!-- ticker -->
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Ticker"
@@ -23,24 +23,24 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="2"
         >
 
          <!--price and arrow-->
 
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:id="@+id/triangleImage"
             android:src="@drawable/triangle_up"
             android:layout_gravity="center"
             />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="$ 800.00"
@@ -57,7 +57,7 @@
 
     <!-- change -->
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="-10.00 %"

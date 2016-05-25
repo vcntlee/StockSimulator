@@ -93,6 +93,7 @@ public class StockProfileActivity extends AppCompatActivity {
 
     private View mHeader;
     private View mFooter;
+    private boolean mIsFromPortfolio;
 
 
     @Override
@@ -102,6 +103,7 @@ public class StockProfileActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         mCompanyName = intent.getStringExtra(SearchActivity.QUERY_TICKER);
+        mIsFromPortfolio = intent.getBooleanExtra(PortfolioActivity.WHERE_IS_HOME, true);
 
         mInWatchlist = new WatchlistDataSource(this).retrieveOne(mCompanyName);
 
@@ -169,6 +171,9 @@ public class StockProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(StockProfileActivity.this, TradeActivity.class);
                 intent.putExtra(QUOTE_DETAILS, mStockProfile);
+
+
+
                 startActivity(intent);
             }
         });
@@ -176,7 +181,15 @@ public class StockProfileActivity extends AppCompatActivity {
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StockProfileActivity.this, PortfolioActivity.class);
+                Intent intent;
+
+                if (mIsFromPortfolio) {
+                    intent = new Intent(StockProfileActivity.this, PortfolioActivity.class);
+                }
+                else{
+                    intent = new Intent(StockProfileActivity.this, WatchlistActivity.class);
+
+                }
                 startActivity(intent);
             }
         });
@@ -465,7 +478,7 @@ public class StockProfileActivity extends AppCompatActivity {
                         +   "   dataset.push([xVals[i], yVals[i]]);"
                         +   "}"
                         +   "data.addRows(dataset);"
-                        +   "var options={vAxis: {title: 'Price'}, series: {0: {color:'#f1b927', visibleInLegend:false}}, chartArea:{width:'90%'}};"
+                        +   "var options={vAxis: {title: 'Price', titleTextStyle:{color:'#9b9b9b'}}, hAxis:{title: 'Date', titleTextStyle:{color:'#9b9b9b'}}, legend:{position:'none'}, series: {0: {color:'#f1b927'}}};"
                         +   "var chart = new google.visualization.LineChart(document.getElementById('chart_div'));"
                         +   "chart.draw(data, options);"
                         +   "}";
@@ -660,8 +673,14 @@ public class StockProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home){
-            Intent intent = new Intent(this, PortfolioActivity.class);
-            NavUtils.navigateUpTo(this, intent);
+            if (mIsFromPortfolio) {
+                Intent intent = new Intent(this, PortfolioActivity.class);
+                NavUtils.navigateUpTo(this, intent);
+            }
+            else{
+                Intent intent = new Intent(this, WatchlistActivity.class);
+                NavUtils.navigateUpTo(this, intent);
+            }
         }
         else if(id == R.id.refreshOption){
             Log.i(TAG+" periodchecked", mPeriodChecked);
@@ -679,6 +698,7 @@ public class StockProfileActivity extends AppCompatActivity {
                 item.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.star_empty, null));
                 // delete from watchlist
                 dataSource.delete(mStockProfile.getSymbol());
+                mInWatchlist = false;
             }
             else{
                 // change star to full
@@ -689,6 +709,7 @@ public class StockProfileActivity extends AppCompatActivity {
                         TradeActivity.round(mStockProfile.getPercentChange(), 2),
                         TradeActivity.round(mStockProfile.getChangePercentYtd(), 2));
                 dataSource.create(watchlist);
+                mInWatchlist = true;
             }
         }
 

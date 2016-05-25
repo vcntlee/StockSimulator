@@ -120,6 +120,10 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         else if (id == R.id.nav_settings){
 
         }
+        else if (id == R.id.nav_instructions){
+            Intent intent = new Intent(this, InstructionsActivity.class);
+            startActivity(intent);
+        }
 
         mDrawer.closeDrawer(GravityCompat.START);
         return false;

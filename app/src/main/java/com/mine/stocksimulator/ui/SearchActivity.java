@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,16 +50,23 @@ public class SearchActivity extends AppCompatActivity {
     private boolean mIsValidSearch;
     private ArrayList<SearchResult> mSearchResults = new ArrayList<>();
     private TextView mFailedSearch;
+    private boolean mIsFromPortfolio;
+    private TextView mErrorMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        Intent intent = getIntent();
+        mIsFromPortfolio = intent.getBooleanExtra(PortfolioActivity.WHERE_IS_HOME, true);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.searchActivityAppBar);
         mListView = (ListView) findViewById(android.R.id.list);
         mSearchEditText = (EditText) findViewById(R.id.searchEditText);
         mSearchButton = (Button) findViewById(R.id.searchButton);
         mFailedSearch = (TextView) findViewById(R.id.failedSearch);
+        mErrorMessage = (TextView) findViewById(R.id.emptyMessage);
 
         if (toolbar != null){
             setSupportActionBar(toolbar);
@@ -72,9 +81,27 @@ public class SearchActivity extends AppCompatActivity {
         mSearchEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mErrorMessage.setVisibility(View.INVISIBLE);
                 mSearchEditText.setCursorVisible(true);
             }
         });
+        mSearchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                mErrorMessage.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mErrorMessage.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mErrorMessage.setVisibility(View.INVISIBLE);
+            }
+        });
+
 
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +133,14 @@ public class SearchActivity extends AppCompatActivity {
                     String ticker = mSearchResults.get(position).getTicker();
                     Intent intent = new Intent(SearchActivity.this, StockProfileActivity.class);
                     intent.putExtra(QUERY_TICKER, ticker);
+
+
+                    if (mIsFromPortfolio)
+                        intent.putExtra(PortfolioActivity.WHERE_IS_HOME, true);
+                    else
+                        intent.putExtra(PortfolioActivity.WHERE_IS_HOME, false);
+
+
                     startActivity(intent);
                 }
 
@@ -220,9 +255,9 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void displayErrorMessage(String s) {
-        TextView errorMessage = (TextView) findViewById(R.id.emptyMessage);
-        errorMessage.setText(s);
-        errorMessage.setVisibility(View.VISIBLE);
+
+        mErrorMessage.setText(s);
+        mErrorMessage.setVisibility(View.VISIBLE);
     }
 
     private boolean isNetworkAvailable() {
@@ -248,8 +283,14 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home){
-            Intent intent = new Intent(this, PortfolioActivity.class);
-            NavUtils.navigateUpTo(this, intent);
+            if (mIsFromPortfolio) {
+                Intent intent = new Intent(this, PortfolioActivity.class);
+                NavUtils.navigateUpTo(this, intent);
+            }
+            else{
+                Intent intent = new Intent(this, WatchlistActivity.class);
+                NavUtils.navigateUpTo(this, intent);
+            }
         }
         return super.onOptionsItemSelected(item);
     }

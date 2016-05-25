@@ -43,6 +43,7 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
     private LinearLayout mHeaderContainer;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,10 +73,13 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
 
         mWatchlists = setWatchlist();
         mAdapter = new WatchlistAdapter(this, mWatchlists);
-        mListView.setAdapter(mAdapter);
 
         mListView.addHeaderView(mHeaderView, null, false);
         mListView.addFooterView(mFooterView, null, false);
+
+        mListView.setAdapter(mAdapter);
+
+
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,6 +89,7 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
                     String ticker = mWatchlists.get(position - 1).getTicker();
                     Intent intent = new Intent(WatchlistActivity.this, StockProfileActivity.class);
                     intent.putExtra(SearchActivity.QUERY_TICKER, ticker);
+                    intent.putExtra(PortfolioActivity.WHERE_IS_HOME, false);
                     startActivity(intent);
                 }
                 else{
@@ -136,6 +141,7 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
         int id = item.getItemId();
         if (id == R.id.addOption){
             Intent intent = new Intent(this, SearchActivity.class);
+            intent.putExtra(PortfolioActivity.WHERE_IS_HOME, false);
             startActivity(intent);
         }
 
@@ -158,6 +164,10 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
 
         else if (id == R.id.nav_settings){
             Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
+        else if (id == R.id.nav_instructions){
+            Intent intent = new Intent(this, InstructionsActivity.class);
             startActivity(intent);
         }
 

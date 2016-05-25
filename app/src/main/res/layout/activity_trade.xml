@@ -30,7 +30,7 @@
 
         <TextView
 
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/selectActionLabel"
@@ -42,7 +42,7 @@
             />
 
         <Spinner
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/actionSpinner"
             android:layout_weight="1"
@@ -65,7 +65,7 @@
         >
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Number of Shares"
@@ -75,7 +75,7 @@
             />
 
         <EditText
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/numberOfSharesInput"
@@ -104,7 +104,7 @@
         >
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Available shares"
@@ -113,7 +113,7 @@
             android:gravity="left"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/availableShares"
@@ -139,7 +139,7 @@
         >
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Price/Share"
@@ -148,7 +148,7 @@
             android:gravity="left"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/pricePerShare"
@@ -174,7 +174,7 @@
         >
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Current Cash"
@@ -183,7 +183,7 @@
             android:gravity="left"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/currentCash"
@@ -209,7 +209,7 @@
         >
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Total"
@@ -218,7 +218,7 @@
             android:gravity="left"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/totalTransaction"
@@ -243,7 +243,7 @@
         >
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Remaining Cash"
@@ -252,7 +252,7 @@
             android:gravity="left"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/remainingCash"
@@ -275,7 +275,7 @@
         >
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Cancel"
@@ -288,7 +288,7 @@
             android:layout_marginRight="8dp"/>
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Trade"

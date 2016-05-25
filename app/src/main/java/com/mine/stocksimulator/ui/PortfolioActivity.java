@@ -45,9 +45,13 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     // EmptyTextView doesn't work here
 
+    public static final String WHERE_IS_HOME = "WHERE_IS_HOME";
+
     public static final int PORTFOLIO_OPTION = 0;
     public static final int WATCHLIST_OPTION = 1;
     public static final int SETTINGS_OPTION = 2;
+    public static final int INSTRUCTIONS_OPTION = 3;
+
 
     private static final String TAG = PortfolioActivity.class.getSimpleName();
 
@@ -186,6 +190,7 @@ public class PortfolioActivity extends AppCompatActivity implements
                     String ticker = mPositions.get(position - 1).getCompanyTicker();
                     Intent intent = new Intent(PortfolioActivity.this, StockProfileActivity.class);
                     intent.putExtra(SearchActivity.QUERY_TICKER, ticker);
+                    intent.putExtra(PortfolioActivity.WHERE_IS_HOME, true);
                     startActivity(intent);
                 }
                 else{
@@ -200,6 +205,7 @@ public class PortfolioActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PortfolioActivity.this, SearchActivity.class);
+                intent.putExtra(PortfolioActivity.WHERE_IS_HOME, true);
                 startActivity(intent);
             }
         });
@@ -280,9 +286,7 @@ public class PortfolioActivity extends AppCompatActivity implements
         mListView.setAdapter(mAdapter);
     }
 
-    private double calculateReturn(double a, double b){
-        return TradeActivity.round((b - a)/ a, 2) * 100;
-    }
+
 
 //    private void updatePositions(){
 //        PositionDataSource dataSource = new PositionDataSource(this);
@@ -358,6 +362,7 @@ public class PortfolioActivity extends AppCompatActivity implements
         int id = item.getItemId();
         if (id == R.id.searchOption){
             Intent intent = new Intent(PortfolioActivity.this, SearchActivity.class);
+            intent.putExtra(WHERE_IS_HOME, true);
             startActivity(intent);
             return true;
         }
@@ -371,17 +376,18 @@ public class PortfolioActivity extends AppCompatActivity implements
 
         int id = item.getItemId();
         if (id == R.id.nav_portfolio){
-            Log.i(TAG, "portfolio icon pressed");
 
         }
         else if (id == R.id.nav_watchlist){
-            Log.i(TAG, "watchlist icon pressed");
             Intent intent = new Intent(this, WatchlistActivity.class);
             startActivity(intent);
         }
         else if (id == R.id.nav_settings){
-            Log.i(TAG, "settings icon pressed");
             Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
+        else if (id == R.id.nav_instructions){
+            Intent intent = new Intent(this, InstructionsActivity.class);
             startActivity(intent);
         }
 

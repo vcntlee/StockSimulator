@@ -17,6 +17,10 @@
             android:icon="@drawable/settings_48"
             android:title="Account Settings"
             />
+        <item
+            android:id="@+id/nav_instructions"
+            android:title="Instructions"
+            />
     </group>
 
 </menu>
