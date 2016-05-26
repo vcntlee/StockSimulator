@@ -25,18 +25,18 @@
             />
 
 
+
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@android:id/list"
-
-
             android:layout_below="@id/app_bar"
-            android:background="@drawable/background_with_shadow"
+
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:scrollbars="none"
-
+            android:footerDividersEnabled="false"
+            android:headerDividersEnabled="false"
             />
 
 
@@ -45,7 +45,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Empty portfolio"
+            android:text="Empty portfolio, press Trade to start"
             android:id="@+id/emptyMessage"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"

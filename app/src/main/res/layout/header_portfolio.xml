@@ -27,8 +27,7 @@
         android:padding="15dp"
 
         >
-
-
+        
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -102,68 +101,24 @@
 
         </LinearLayout>
 
-        <!--<LinearLayout-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!-->-->
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="Return:"-->
-                <!--android:textSize="16sp"-->
-                <!--android:gravity="right"-->
-                <!--android:textColor="@color/fontColor"-->
-                <!--android:layout_marginTop="5dp"-->
 
-
-                <!--/>-->
-
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="&#45;&#45; %"-->
-                <!--android:id="@+id/percentReturn"-->
-                <!--android:textSize="16sp"-->
-                <!--android:layout_marginLeft="10dp"-->
-                <!--android:gravity="left"-->
-                <!--android:textColor="@color/fontColor"-->
-                <!--android:layout_marginTop="5dp"-->
-
-
-                <!--/>-->
-
-        <!--</LinearLayout>-->
 
 
     </LinearLayout>
 
-        <!-- <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/balanceContainer"
-            android:layout_marginTop="30dp"
-            android:text="Current Positions"
-            android:textColor="@color/fontColor"
-            android:textSize="18sp"
-            android:id="@+id/currentPositionsLabel"
 
-            /> -->
 
         <!-- this is for the header -->
 
     <LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/headerContainer"
-    android:background="@drawable/background_without_shadow"
-    android:layout_below="@id/balanceContainer"
-    android:padding="15dp"
-    android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/headerContainer"
+        android:background="@drawable/background_without_shadow"
+        android:layout_below="@id/balanceContainer"
+        android:padding="15dp"
+        android:layout_marginTop="10dp"
 
 
         >

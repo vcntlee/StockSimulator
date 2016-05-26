@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/searchContainer"
         android:layout_below="@id/searchActivityAppBar"
-        android:layout_marginTop="15dp">
+        android:layout_margin="@dimen/activity_horizontal_margin">
 
 
         <EditText
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:id="@+id/searchEditText"
-            android:hint="Search company"
+            android:hint="Name or symbol"
             android:textSize="14sp"
             android:layout_gravity="center"
             android:cursorVisible="false"
@@ -50,11 +50,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/searchButton"
-            android:text="SEARCH"
+            android:text="Search"
             android:textColor="#eeeeee"
             android:background="@color/toolbarBackground"
             android:textSize="14sp"
             android:gravity="center"
+            android:textAllCaps="false"
             />
 
     </LinearLayout>
@@ -66,17 +67,11 @@
         android:layout_marginTop="15dp"
         android:layout_marginBottom="0dp"
         android:layout_below="@id/searchContainer"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         />
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_below="@+id/radioGroup"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="15dp"
-        android:visibility="invisible"
-        />
+
 
     <TextView
         android:layout_width="match_parent"

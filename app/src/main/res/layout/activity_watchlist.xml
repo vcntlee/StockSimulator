@@ -33,11 +33,12 @@
             android:layout_height="wrap_content"
             android:id="@android:id/list"
 
-            android:background="@drawable/background_with_shadow"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_below="@id/watchlist_toolbar"
             android:scrollbars="none"
+            android:footerDividersEnabled="false"
+            android:headerDividersEnabled="false"
             />
 
         <TextView

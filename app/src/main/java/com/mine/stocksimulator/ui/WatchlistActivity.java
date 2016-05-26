@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -72,6 +73,13 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
 
 
         mWatchlists = setWatchlist();
+        if (mWatchlists.size() == 0){
+            mEmpty.setVisibility(View.VISIBLE);
+            mHeaderContainer.setVisibility(View.INVISIBLE);
+        }
+        else {
+            mListView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
         mAdapter = new WatchlistAdapter(this, mWatchlists);
 
         mListView.addHeaderView(mHeaderView, null, false);
@@ -118,11 +126,6 @@ public class WatchlistActivity extends AppCompatActivity implements NavigationVi
         ArrayList<Watchlist> watchlists;
         WatchlistDataSource dataSource = new WatchlistDataSource(this);
         watchlists = dataSource.retrieve();
-
-        if (watchlists.size() == 0){
-            mEmpty.setVisibility(View.VISIBLE);
-            mHeaderContainer.setVisibility(View.INVISIBLE);
-        }
 
         return watchlists;
     }

@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -281,7 +282,9 @@ public class PortfolioActivity extends AppCompatActivity implements
             mTradeButton.setVisibility(View.VISIBLE);
 
         }
-
+        else {
+            mListView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
         mAdapter = new PositionAdapter(this, mPositions);
         mListView.setAdapter(mAdapter);
     }
