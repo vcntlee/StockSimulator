@@ -62,7 +62,7 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     private TextView mPortfolioValue;
     private TextView mAvailableCash;
-    //private TextView mPercentReturn;
+    private TextView mPercentReturn;
     private DrawerLayout mDrawer;
     private ListView mListView;
     private Button mTradeButton;
@@ -127,7 +127,7 @@ public class PortfolioActivity extends AppCompatActivity implements
 
         mPortfolioValue = (TextView) mHeaderView.findViewById(R.id.portfolioValue);
         mAvailableCash = (TextView) mHeaderView.findViewById(R.id.availableCash);
-        //mPercentReturn = (TextView) mHeaderView.findViewById(R.id.percentReturn);
+        mPercentReturn = (TextView) mHeaderView.findViewById(R.id.percentReturn);
         mHeaderContainer = (LinearLayout) mHeaderView.findViewById(R.id.headerContainer);
 
         mTradeButton = (Button) findViewById(R.id.tradeButton);
@@ -318,7 +318,14 @@ public class PortfolioActivity extends AppCompatActivity implements
         mPortfolioValue.setText("$ " + mCachePortfolioValue);
 
         mAvailableCash.setText("$ " + mAccountSummary.getAvailableCash());
-        //mPercentReturn.setText(mAccountSummary.getPercentReturn() + " %");
+        mPercentReturn.setText(mAccountSummary.getPercentReturn() + " %");
+
+        if (mAccountSummary.getPercentReturn() >= 0){
+            mPercentReturn.setTextColor(Color.parseColor("#4dd14d"));
+        }else{
+            mPercentReturn.setTextColor(Color.parseColor("#f1575a"));
+        }
+
     }
 
     private void saveSummary(){

@@ -3,6 +3,8 @@ package com.mine.stocksimulator.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.mine.stocksimulator.ui.TradeActivity;
+
 public class AccountSummary implements Parcelable {
 
     private double mAvailableCash;
@@ -16,7 +18,7 @@ public class AccountSummary implements Parcelable {
     }
 
     public void setAvailableCash(double availableCash) {
-        mAvailableCash = availableCash;
+        mAvailableCash = TradeActivity.round(availableCash,2);
     }
 
     public double getPercentReturn() {
@@ -32,7 +34,7 @@ public class AccountSummary implements Parcelable {
     }
 
     public void setPortfolioValue(double portfolioValue) {
-        mPortfolioValue = portfolioValue;
+        mPortfolioValue = TradeActivity.round(portfolioValue,2);
     }
 
     @Override

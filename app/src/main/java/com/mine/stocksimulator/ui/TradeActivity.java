@@ -201,8 +201,9 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                             mPosition.setShares(mNumShares);
                             mPosition.setType(mAction);
                             mPosition.setPercentReturn(0);
-                            mPosition.setTotalMkt();
                             mPosition.setTotalCost(mTotalTransaction);
+                            mPosition.setTotalMkt();
+
                         }
                         else{
                             Toast.makeText(TradeActivity.this,
@@ -218,8 +219,10 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                                 mPosition.setShares(mNumShares + mPosition.getShares());
                                 mPosition.setPrice(mStockProfile.getPrice());
                                 mPosition.setWeightedCost(mNumShares, mStockProfile.getPrice());
-                                mPosition.setTotalMkt();
+                                // setTotalCost = totalcost += newCost
                                 mPosition.setTotalCost(mTotalTransaction);
+                                mPosition.setTotalMkt();
+
                                 Log.i(TAG+" weighted", mPosition.getCost()+"");
                             }
                             else{
@@ -242,8 +245,9 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                             if (mNumShares < mPosition.getShares()) {
                                 mPosition.setShares(mPosition.getShares() - mNumShares);
                                 mPosition.setPrice(mStockProfile.getPrice());
-                                mPosition.setTotalMkt();
                                 mPosition.setTotalCost((-1) * mTotalTransaction);
+                                mPosition.setTotalMkt();
+
                             }
                             else{
                                 PositionDataSource dataSource = new PositionDataSource(TradeActivity.this);

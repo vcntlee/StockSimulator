@@ -1,7 +1,10 @@
 package com.mine.stocksimulator.data;
 
+import android.util.Log;
+
 public class Position  {
 
+    private static final String TAG = Position.class.getSimpleName();
     private int mId;
     private String mCompanyTicker;
     private double mPrice;
@@ -94,7 +97,15 @@ public class Position  {
     }
 
     public void setTotalMkt() {
-        mTotalMkt = mShares * mPrice;
+        if (mType.equals("Long")) {
+            mTotalMkt = mShares * mPrice;
+        }else{
+            Log.i(TAG+" mktcost", mTotalCost+"");
+            Log.i(TAG+" mktcost", (mShares*mPrice)+"");
+
+            mTotalMkt = mTotalCost - (mShares * mPrice) + mTotalCost;
+        }
+
     }
 
     public double getTotalCost() {
