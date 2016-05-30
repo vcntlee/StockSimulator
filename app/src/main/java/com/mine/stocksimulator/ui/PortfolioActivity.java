@@ -247,10 +247,9 @@ public class PortfolioActivity extends AppCompatActivity implements
             PositionDataSource dataSource = new PositionDataSource(this);
             mAccountSummary = new Gson().fromJson(jsonSummary, AccountSummary.class);
 
-            Log.i(TAG+" summary", mAccountSummary.getAvailableCash()+"");
-            Log.i(TAG+" summary", mAccountSummary.getPortfolioValue()+"");
-            Log.i(TAG+" summary", mAccountSummary.getPercentReturn()+"");
-            Log.i(TAG+" summary", mAccountSummary.getAvailableCash()+"");
+            Log.i(TAG+" availableCash", mAccountSummary.getAvailableCash()+"");
+            Log.i(TAG+" portfolioValue", mAccountSummary.getPortfolioValue()+"");
+            Log.i(TAG+" percentReturn", mAccountSummary.getPercentReturn()+"");
 
 
             mRemainingCash = mAccountSummary.getAvailableCash();
@@ -261,7 +260,7 @@ public class PortfolioActivity extends AppCompatActivity implements
                 Log.i(TAG+" totalMkt" , totalMkt+"");
                 Log.i(TAG+" totalCost" , totalCost+"");
 
-                mCachePortfolioValue = totalMkt;
+                mCachePortfolioValue = TradeActivity.round(totalMkt,2);
                 mAccountSummary.setPortfolioValue(mCachePortfolioValue);
                 double percentReturn = (totalMkt - totalCost) / totalCost * 100;
                 mAccountSummary.setPercentReturn(TradeActivity.round(percentReturn,2));
@@ -287,6 +286,7 @@ public class PortfolioActivity extends AppCompatActivity implements
         }
         mAdapter = new PositionAdapter(this, mPositions);
         mListView.setAdapter(mAdapter);
+
     }
 
 

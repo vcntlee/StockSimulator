@@ -148,10 +148,10 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
                     mTotalTransactionTextView.setText("$ " + mTotalTransaction);
 
                     if (mAction.equals("Long") || mAction.equals("Short")) {
-                        mRemainingCashTextView.setText("$ " + (mCurrentCash - mTotalTransaction));
+                        mRemainingCashTextView.setText("$ " + round(mCurrentCash - mTotalTransaction,2));
                     }
                     else if(mAction.equals("Sell")){
-                        mRemainingCashTextView.setText("$ " + (mCurrentCash + mTotalTransaction));
+                        mRemainingCashTextView.setText("$ " + round(mCurrentCash + mTotalTransaction,2));
                     }
 
                     else if (mAction.equals("Buy")){
@@ -282,6 +282,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
         Log.i(TAG+" mPosition", mPosition.getPrice()+"");
         Log.i(TAG+" mPosition", mPosition.getType());
         Log.i(TAG+" mPosition", mPosition.getShares()+"");
+        Log.i(TAG+" mPosition", mPosition.getTotalMkt()+"");
         PositionDataSource dataSource = new PositionDataSource(this);
         // if position in db:
         if (!mCreateNeeded) {
@@ -335,7 +336,7 @@ public class TradeActivity extends AppCompatActivity implements AdapterView.OnIt
 
         double total =  mCurrentCash + 2 * (mPosition.getCost() * mPosition.getShares()) - mTotalTransaction;
         Log.i(TAG+" total", total+"");
-        return total;
+        return round(total,2);
     }
 
 

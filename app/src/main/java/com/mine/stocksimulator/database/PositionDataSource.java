@@ -40,8 +40,8 @@ public class PositionDataSource {
         value.put(PositionSQLiteHelper.COLUMN_TYPE, position.getType());
         value.put(PositionSQLiteHelper.COLUMN_RETURN, TradeActivity.round(position.getPercentReturn(),2));
 
-        value.put(PositionSQLiteHelper.COLUMN_TOTAL_MKT, TradeActivity.round(position.getPrice() * position.getShares(),2));
-        value.put(PositionSQLiteHelper.COLUMN_TOTAL_COST, TradeActivity.round(position.getCost() * position.getShares(),2));
+        value.put(PositionSQLiteHelper.COLUMN_TOTAL_MKT, TradeActivity.round(position.getTotalMkt(),2));
+        value.put(PositionSQLiteHelper.COLUMN_TOTAL_COST, TradeActivity.round(position.getTotalCost(),2));
 
         database.insert(PositionSQLiteHelper.POSITIONS_TABLE, null, value);
 
