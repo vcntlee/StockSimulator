@@ -287,6 +287,10 @@ public class PortfolioActivity extends AppCompatActivity implements
         mAdapter = new PositionAdapter(this, mPositions);
         mListView.setAdapter(mAdapter);
 
+        for (int i = 0 ; i < mPositions.size(); i++){
+            Log.i(TAG+" mPosMkt", mPositions.get(i).getTotalMkt()+"");
+        }
+
     }
 
 

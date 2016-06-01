@@ -157,7 +157,7 @@ public class UpdateService extends IntentService {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                mPositionDataSource.update(position, position.getPrice(), -1, -1, position.getPercentReturn(), position.getPrice() * position.getShares(), -1);
+                mPositionDataSource.update(position, position.getPrice(), -1, -1, position.getPercentReturn(), position.getTotalMkt(), -1);
             }
         }
     }
@@ -209,21 +209,9 @@ public class UpdateService extends IntentService {
     private void updatePosition(String jsonData, Position position) throws JSONException {
         JSONObject wholeQuote = new JSONObject(jsonData);
 
-        double newPrice = wholeQuote.getDouble("LastPrice");
-        double oldPrice = position.getCost();
-
-        Log.i(TAG + " newPrice", newPrice+"");
-        Log.i(TAG + " oldPrice", oldPrice+"");
-
-        double percentReturn = 0;
-        if (position.getType().equals("Long")) {
-            percentReturn = (newPrice - oldPrice) / oldPrice;
-        }
-        else{
-            percentReturn = (oldPrice - newPrice) / newPrice;
-        }
-        Log.i(TAG + " percent return", percentReturn+"");
         position.setPrice(wholeQuote.getDouble("LastPrice"));
+        position.setTotalMkt();
+        double percentReturn = (position.getTotalMkt() - position.getTotalCost()) / position.getTotalCost();
         position.setPercentReturn(percentReturn);
 
     }
