@@ -27,41 +27,6 @@
         android:padding="15dp"
 
         >
-        
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            >
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Positions Value:"
-                android:textSize="16sp"
-                android:gravity="right"
-                android:textColor="@color/fontColor"
-                android:layout_marginBottom="5dp"
-                />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="$---"
-                android:id="@+id/portfolioValue"
-                android:textSize="16sp"
-                android:layout_marginLeft="10dp"
-                android:gravity="left"
-                android:textColor="@color/fontColor"
-                android:layout_marginBottom="5dp"
-
-
-                />
-
-        </LinearLayout>
-
 
         <LinearLayout
             android:orientation="horizontal"
@@ -111,6 +76,40 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="Profit:"
+                android:textSize="16sp"
+                android:gravity="right"
+                android:textColor="@color/fontColor"
+                android:layout_marginBottom="5dp"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="$---"
+                android:id="@+id/profitLossValue"
+                android:textSize="16sp"
+                android:layout_marginLeft="10dp"
+                android:gravity="left"
+                android:textColor="@color/fontColor"
+                android:layout_marginBottom="5dp"
+
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Return:"
                 android:textSize="16sp"
                 android:gravity="right"
@@ -129,7 +128,6 @@
                 android:gravity="left"
                 android:textColor="@color/fontColor"
                 android:layout_marginBottom="5dp"
-
 
                 />
 

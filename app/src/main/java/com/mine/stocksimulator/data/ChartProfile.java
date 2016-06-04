@@ -1,12 +1,9 @@
 package com.mine.stocksimulator.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.ArrayList;
 
 
-public class ChartProfile implements Parcelable{
+public class ChartProfile {
 
     private static final String TAG = ChartProfile.class.getSimpleName();
     private ArrayList<String> mChartDates;
@@ -78,36 +75,36 @@ public class ChartProfile implements Parcelable{
             mChartValues.add(0.0);
         }
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringList(mChartDates);
-        dest.writeList(mChartValues);
-
-    }
-    private ChartProfile(Parcel source){
-        this();
-        source.readStringList(mChartDates);
-        source.readList(mChartValues, null);
-
-    }
-
-    public static final Creator<ChartProfile> CREATOR = new Creator<ChartProfile>() {
-        @Override
-        public ChartProfile createFromParcel(Parcel source) {
-            return new ChartProfile(source);
-        }
-
-        @Override
-        public ChartProfile[] newArray(int size) {
-            return new ChartProfile[size];
-        }
-    };
+//
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeStringList(mChartDates);
+//        dest.writeList(mChartValues);
+//
+//    }
+//    private ChartProfile(Parcel source){
+//        this();
+//        source.readStringList(mChartDates);
+//        source.readList(mChartValues, null);
+//
+//    }
+//
+//    public static final Creator<ChartProfile> CREATOR = new Creator<ChartProfile>() {
+//        @Override
+//        public ChartProfile createFromParcel(Parcel source) {
+//            return new ChartProfile(source);
+//        }
+//
+//        @Override
+//        public ChartProfile[] newArray(int size) {
+//            return new ChartProfile[size];
+//        }
+//    };
 
 
 }

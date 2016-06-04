@@ -60,7 +60,8 @@ public class PortfolioActivity extends AppCompatActivity implements
     public static final String ACCOUNT_SUMMARY = "ACCOUNT_SUMMARY";
 
 
-    private TextView mPortfolioValue;
+    //private TextView mPortfolioValue;
+    private TextView mProfitLossValue;
     private TextView mAvailableCash;
     private TextView mPercentReturn;
     private DrawerLayout mDrawer;
@@ -77,7 +78,7 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     /* This is for the account summary*/
     private AccountSummary mAccountSummary;
-    private double mCachePortfolioValue;
+    //private double mCachePortfolioValue;
 
 
     private View mHeaderView;
@@ -125,7 +126,8 @@ public class PortfolioActivity extends AppCompatActivity implements
         mListView.addHeaderView(mHeaderView, null, false);
         mListView.addFooterView(mFooterView, null, false);
 
-        mPortfolioValue = (TextView) mHeaderView.findViewById(R.id.portfolioValue);
+        //mPortfolioValue = (TextView) mHeaderView.findViewById(R.id.profitLossValue);
+        mProfitLossValue = (TextView) mHeaderView.findViewById(R.id.profitLossValue);
         mAvailableCash = (TextView) mHeaderView.findViewById(R.id.availableCash);
         mPercentReturn = (TextView) mHeaderView.findViewById(R.id.percentReturn);
         mHeaderContainer = (LinearLayout) mHeaderView.findViewById(R.id.headerContainer);
@@ -141,10 +143,6 @@ public class PortfolioActivity extends AppCompatActivity implements
 
         if (getIntent()!= null && getIntent().getExtras() != null) {
 
-            Log.i(TAG, " entering here");
-            Log.i(TAG + " extraTrade", getIntent().getDoubleExtra(TradeActivity.ACCOUNT_REMAINING_CASH, -1)+"");
-            Log.i(TAG + " extraSetting", getIntent().getDoubleExtra(SettingsActivity.INITIAL_BALANCE, -1)+"");
-
             Intent intent = getIntent();
             double remainingCash = intent.getDoubleExtra(TradeActivity.ACCOUNT_REMAINING_CASH, -1);
             double initBal = intent.getDoubleExtra(SettingsActivity.INITIAL_BALANCE, -1);
@@ -155,7 +153,8 @@ public class PortfolioActivity extends AppCompatActivity implements
                 mRemainingCash = initBal;
                 mAccountSummary.setAvailableCash(mRemainingCash);
                 mAccountSummary.setPercentReturn(0);
-                mAccountSummary.setPortfolioValue(0);
+                //mAccountSummary.setPortfolioValue(0);
+                mAccountSummary.setProfitLossValue(0);
             }
 
             // this is to get intent from trade
@@ -164,21 +163,11 @@ public class PortfolioActivity extends AppCompatActivity implements
                 mAccountSummary.setAvailableCash(mRemainingCash);
             }
 
-            Log.i(TAG+" cash", mAccountSummary.getAvailableCash() +"");
-
             saveSummary();
             intent.removeExtra(TradeActivity.ACCOUNT_REMAINING_CASH);
             intent.removeExtra(SettingsActivity.INITIAL_BALANCE);
         }
 
-
-
-        // here we update the adapter
-                //wrapperForRefreshPositions();
-                //updatePositions();
-        // update account summary
-        //updateAccountSummary();
-        // set the account details views
         populateAccountTextViews();
         scheduleAlarm();
 
@@ -239,8 +228,9 @@ public class PortfolioActivity extends AppCompatActivity implements
             mAccountSummary = new AccountSummary();
             mAccountSummary.setAvailableCash(mRemainingCash);
             mAccountSummary.setPercentReturn(0);
-            mCachePortfolioValue = 0;
-            mAccountSummary.setPortfolioValue(mCachePortfolioValue);
+            //mCachePortfolioValue = 0;
+            //mAccountSummary.setPortfolioValue(mCachePortfolioValue);
+            mAccountSummary.setProfitLossValue(0);
         }
 
         else{
@@ -248,7 +238,7 @@ public class PortfolioActivity extends AppCompatActivity implements
             mAccountSummary = new Gson().fromJson(jsonSummary, AccountSummary.class);
 
             Log.i(TAG+" availableCash", mAccountSummary.getAvailableCash()+"");
-            Log.i(TAG+" portfolioValue", mAccountSummary.getPortfolioValue()+"");
+            Log.i(TAG+" profitloss", mAccountSummary.getProfitLossValue()+"");
             Log.i(TAG+" percentReturn", mAccountSummary.getPercentReturn()+"");
 
 
@@ -260,8 +250,9 @@ public class PortfolioActivity extends AppCompatActivity implements
                 Log.i(TAG+" totalMkt" , totalMkt+"");
                 Log.i(TAG+" totalCost" , totalCost+"");
 
-                mCachePortfolioValue = TradeActivity.round(totalMkt,2);
-                mAccountSummary.setPortfolioValue(mCachePortfolioValue);
+                //mCachePortfolioValue = TradeActivity.round(totalMkt,2);
+                //mAccountSummary.setPortfolioValue(mCachePortfolioValue);
+                mAccountSummary.setProfitLossValue(TradeActivity.round(totalMkt-totalCost,2));
                 double percentReturn = (totalMkt - totalCost) / totalCost * 100;
                 mAccountSummary.setPercentReturn(TradeActivity.round(percentReturn,2));
                 Log.i(TAG + " return", mAccountSummary.getPercentReturn()+"");
@@ -294,35 +285,19 @@ public class PortfolioActivity extends AppCompatActivity implements
     }
 
 
-
-//    private void updatePositions(){
-//        PositionDataSource dataSource = new PositionDataSource(this);
-//        for (int i = 0; i < mPositions.size(); i++) {
-//            double percentReturn = calculateReturn(mPositions.get(i).getCost(), mPositions.get(i).getPrice());
-//            double totalMkt = mPositions.get(i).getPrice() * mPositions.get(i).getShares();
-//            dataSource.update(mPositions.get(i), mPositions.get(i).getPrice(), -1, -1, percentReturn, totalMkt, -1);
-//        }
-//        mAdapter.notifyDataSetChanged();
-//    }
-//
-//    private void updateAccountSummary(){
-//        if (mPositions.size() > 0) {
-//            PositionDataSource datasource = new PositionDataSource(this);
-//            mCachePortfolioValue = TradeActivity.round(datasource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_MKT),2);
-//            double totalCost = datasource.getTotal(PositionSQLiteHelper.COLUMN_TOTAL_COST);
-//            double percentReturn = calculateReturn(totalCost, mCachePortfolioValue);
-//            mAccountSummary.setPercentReturn(percentReturn);
-//        }
-//
-//    }
-
-
     public void populateAccountTextViews(){
 
-        mPortfolioValue.setText("$ " + mCachePortfolioValue);
+        //mPortfolioValue.setText("$ " + mCachePortfolioValue);
+        mProfitLossValue.setText("$ " + mAccountSummary.getProfitLossValue());
 
         mAvailableCash.setText("$ " + mAccountSummary.getAvailableCash());
         mPercentReturn.setText(mAccountSummary.getPercentReturn() + " %");
+
+        if (mAccountSummary.getProfitLossValue() >= 0){
+            mProfitLossValue.setTextColor(Color.parseColor("#4dd14d"));
+        }else{
+            mProfitLossValue.setTextColor(Color.parseColor("#f1575a"));
+        }
 
         if (mAccountSummary.getPercentReturn() >= 0){
             mPercentReturn.setTextColor(Color.parseColor("#4dd14d"));
@@ -334,7 +309,6 @@ public class PortfolioActivity extends AppCompatActivity implements
 
     private void saveSummary(){
         String jsonSummary = new Gson().toJson(mAccountSummary);
-        Log.i(TAG + " jsonSummary", jsonSummary);
         mEditorSummary.putString(ACCOUNT_SUMMARY, jsonSummary);
         mEditorSummary.apply();
     }
@@ -342,10 +316,9 @@ public class PortfolioActivity extends AppCompatActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(TAG, "entered onPause");
 
         if (getIntent()!= null && getIntent().getExtras() != null) {
-            Log.i(TAG, "entered onPause's remove extras");
+
             getIntent().removeExtra(TradeActivity.ACCOUNT_REMAINING_CASH);
             getIntent().removeExtra(SettingsActivity.INITIAL_BALANCE);
         }

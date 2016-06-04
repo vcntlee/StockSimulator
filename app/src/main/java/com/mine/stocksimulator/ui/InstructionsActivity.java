@@ -38,8 +38,6 @@ public class InstructionsActivity extends AppCompatActivity  implements Navigati
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(PortfolioActivity.INSTRUCTIONS_OPTION).setChecked(true);
 
-
-
     }
 
 

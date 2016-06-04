@@ -3,7 +3,7 @@ package com.mine.stocksimulator.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class StockProfile implements Parcelable{
+public class StockProfile implements Parcelable {
 
     private String mName;
     private String mSymbol;
